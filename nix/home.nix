@@ -5,7 +5,7 @@
   home.username = "yongminari";
   home.homeDirectory = "/home/yongminari";
 
-  # Home Manager State Version (변경하지 말 것)
+  # Home Manager State Version
   home.stateVersion = "23.11"; 
 
   # [패키지 설치 목록]
@@ -17,8 +17,7 @@
     fzf
     ripgrep
     
-    # [Fonts] - 폰트 설정
-    # [Fix] maple-mono는 패키지 묶음이므로 .NF를 명시해야 함
+    # [Fonts]
     maple-mono.NF          
     nerd-fonts.ubuntu-mono 
   ];
@@ -30,11 +29,9 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    # [Fix] home-manager/master 버전에 따른 경고 대응 (initExtra -> initContent)
-    # 만약 에러가 발생하면 다시 initExtra로 변경
-    initExtra = ''
+    # [Fix] initExtra -> initContent 로 변경 (최신 master 브랜치 반영)
+    initContent = ''
       export PATH=$HOME/.local/bin:$PATH
-      # 여기에 alias 등을 추가
       alias ll="ls -al"
       alias hms="home-manager switch --flake ~/dotfiles/#yongminari"
     '';
@@ -43,8 +40,18 @@
   # Git 설정
   programs.git = {
     enable = true;
-    userName = "yongminari";
-    userEmail = "easyid21c@gmail.com"; # 본인 이메일 입력
+    
+    # [Fix] 에러 및 경고 해결을 위한 설정 방식 변경
+    # userName/userEmail 직접 사용 대신 extraConfig 사용
+    extraConfig = {
+      user = {
+        name = "yongminari";
+        email = "easyid21c@gmail.com"; # 에러 로그에 있던 이메일 반영
+      };
+      init = {
+        defaultBranch = "master";
+      };
+    };
   };
   
   # Home Manager 스스로 관리하도록 설정

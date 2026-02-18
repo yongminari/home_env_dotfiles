@@ -1,0 +1,15 @@
+# .gitignore 파일 생성
+cat <<EOF > .gitignore
+# Nix build result
+result
+result-*
+
+# Direnv (Optional)
+.direnv
+.envrc
+
+# Editor temp files
+*.swp
+*~
+.DS_Store
+EOF

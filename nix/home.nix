@@ -43,7 +43,7 @@
     
     # [Fix] 에러 및 경고 해결을 위한 설정 방식 변경
     # userName/userEmail 직접 사용 대신 extraConfig 사용
-    extraConfig = {
+    settings = {
       user = {
         name = "yongminari";
         email = "easyid21c@gmail.com"; # 에러 로그에 있던 이메일 반영

@@ -85,12 +85,12 @@
       # ---------------------------------------------------------
       if [[ -n "$TMUX" ]]; then
         echo "\x1b[40;1;31m
-      __      __        .__                       ._. \x1b[40;1;31m $(lsb_release -d 2>/dev/null || echo "Linux")
+      __      __        .__                              ._. \x1b[40;1;31m $(lsb_release -d 2>/dev/null || echo "Linux")
      /  \    /  \ ____ |  |    ____  ____   _____    ____| | \x1b[40;1;33m HOST       :      $(uname -n)
-     \   \/\/   // __ \|  | _/ ___\/  _ \ /     \_/ __ \ | \x1b[40;1;34m Kernel     :      $(uname -r)
-      \        /\  ___/|  |_\  \__(  <_> )  Y Y  \  ___/\| \x1b[40;1;35m Date       :      $(date)
-       \__/\  /  \___  >____/\___  >____/|__|_|  /\___  >_ \x1b[40;1;36m Shell      :      $(zsh --version | awk '{print $1, $2}')
-            \/        \/           \/            \/      \/\/ \x1b[40;1;37m Who        :      $(whoami)
+     \   \/\/   // __ \|  | _/ ___\/  _ \ /     \_/ __ \ | \x1b[40;1;34m   Kernel     :      $(uname -r)
+      \        /\  ___/|  |_\  \__(  <_> )  Y Y  \  ___/\| \x1b[40;1;35m   Date       :      $(date)
+       \__/\  /  \___  >____/\___  >____/|__|_|  /\___  >_ \x1b[40;1;36m   Shell      :      $(zsh --version | awk '{print $1, $2}')
+            \/       \/          \/            \/     \/\/ \x1b[40;1;37m   Who        :      $(whoami)
     \x1b[0m"
         echo "Welcome to \x1b[94mZsh\x1b[94m, \x1b[1m$USER!\x1b[0m You are on $HOSTNAME."
         echo "Current directory: \x1b[1m$(pwd)\x1b[0m"

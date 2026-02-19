@@ -21,8 +21,8 @@
     neofetch htop fzf ripgrep fd unzip
     
     # 2. 개발 언어 및 도구
-    nodejs          # 최신 LTS 자동 추적 (nodejs_24 대신 사용)
-    # corepack      # nodejs에 포함될 수 있으므로 충돌 시 주석 처리
+    nodejs          # 최신 LTS (자동 업데이트)
+    # corepack      # 충돌 방지를 위해 주석 처리 (nodejs에 포함됨)
     clang-tools cmake gnumake go gopls
 
     # 3. 폰트
@@ -33,19 +33,21 @@
     ghostty
   ]);
 
-  # [Activation Script] NPM 패키지 자동 설치 (Fix: 권한 에러 해결)
+  # [Activation Script] NPM 패키지 자동 설치 (Fix: PATH 문제 해결)
   home.activation.installGeminiCli = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    # NPM 글로벌 설치 경로 설정
+    # 1. NPM 글로벌 설치 디렉토리 생성
     npm_global_dir="${config.home.homeDirectory}/.npm-global"
     mkdir -p "$npm_global_dir"
     
-    # PATH에 임시로 추가하여 gemini 명령어 확인
-    export PATH="$npm_global_dir/bin:$PATH"
+    # 2. [중요] PATH에 Node.js 바이너리 경로를 명시적으로 추가
+    # 이렇게 해야 npm이 실행하는 하위 스크립트(node-gyp 등)가 'node'를 찾을 수 있음
+    export PATH="${pkgs.nodejs}/bin:$npm_global_dir/bin:$PATH"
 
+    # 3. 설치 확인 및 진행
     if ! command -v gemini &> /dev/null; then
       echo "Installing @google/gemini-cli..."
-      # --prefix 옵션으로 설치 경로를 강제 지정
-      ${pkgs.nodejs}/bin/npm install -g --prefix "$npm_global_dir" @google/gemini-cli
+      # --prefix 옵션으로 설치 경로 강제 지정
+      npm install -g --prefix "$npm_global_dir" @google/gemini-cli
     else
       echo "@google/gemini-cli is already installed."
     fi
@@ -141,7 +143,7 @@
       }
     ];
 
-    # [Fix] extraLuaConfig -> initLua 로 이름 변경
+    # [Fix] initLua 사용
     initLua = ''
       vim.opt.number = true
       vim.opt.relativenumber = true

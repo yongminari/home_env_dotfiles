@@ -2,12 +2,12 @@
   description = "Home Manager configuration for yongminari";
 
   inputs = {
-    # Nixpkgs (Unstable 채널)
+    # Nixpkgs (Unstable 채널 - 현재 26.05)
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Home Manager (25.11 릴리스 브랜치)
+    # Home Manager (Master 브랜치 - Nixpkgs Unstable과 버전을 맞춤)
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -22,7 +22,6 @@
         "yongminari" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./nix/home.nix ];
-          # Native 환경임을 명시
           extraSpecialArgs = { isWSL = false; };
         };
 
@@ -30,7 +29,6 @@
         "yongminari-wsl" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [ ./nix/home.nix ];
-          # WSL 환경임을 명시
           extraSpecialArgs = { isWSL = true; };
         };
       };

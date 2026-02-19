@@ -21,7 +21,7 @@
     neofetch htop fzf ripgrep fd unzip
     
     # 2. 개발 언어 및 도구
-    nodejs_24 corepack clang-tools cmake gnumake go gopls
+    nodejs clang-tools cmake gnumake go gopls
 
     # 3. 폰트
     maple-mono.NF nerd-fonts.ubuntu-mono 

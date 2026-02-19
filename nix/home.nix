@@ -21,22 +21,33 @@
     neofetch htop fzf ripgrep fd unzip
     
     # 2. 개발 언어 및 도구
-    nodejs clang-tools cmake gnumake go gopls
+    nodejs          # 최신 LTS 자동 추적 (nodejs_24 대신 사용)
+    # corepack      # nodejs에 포함될 수 있으므로 충돌 시 주석 처리
+    clang-tools cmake gnumake go gopls
 
     # 3. 폰트
     maple-mono.NF nerd-fonts.ubuntu-mono 
 
-  # [조건부 설치] WSL이 아닐 때만 Ghostty 터미널 설치
+  # [조건부 설치] WSL이 아닐 때만 Ghostty 설치
   ] ++ (lib.optionals (!isWSL) [
     ghostty
   ]);
 
-  # [Activation Script] NPM 패키지 자동 설치
+  # [Activation Script] NPM 패키지 자동 설치 (Fix: 권한 에러 해결)
   home.activation.installGeminiCli = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    PATH="${config.home.homeDirectory}/.npm-global/bin:$PATH"
+    # NPM 글로벌 설치 경로 설정
+    npm_global_dir="${config.home.homeDirectory}/.npm-global"
+    mkdir -p "$npm_global_dir"
+    
+    # PATH에 임시로 추가하여 gemini 명령어 확인
+    export PATH="$npm_global_dir/bin:$PATH"
+
     if ! command -v gemini &> /dev/null; then
       echo "Installing @google/gemini-cli..."
-      ${pkgs.nodejs_24}/bin/npm install -g @google/gemini-cli
+      # --prefix 옵션으로 설치 경로를 강제 지정
+      ${pkgs.nodejs}/bin/npm install -g --prefix "$npm_global_dir" @google/gemini-cli
+    else
+      echo "@google/gemini-cli is already installed."
     fi
   '';
 
@@ -61,7 +72,6 @@
 
     initContent = ''
       alias ll="ls -al"
-      # (중요) 환경에 맞게 alias 분기 처리는 어렵지만, 주로 쓰는 명령어로 통일 가능
       alias hms="home-manager switch --flake ~/dotfiles/#yongminari" 
       alias hms-wsl="home-manager switch --flake ~/dotfiles/#yongminari-wsl"
       alias vi="nvim"
@@ -131,7 +141,8 @@
       }
     ];
 
-    extraLuaConfig = ''
+    # [Fix] extraLuaConfig -> initLua 로 이름 변경
+    initLua = ''
       vim.opt.number = true
       vim.opt.relativenumber = true
       vim.opt.tabstop = 4

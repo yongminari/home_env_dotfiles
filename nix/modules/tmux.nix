@@ -21,6 +21,13 @@
     ];
     extraConfig = ''
       set -g set-clipboard on
+      # GNOME Terminal/vte 지원을 위한 설정
+      set -as terminal-features ',xterm-256color:clipboard'
+      
+      # tmux-yank이 xclip을 명시적으로 사용하도록 설정
+      set -g @yank_selection 'clipboard'
+      set -g @yank_selection_mouse 'clipboard'
+
       bind-key -T copy-mode-vi v send-keys -X begin-selection
       bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
     '';

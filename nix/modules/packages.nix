@@ -10,17 +10,21 @@
   ];
 
   home.packages = with pkgs; [
-    # 유틸
-    neofetch htop fzf ripgrep fd unzip
+    # [시스템 유틸]
+    neofetch htop ripgrep fd unzip
+    lsb-release   # (New) 웰컴 메시지에서 OS 정보 출력용
+    xclip         # (New) 클립보드 복사 (alias tocb)
     
-    # 개발 도구 (nodejs: 최신 LTS 자동)
+    # [개발 도구]
     nodejs
     clang-tools cmake gnumake go gopls
+    
+    # (선택) Pyenv가 꼭 필요하다면 추가 (Nix에서는 보통 shell.nix로 대체함)
+    # pyenv 
 
     # 폰트
     maple-mono.NF nerd-fonts.ubuntu-mono 
 
-  # [조건부 설치] Ghostty
   ] ++ (lib.optionals (!isWSL) [
     ghostty
   ]);

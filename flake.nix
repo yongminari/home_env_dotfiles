@@ -2,28 +2,36 @@
   description = "Home Manager configuration for yongminari";
 
   inputs = {
-    # Nixpkgs (Unstable 채널 사용 - 최신 패키지)
+    # Nixpkgs (Unstable 채널)
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    # Home Manager (Master 브랜치)
+    # Home Manager (25.11 릴리스 브랜치)
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
   outputs = { self, nixpkgs, home-manager, ... }:
     let
-      system = "x86_64-linux"; # 사용하는 시스템 아키텍처 (Intel/AMD)
+      system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       homeConfigurations = {
-        yongminari = home-manager.lib.homeManagerConfiguration {
-          # [Fix] system 변수 대신 pkgs를 직접 전달하여 경고 해결
+        # [Profile 1] Native Linux용 (Ghostty 포함)
+        "yongminari" = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-
-          # 모듈 경로 지정
           modules = [ ./nix/home.nix ];
+          # Native 환경임을 명시
+          extraSpecialArgs = { isWSL = false; };
+        };
+
+        # [Profile 2] WSL용 (Ghostty 제외)
+        "yongminari-wsl" = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./nix/home.nix ];
+          # WSL 환경임을 명시
+          extraSpecialArgs = { isWSL = true; };
         };
       };
     };

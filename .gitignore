@@ -1,15 +1,14 @@
-# .gitignore 파일 생성
+mkdir -p ~/dotfiles/nix
+cd ~/dotfiles
+git init
+
+# .gitignore 생성
 cat <<EOF > .gitignore
-# Nix build result
 result
 result-*
-
-# Direnv (Optional)
 .direnv
 .envrc
-
-# Editor temp files
 *.swp
-*~
-.DS_Store
+node_modules
+.npm-global
 EOF

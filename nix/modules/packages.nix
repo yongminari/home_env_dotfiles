@@ -16,10 +16,10 @@
     xclip xsel wl-clipboard 
     
     # [개발 도구]
+    # gcc
     nodejs
-    gcc
     clang
-    binutils
+    # binutils
     pkg-config
     clang-tools cmake gnumake go gopls
     

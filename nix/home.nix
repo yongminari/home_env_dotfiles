@@ -21,11 +21,18 @@
   # [Ghostty 설정 관리]
   # 직접 설치하신 Ghostty가 이 파일을 읽게 됩니다.
   xdg.configFile."ghostty/config".text = ''
+    # Fonts
     font-family = "Maple Mono NF"
     font-size = 12
-    theme = dark:Dracula,light:Builtin Light
-    background-opacity = 0.9
-    window-decoration = false
+
+    # Window
+    window-width = 120
+    window-height = 60
+    window-decoration = auto
+    background-opacity = 0.85
+
+    # Theme
+    theme = Dracula
   '';
 
   programs.home-manager.enable = true;

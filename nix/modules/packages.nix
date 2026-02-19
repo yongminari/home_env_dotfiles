@@ -13,7 +13,7 @@
     # [시스템 유틸]
     neofetch htop ripgrep fd unzip lazygit
     lsb-release   # (New) 웰컴 메시지에서 OS 정보 출력용
-    xclip         # (New) 클립보드 복사 (alias tocb)
+    xclip xsel wl-clipboard 
     
     # [개발 도구]
     nodejs

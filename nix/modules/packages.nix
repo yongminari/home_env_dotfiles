@@ -1,59 +1,35 @@
 { config, pkgs, lib, ... }:
 
 {
-  home.sessionVariables = {
-    NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
-  };
   home.sessionPath = [
-    "${config.home.homeDirectory}/.npm-global/bin"
     "${config.home.homeDirectory}/.local/bin"
   ];
 
   home.packages = with pkgs; [
-    # [시스템 유틸]
-    neofetch htop ripgrep fd unzip lazygit lolcat
-    lsb-release   # (New) 웰컴 메시지에서 OS 정보 출력용
-    xclip xsel wl-clipboard 
+    # [시스템 유틸 및 CLI 도구]
+    # 순수하게 도구로서 작동하며 시스템 라이브러리와 충돌이 적은 것들 위주
+    neofetch 
+    htop 
+    ripgrep 
+    fd 
+    unzip 
+    lazygit 
+    lolcat
+    lsb-release
+    xclip 
+    xsel 
+    wl-clipboard 
     
-    # [개발 도구]
-    gcc
-    binutils
-    rustc
-    cargo
-    nodejs
-    ast-grep      # ast-grep CLI
+    # [Neovim 보조 도구 (LSP/Parsers)]
+    # 에디터 경험을 위해 가벼운 서버들만 유지
     nil           # Nix Language Server
+    ast-grep      # ast-grep CLI
     lua51Packages.jsregexp # Luasnip dependency
-    pkg-config
-    clang-tools   # clangd 등 LSP 도구 (컴파일러 본체와 충돌 방지용)
-    cmake gnumake go gopls
-    
-    # (선택) clang이 필요한 경우만 유지. 보통 gcc와 충돌할 수 있으므로 
-    # nvim treesitter 용으로는 gcc + binutils 조합이 가장 안정적입니다.
-    # clang 
-    
-    # (선택) Pyenv가 꼭 필요하다면 추가 (Nix에서는 보통 shell.nix로 대체함)
-    # pyenv 
+    gopls         # Go LSP
+    clang-tools   # clangd 등 (헤더 검색 등 에디터용)
 
     # 폰트
-    maple-mono.NF nerd-fonts.ubuntu-mono 
-
+    maple-mono.NF
+    nerd-fonts.ubuntu-mono 
   ];
-
-  # [Gemini CLI 자동 설치]
-  home.activation.installGeminiCli = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    npm_global_dir="${config.home.homeDirectory}/.npm-global"
-    mkdir -p "$npm_global_dir"
-    export PATH="${pkgs.nodejs}/bin:$npm_global_dir/bin:$PATH"
-
-    if ! command -v gemini &> /dev/null; then
-      echo "Installing @google/gemini-cli..."
-      npm install -g --prefix "$npm_global_dir" @google/gemini-cli
-    fi
-
-    if ! command -v tree-sitter &> /dev/null; then
-      echo "Installing tree-sitter-cli..."
-      npm install -g --prefix "$npm_global_dir" tree-sitter-cli
-    fi
-  '';
 }

@@ -35,20 +35,27 @@
       unbind-key -n C-k
       unbind-key -n C-l
 
-      # 2. 터미널 클립보드 프로토콜(OSC 52) 설정
-      set -s set-clipboard off
+      # 2. Nested Tmux (Remote Session) Toggle
+      # F12를 눌러 로컬 tmux 단축키를 비활성화하고 상태바를 숨깁니다.
+      bind-key -T root F12 set prefix None \; set key-table off \; set status off \; if -F '#{pane_in_mode}' 'send-keys -X cancel' \; refresh-client -S
+      
+      # F12를 다시 눌러 로컬 tmux를 활성화하고 상태바를 다시 표시합니다.
+      bind-key -T off F12 set -u prefix \; set -u key-table \; set status on \; refresh-client -S
+
+      # 3. 터미널 클립보드 프로토콜(OSC 52) 설정
+      # 원격 환경에서도 로컬 클립보드로 복사되도록 설정합니다.
+      set -s set-clipboard on
       set -as terminal-features ',xterm-256color:clipboard'
 
-      # 2. 복사 모드(vi) 키 바인딩
+      # 4. 복사 모드(vi) 키 바인딩
       bind-key -T copy-mode-vi v send-keys -X begin-selection
 
-      # 3. 복사 명령어 (Wayland와 X11 모두 지원)
-      # Nix 패키지의 실행 파일 경로를 직접 사용하여 '명령어를 찾을 수 없음' 에러를 방지합니다.
-      # Wayland일 경우 wl-copy를, X11일 경우 xclip을 사용합니다.
-      bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "if [ -n \"$WAYLAND_DISPLAY\" ]; then ${pkgs.wl-clipboard}/bin/wl-copy; else ${pkgs.xclip}/bin/xclip -sel clip -i; fi"
-      bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "if [ -n \"$WAYLAND_DISPLAY\" ]; then ${pkgs.wl-clipboard}/bin/wl-copy; else ${pkgs.xclip}/bin/xclip -sel clip -i; fi"
+      # 5. 복사 명령어 (Wayland와 X11 모두 지원)
+      # 로컬에서는 OS별 유틸리티를 사용하고, 원격/기본값으로는 OSC 52(set-clipboard)를 활용합니다.
+      bind-key -T copy-mode-vi y send-keys -X copy-pipe-and-cancel "if [ -n \"$WAYLAND_DISPLAY\" ]; then ${pkgs.wl-clipboard}/bin/wl-copy; elif [ -n \"$DISPLAY\" ]; then ${pkgs.xclip}/bin/xclip -sel clip -i; else tmux load-buffer - ; fi"
+      bind-key -T copy-mode-vi MouseDragEnd1Pane send-keys -X copy-pipe-and-cancel "if [ -n \"$WAYLAND_DISPLAY\" ]; then ${pkgs.wl-clipboard}/bin/wl-copy; elif [ -n \"$DISPLAY\" ]; then ${pkgs.xclip}/bin/xclip -sel clip -i; else tmux load-buffer - ; fi"
 
-      # 4. tmux-yank 플러그인 설정 (보조용)
+      # 6. tmux-yank 플러그인 설정 (보조용)
       set -g @yank_selection 'clipboard'
       set -g @yank_selection_mouse 'clipboard'
       set -g @yank_action 'copy-pipe'

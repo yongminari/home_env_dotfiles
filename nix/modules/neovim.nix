@@ -153,6 +153,25 @@
         vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<cr>", { desc = "Open LazyGit" })
       end)
 
+      -- [Neo-tree 설정]
+      safe_require("neo-tree", function(neotree)
+        neotree.setup({
+          close_if_last_window = true,
+          filesystem = {
+            follow_current_file = {
+              enabled = true,
+            },
+            use_libuv_file_watcher = true,
+          },
+          window = {
+            width = 30,
+            mappings = {
+              ["<space>"] = "none",
+            }
+          }
+        })
+      end)
+
       -- [Mini.icons 설정]
       safe_require("mini.icons", function(icons)
         icons.setup()

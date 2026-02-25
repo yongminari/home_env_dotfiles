@@ -31,5 +31,8 @@
     # 폰트
     maple-mono.NF
     nerd-fonts.ubuntu-mono 
+
+    fnm
+    gemini-cli
   ];
 }

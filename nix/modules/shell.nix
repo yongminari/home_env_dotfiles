@@ -74,6 +74,11 @@
     };
 
     initContent = ''
+      # [추가] fnm 초기화 코드 (fnm이 설치되어 있다면 실행)
+      if command -v fnm &>/dev/null; then
+        eval "$(fnm env --use-on-cd --shell zsh)"
+      fi
+
       export PATH=$HOME/.local/bin:$PATH
 
       # History Search 키바인딩

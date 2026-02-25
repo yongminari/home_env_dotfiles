@@ -193,9 +193,16 @@
 
       -- [Telescope 키맵]
       safe_require("telescope.builtin", function(builtin)
-        vim.keymap.set('n', '<leader>f', builtin.find_files, {})
-        vim.keymap.set('n', '<leader>g', builtin.live_grep, {})
-        vim.keymap.set('n', '<leader>ss', builtin.spell_suggest, {})
+        vim.keymap.set('n', '<leader>f', builtin.find_files, { desc = "Find files" })
+        vim.keymap.set('n', '<leader>g', builtin.live_grep, { desc = "Live grep (text search)" })
+        vim.keymap.set('n', '<leader>ss', builtin.spell_suggest, { desc = "Spell suggest" })
+        
+        -- [LSP 심볼/인덱싱 검색]
+        vim.keymap.set('n', '<leader>s', builtin.lsp_document_symbols, { desc = "Current file symbols (Outline)" })
+        vim.keymap.set('n', '<leader>S', builtin.lsp_dynamic_workspace_symbols, { desc = "Project-wide symbols" })
+        vim.keymap.set('n', '<leader>d', builtin.lsp_definitions, { desc = "Go to definition" })
+        vim.keymap.set('n', '<leader>r', builtin.lsp_references, { desc = "Find references" })
+        vim.keymap.set('n', '<leader>i', builtin.lsp_implementations, { desc = "Go to implementation" })
       end)
 
       -- [Treesitter 설정]

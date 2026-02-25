@@ -15,7 +15,7 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 - **💻 Terminal Multiplexer:** **Tmux** pre-configured.
   - Auto-start on launch (except VS Code).
   - Prefix: `Ctrl + g`.
-  - Seamless navigation with Neovim (`Ctrl + h,j,k,l`).
+  - Seamless navigation with Neovim (`Alt + h,j,k,l`).
 - **📝 Editor:** **Neovim** (IDE-like setup).
   - Lazy loading, Telescope, Neo-tree, Treesitter, LSP (C++, Go, Node).
 - **🤖 AI:** Auto-installation of `@google/gemini-cli`.
@@ -63,7 +63,16 @@ cd ~/home_env_dotfiles
 nix run home-manager/master -- switch --flake .#yongminari -b backup
 ```
 
-### 4. Set Zsh as Default Shell (chsh)
+### 4. Node.js Setup (via fnm)
+
+이 설정은 Node.js 관리를 위해 `fnm`을 포함하고 있습니다. 최초 설치 후 다음 명령어를 통해 Node.js를 설치하세요.
+
+```bash
+fnm install --lts
+fnm default lts-latest
+```
+
+### 5. Set Zsh as Default Shell (chsh)
 
 Nix로 설치된 Zsh는 경로가 다르기 때문에 시스템이 기본 셸로 바로 인식하지 못할 수 있습니다. 다음 단계를 따라 전환하세요.
 
@@ -91,7 +100,7 @@ chsh -s $(which zsh)
 | `Space + g` | Live Grep (Telescope) | - |
 | `Ctrl + n` | Toggle File Explorer | `Neotree` |
 | `Ctrl + g` | Tmux Prefix Key | - |
-| `Ctrl + h/j/k/l` | Navigate between Vim & Tmux | - |
+| `Alt + h/j/k/l` | Navigate between Vim & Tmux | - |
 
 ---
 

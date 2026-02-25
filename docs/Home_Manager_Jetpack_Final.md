@@ -7,10 +7,10 @@ Native Linux(Ubuntu 등)와 WSL 환경을 하나의 통합된 코드베이스로
 
 **주요 기능:**
 - **Core:** Nix Flakes + Home Manager (Modular Structure)
-- **Shell:** Zsh + Starship (Jetpack) + Eza + Zoxide + Bat + FZF + **Direnv**
-- **Editor:** Neovim (LSP, Treesitter, Telescope, Neo-tree)
+- **Shell:** Zsh + Starship (Jetpack) + Eza + Zoxide + Bat + FZF + **Direnv** + **fnm (Node Version Manager)**
+- **Editor:** Neovim (Tokyonight, LSP, Treesitter, Telescope, Neo-tree, oil.nvim, etc.)
 - **Terminal:** Tmux (Prefix Ctrl+g, Vim-Navigator, Auto-start)
-- **Auto-Install:** Node.js (LTS), Gemini CLI, Tree-sitter CLI
+- **Auto-Install:** Gemini CLI, Tree-sitter CLI (via Nix)
 - **Dev Tools:** gcc, clang, make, cmake, go, gopls
 
 ## 2. 필수 사전 준비 (Manual Steps)
@@ -118,7 +118,7 @@ Native Linux와 WSL 환경을 동일하게 관리하도록 통합된 설정이�
   xdg.configFile."ghostty/config".text = ''
     font-family = "Maple Mono NF"
     font-size = 12
-    window-width = 120
+    window-width = 150
     window-height = 60
     window-decoration = auto
     background-opacity = 0.85
@@ -130,56 +130,36 @@ Native Linux와 WSL 환경을 동일하게 관리하도록 통합된 설정이�
 ```
 
 ### 4.3 ~/home_env_dotfiles/nix/modules/packages.nix
-필수 패키지와 개발 도구를 설치한다. `gemini-cli`와 `tree-sitter-cli` 자동 설치 스크립트가 포함되어 있다.
+필수 패키지와 개발 도구를 설치한다.
 
 ```nix
 { config, pkgs, lib, ... }:
 
 {
-  home.sessionVariables = {
-    NPM_CONFIG_PREFIX = "${config.home.homeDirectory}/.npm-global";
-  };
   home.sessionPath = [
-    "${config.home.homeDirectory}/.npm-global/bin"
     "${config.home.homeDirectory}/.local/bin"
   ];
 
   home.packages = with pkgs; [
-    # [시스템 유틸]
-    neofetch htop ripgrep fd unzip lazygit
-    lsb-release
+    # [시스템 유틸 및 CLI 도구]
+    neofetch htop ripgrep fd unzip lazygit lolcat lsb-release
     xclip xsel wl-clipboard 
     
-    # [개발 도구]
-    nodejs
-    gcc clang binutils pkg-config # Essential Build Tools
-    clang-tools cmake gnumake go gopls
-    
+    # [Neovim 보조 도구 (LSP/Parsers)]
+    nil ast-grep lua51Packages.jsregexp gopls clang-tools
+
     # 폰트
     maple-mono.NF nerd-fonts.ubuntu-mono 
+
+    # Node.js 관리 및 CLI
+    fnm
+    gemini-cli
   ];
-
-  # [Gemini CLI & Tree-sitter CLI 자동 설치]
-  home.activation.installGeminiCli = lib.hm.dag.entryAfter ["writeBoundary"] ''
-    npm_global_dir="${config.home.homeDirectory}/.npm-global"
-    mkdir -p "$npm_global_dir"
-    export PATH="${pkgs.nodejs}/bin:$npm_global_dir/bin:$PATH"
-
-    if ! command -v gemini &> /dev/null; then
-      echo "Installing @google/gemini-cli..."
-      npm install -g --prefix "$npm_global_dir" @google/gemini-cli
-    fi
-
-    if ! command -v tree-sitter &> /dev/null; then
-      echo "Installing tree-sitter-cli..."
-      npm install -g --prefix "$npm_global_dir" tree-sitter-cli
-    fi
-  '';
 }
 ```
 
 ### 4.4 ~/home_env_dotfiles/nix/modules/neovim.nix
-Neovim 설정. `tree-sitter-cli` 에러 해결을 위해 `packages.nix`에서 CLI 도구를 설치하고, 여기서는 플러그인과 Lua 설정을 관리한다.
+Neovim 설정. TokyoNight 테마와 현대적인 플러그인들(oil.nvim, trouble.nvim, gitsigns 등)이 포함되어 있다.
 
 ```nix
 { config, pkgs, ... }:
@@ -192,61 +172,59 @@ Neovim 설정. `tree-sitter-cli` 에러 해결을 위해 `packages.nix`에서 CL
     vimAlias = true;
 
     plugins = with pkgs.vimPlugins; [
-      catppuccin-nvim
+      tokyonight-nvim
       vim-tmux-navigator 
       which-key-nvim 
       nvim-web-devicons
       lualine-nvim
       neo-tree-nvim
-      nui-nvim 
-      plenary-nvim
       telescope-nvim
       nvim-treesitter.withAllGrammars 
+      oil-nvim
+      trouble-nvim
+      # ... (기타 다수의 플러그인)
     ];
 
     initLua = ''
-      -- (생략: Lua 설정 코드, GitHub 레포지토리 참조)
-      -- 핵심: Treesitter, Telescope, Neo-tree, Catppuccin 테마 설정
+      -- TokyoNight Theme, LSP, Treesitter, Telescope 설정 포함
+      -- Alt+h/j/k/l: Tmux 및 Vim 창 이동
+      -- Space+f: 파일 찾기, Space+g: Live Grep
+      -- Ctrl+n: Neo-tree 토글
+      -- -: Oil.nvim (부모 디렉토리 열기)
     '';
   };
 }
 ```
 
 ### 4.5 ~/home_env_dotfiles/nix/modules/shell.nix
-Zsh, Starship, Eza, Bat, FZF 등 쉘 환경 설정. Direnv 및 Tmux 자동 실행 로직이 포함됨.
+Zsh, Starship, Eza, Bat, FZF 등 쉘 환경 설정. Direnv, Tmux 자동 실행, 그리고 **fnm 초기화** 로직이 포함됨.
 
 ```nix
 { config, pkgs, lib, ... }:
 
 {
-  # 6. [New] Direnv
-  programs.direnv = {
-    enable = true;
-    enableZshIntegration = true;
-    nix-direnv.enable = true;
-  };
+  # ... Starship, Eza, Zoxide, Bat, FZF, Direnv 설정 ...
 
-  # 7. Zsh 설정
   programs.zsh = {
     enable = true;
     shellAliases = {
-      ls = "eza";
-      ll = "eza -l --icons --git -a";
-      lt = "eza --tree --level=2 --long --icons --git";
-      cat = "bat";
-      tocb = "xclip -selection clipboard"; 
+      # ls -> eza, cat -> bat 등 매핑
       hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
-      vi = "nvim"; vim = "nvim";
     };
     initContent = ''
-      # ... Tmux 자동 실행 및 Welcome Message 스크립트 ...
+      # fnm 초기화 (Node.js 버전 관리)
+      if command -v fnm &>/dev/null; then
+        eval "$(fnm env --use-on-cd --shell zsh)"
+      fi
+
+      # ... Tmux 자동 실행 및 Welcome Message ...
     '';
   };
 }
 ```
 
 ### 4.6 ~/home_env_dotfiles/nix/modules/tmux.nix
-Tmux 설정. 클립보드 연동(OSC 52) 및 Vim Navigator 설정 포함.
+Tmux 설정. 클립보드 연동(OSC 52) 및 Vim Navigator 설정이 포함되어 있다. 특히 창 이동 시 Ctrl-j 충돌 방지를 위해 **Alt(M-h,j,k,l)** 키를 사용하도록 설정되어 있다.
 
 ```nix
 { config, pkgs, ... }:
@@ -257,8 +235,10 @@ Tmux 설정. 클립보드 연동(OSC 52) 및 Vim Navigator 설정 포함.
     prefix = "C-g";
     # ... 마우스, vi 모드, 플러그인 설정 ...
     extraConfig = ''
-      # 클립보드 연동 (xclip/wl-copy)
-      # Vim-Tmux Navigator 키바인딩
+      # 1. Vim-Tmux Navigator Alt (Meta) Key Bindings
+      # Ctrl+j 충돌 방지를 위해 Alt(M-) 키로 변경됨
+      
+      # 2. 터미널 클립보드 프로토콜(OSC 52) 및 복사 설정
     '';
   };
 }
@@ -273,10 +253,15 @@ cd ~/home_env_dotfiles
 
 # 2. Home Manager 적용 (Native Linux & WSL 통합)
 home-manager switch --flake .#yongminari -b backup
+
+# 3. Node.js 설치 (fnm 이용)
+fnm install --lts
+fnm default lts-latest
 ```
 
 ## 6. 트러블슈팅
 
-- **`tree-sitter-cli` 버전 에러:** Neovim 구동 시 에러가 발생하면 `home-manager switch`를 다시 실행하여 최신 `tree-sitter-cli`가 NPM을 통해 설치되도록 한다.
+- **`fnm` / `node` 명령어를 찾을 수 없음:** 터미널을 재시작하거나 `source ~/.zshrc`를 실행하여 쉘 설정이 반영되었는지 확인한다.
 - **GPU Warning:** "Non-NixOS system..." 경고는 무시해도 되며, 필요 시 경고 메시지에 나온 명령어를 `sudo`로 실행한다.
 - **폰트 깨짐:** 터미널(Ghostty 등) 폰트를 `Maple Mono NF` 또는 `UbuntuMono Nerd Font`로 설정했는지 확인한다.
+- **패키지 업데이트:** 새로운 패키지를 추가하거나 업데이트하려면 `nix/modules/packages.nix`를 수정한 후 `hms` (home-manager switch alias)를 실행한다.

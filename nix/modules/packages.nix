@@ -32,7 +32,8 @@
     # 폰트
     maple-mono.NF
     nerd-fonts.ubuntu-mono 
-
+    monaspace
+    nerd-fonts.jetbrains-mono
     fnm
     gemini-cli
   ];

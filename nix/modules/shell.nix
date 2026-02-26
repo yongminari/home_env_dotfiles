@@ -54,6 +54,14 @@
 
     initContent = lib.mkMerge [
       (lib.mkBefore ''
+        # [Ghostty] Shell Integration (Check if running inside Ghostty AND file exists)
+        if [[ -n "$GHOSTTY_RESOURCES_DIR" ]] && [[ -f "/usr/share/ghostty/shell-integration/zsh/ghostty-integration" ]]; then
+          source "/usr/share/ghostty/shell-integration/zsh/ghostty-integration"
+        elif [[ -f "/usr/share/ghostty/shell-integration/zsh/ghostty-integration" ]]; then
+          # GHOSTTY_RESOURCES_DIR 변수가 없더라도 파일이 있으면 소싱
+          source "/usr/share/ghostty/shell-integration/zsh/ghostty-integration"
+        fi
+
         if [[ "$TERM" == "zellij" ]]; then
           # 접속한 쪽이 Zellij면, 호환성을 위해 TERM을 바꾸고 자동실행 건너뛰기 플래그 설정
           export TERM=xterm-256color
@@ -125,7 +133,8 @@ EOF
 
         # 대화형 쉘 + Zellij 밖 + VSCode 아님 + (Zellij 내부 SSH가 아님) -> 자동 실행
         if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$ZELLIJ_SKIP_AUTOSTART" ]] && ! is_vscode; then
-          exec zellij
+          # 세션 자동 생성 및 복구 모드로 실행 (세션명: main)
+          exec zellij attach -c main
         fi
       ''
     ];

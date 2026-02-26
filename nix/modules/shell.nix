@@ -105,9 +105,9 @@
         fi
 
         # ---------------------------------------------------------
-        # [New] Welcome Message for Zellij Sessions
+        # [New] Welcome Message for Zellij Sessions or SSH
         # ---------------------------------------------------------
-        if [[ -n "$ZELLIJ" ]]; then
+        if [[ -n "$ZELLIJ" ]] || is_ssh; then
           # 줄바꿈 비활성화
           printf "\e[?7l"
 
@@ -117,8 +117,24 @@
             os_name=$(grep PRETTY_NAME /etc/os-release | cut -d '"' -f2)
           fi
 
-          # Only use lolcat if available
-          if command -v lolcat &>/dev/null; then
+          # Determine which ASCII art to show
+          if is_ssh; then
+            # SSH: Always show the small version
+            cat << 'EOF'
+ ███                     █████                         █████     
+░░░███                  ░░███                         ░░███      
+  ░░░███      █████ ████ ░███████       █████   █████  ░███████  
+    ░░░███   ░░███ ░███  ░███░░███     ███░░   ███░░   ░███░░███ 
+     ███░     ░███ ░███  ░███ ░███    ░░█████ ░░█████  ░███ ░███ 
+   ███░       ░███ ░███  ░███ ░███     ░░░░███ ░░░░███ ░███ ░███ 
+ ███░         ░░███████  ████ █████    ██████  ██████  ████ █████
+░░░            ░░░░░███ ░░░░ ░░░░░    ░░░░░░  ░░░░░░  ░░░░ ░░░░░ 
+               ███ ░███                                          
+              ░░██████                                           
+               ░░░░░░
+EOF
+          elif command -v lolcat &>/dev/null; then
+            # Local Zellij: Show large version with lolcat
             cat << 'EOF' | lolcat 
                                                                                                                  
 
@@ -135,13 +151,14 @@
                                                 ░░░░░░                                                                                                                                                                                                     
 EOF
           else
+            # Local Zellij (no lolcat): Show small version
             cat << 'EOF'
  ███                     █████                         █████     
 ░░░███                  ░░███                         ░░███      
   ░░░███      █████ ████ ░███████       █████   █████  ░███████  
     ░░░███   ░░███ ░███  ░███░░███     ███░░   ███░░   ░███░░███ 
      ███░     ░███ ░███  ░███ ░███    ░░█████ ░░█████  ░███ ░███ 
-   ███░       ░███ ░███  ░███ ░███     ░░░░███ ░░░░███ ░███ ░███ 
+   ███░       ░░███ ░███  ░███ ░███     ░░░░███ ░░░░███ ░███ ░███ 
  ███░         ░░███████  ████ █████    ██████  ██████  ████ █████
 ░░░            ░░░░░███ ░░░░ ░░░░░    ░░░░░░  ░░░░░░  ░░░░ ░░░░░ 
                ███ ░███                                          

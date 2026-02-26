@@ -32,8 +32,6 @@
           "bind \"Alt n\"" = { NewPane = "Right"; };
           "bind \"Alt i\"" = { MoveTab = "Left"; };
           "bind \"Alt o\"" = { MoveTab = "Right"; };
-          # [수정] 인자 없이 액션만 실행되도록 수정
-          "bind \"Alt f\"" = { ToggleFocusFullscreen = { }; }; 
         };
       };
 

@@ -72,6 +72,7 @@
       vi = "nvim";
       vim = "nvim";
       zj = "zellij";
+      ssh = "TERM=xterm-256color ssh";
       zj_shortcuts = ''echo -e "\033[1;34m=== Zellij Custom Shortcuts (Tmux Style) ===\033[0m" && \
                         echo -e "\033[1;33m[ Quick Actions (Alt Key) ]\033[0m" && \
                         echo "  Alt + n       : New Pane (Right)" && \
@@ -153,8 +154,8 @@ EOF
         [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TERM_PROGRAM" == "vscode" ]]
       }
 
-      # 대화형 쉘 + Zellij 밖 + VSCode 아님 -> 자동 실행
-      if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && ! is_vscode; then
+      # 대화형 쉘 + Zellij 밖 + VSCode 아님 + SSH 아님 -> 자동 실행
+      if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && ! is_vscode && [[ -z "$SSH_TTY" ]]; then
         exec zellij
       fi
     '';

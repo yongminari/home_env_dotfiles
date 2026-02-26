@@ -13,27 +13,11 @@
     ./modules/neovim.nix
     ./modules/zellij.nix
     ./modules/git.nix
+    ./modules/ghostty.nix
   ];
 
   targets.genericLinux.enable = true;
   fonts.fontconfig.enable = true;
-
-  # [Ghostty 설정 관리]
-  # 직접 설치하신 Ghostty가 이 파일을 읽게 됩니다.
-  xdg.configFile."ghostty/config".text = ''
-    # Fonts
-    font-family = "Maple Mono NF"
-    font-size = 12
-
-    # Window
-    window-width = 150
-    window-height = 60
-    window-decoration = auto
-    background-opacity = 0.85
-
-    # Theme
-    theme = Dracula
-  '';
 
   programs.home-manager.enable = true;
 }

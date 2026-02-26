@@ -5,12 +5,12 @@
     enable = true;
     
     settings = {
-      theme = "dracula";
-      # [변경] 처음 배우실 때는 'default' 레이아웃이 도움말이 잘 나와서 훨씬 좋습니다.
+      theme = "modern-gruvbox";
       default_layout = "default";
-      # [변경] 패널 테두리를 켜면 각 패널의 상태(Locked 등)를 확인하기 쉽습니다.
       pane_frames = true;
-      
+      simplified_ui = false;
+      mirror_session_to_terminal_title = true;
+
       keybinds = {
         unbind = [ "Ctrl b" "Ctrl h" ];
         
@@ -32,22 +32,24 @@
           "bind \"Alt n\"" = { NewPane = "Right"; };
           "bind \"Alt i\"" = { MoveTab = "Left"; };
           "bind \"Alt o\"" = { MoveTab = "Right"; };
+          # [수정] 인자 없이 액션만 실행되도록 수정
+          "bind \"Alt f\"" = { ToggleFocusFullscreen = { }; }; 
         };
       };
 
       themes = {
-        dracula = {
-          fg = [ 248 248 242 ];
-          bg = [ 40 42 54 ];
-          black = [ 0 0 0 ];
-          red = [ 255 85 85 ];
-          green = [ 80 250 123 ];
-          yellow = [ 241 250 140 ];
-          blue = [ 189 147 249 ];
-          magenta = [ 255 121 198 ];
-          cyan = [ 139 233 253 ];
-          white = [ 255 255 255 ];
-          orange = [ 255 184 108 ];
+        modern-gruvbox = {
+          fg = [ 235 219 178 ];
+          bg = [ 40 40 40 ];
+          black = [ 29 32 33 ];
+          red = [ 251 73 52 ];
+          green = [ 184 187 38 ];
+          yellow = [ 250 189 47 ];
+          blue = [ 131 165 152 ];
+          magenta = [ 211 134 155 ];
+          cyan = [ 142 192 124 ];
+          white = [ 168 153 132 ];
+          orange = [ 254 128 25 ];
         };
       };
 

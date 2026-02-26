@@ -52,6 +52,84 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
+    initContent = lib.mkMerge [
+      (lib.mkBefore ''
+        if [[ "$TERM" == "zellij" ]]; then
+          # 접속한 쪽이 Zellij면, 호환성을 위해 TERM을 바꾸고 자동실행 건너뛰기 플래그 설정
+          export TERM=xterm-256color
+          export ZELLIJ_SKIP_AUTOSTART=true
+        fi
+      '')
+      ''
+        # [추가] fnm 초기화 코드 (fnm이 설치되어 있다면 실행)
+        if command -v fnm &>/dev/null; then
+          eval "$(fnm env --use-on-cd --shell zsh)"
+        fi
+
+        export PATH=$HOME/.local/bin:$PATH
+
+        # History Search 키바인딩
+        bindkey '^[[A' history-substring-search-up
+        bindkey '^[[B' history-substring-search-down
+
+        # [New] Pyenv 초기화 (설치되어 있을 경우에만)
+        if command -v pyenv &>/dev/null; then
+          eval "$(pyenv init -)"
+          eval "$(pyenv virtualenv-init -)"
+        fi
+
+        # ---------------------------------------------------------
+        # [New] Welcome Message for Zellij Sessions
+        # ---------------------------------------------------------
+        if [[ -n "$ZELLIJ" ]]; then
+          # 줄바꿈 비활성화
+          printf "\e[?7l"
+
+          cat << 'EOF' | lolcat 
+                                                                                                                 
+
+   ███          █████ █████                              ██████   ██████  ███                                  ███ 
+  ░░░███       ░░███ ░░███                              ░░██████ ██████  ░░░                                  ░░░  
+    ░░░███      ░░███ ███    ██████  ████████    ███████ ░███░█████░███  ████  ████████    ██████   ████████  ████ 
+      ░░░███     ░░█████    ███░░███░░███░░███  ███░░███ ░███░░███ ░███ ░░███ ░░███░░███  ░░░░░███ ░░███░░███░░███ 
+       ███░       ░░███    ░███ ░███ ░███ ░███ ░███ ░███ ░███ ░░░  ░███  ░███  ░███ ░███   ███████  ░███ ░░░  ░███ 
+     ███░          ░███    ░███ ░███ ░███ ░███ ░███ ░███ ░███      ░███  ░███  ░███ ░███  ███░░███  ░███      ░███ 
+   ███░            █████   ░░██████  ████ █████░░███████ █████     █████ █████ ████ █████░░████████ █████     █████
+  ░░░             ░░░░░     ░░░░░░  ░░░░ ░░░░░  ░░░░░███░░░░░     ░░░░░ ░░░░░ ░░░░ ░░░░░  ░░░░░░░░ ░░░░░     ░░░░░ 
+                                                ███ ░███                                                           
+                                               ░░██████                                                            
+                                                ░░░░░░                                                                                                                                                                                                     
+EOF
+
+          # 시스템 정보 출력
+          echo "\x1b[1;31m $(lsb_release -d 2>/dev/null | cut -f2 || echo "Linux")"
+          echo "\x1b[1;33m HOST      : $(uname -n)"
+          echo "\x1b[1;32m SESSION   : Zellij (Modern Terminal Workspace)"
+          echo "\x1b[1;34m Kernel    : $(uname -r)"
+          echo "\x1b[1;35m Date      : $(date +'%Y-%m-%d %H:%M:%S')"
+          echo "\x1b[1;36m Shell     : $(zsh --version | awk '{print $1, $2}')"
+          echo "\x1b[1;37m Who       : $(whoami)\x1b[0m"
+
+          echo "\nWelcome to \x1b[94mZsh\x1b[94m, \x1b[1m$USER!\x1b[0m"
+          
+          # 줄바꿈 다시 활성화
+          printf "\e[?7h"
+        fi      
+
+        # ---------------------------------------------------------
+        # [New] Zellij 자동 실행
+        # ---------------------------------------------------------
+        function is_vscode() {
+          [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TERM_PROGRAM" == "vscode" ]]
+        }
+
+        # 대화형 쉘 + Zellij 밖 + VSCode 아님 + (Zellij 내부 SSH가 아님) -> 자동 실행
+        if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$ZELLIJ_SKIP_AUTOSTART" ]] && ! is_vscode; then
+          exec zellij
+        fi
+      ''
+    ];
+
     oh-my-zsh = {
       enable = true;
       plugins = [ "git" "virtualenv" "history-substring-search" ];
@@ -72,7 +150,7 @@
       vi = "nvim";
       vim = "nvim";
       zj = "zellij";
-      ssh = "TERM=xterm-256color ssh";
+      
       zj_shortcuts = ''echo -e "\033[1;34m=== Zellij Custom Shortcuts (Tmux Style) ===\033[0m" && \
                         echo -e "\033[1;33m[ Quick Actions (Alt Key) ]\033[0m" && \
                         echo "  Alt + n       : New Pane (Right)" && \
@@ -90,74 +168,5 @@
                         echo "  Ctrl + q      : QUIT Zellij" && \
                         echo -e "\033[1;32mTip: Bottom bar changes based on these modes!\033[0m" '';
     };
-
-    initContent = ''
-      # [추가] fnm 초기화 코드 (fnm이 설치되어 있다면 실행)
-      if command -v fnm &>/dev/null; then
-        eval "$(fnm env --use-on-cd --shell zsh)"
-      fi
-
-      export PATH=$HOME/.local/bin:$PATH
-
-      # History Search 키바인딩
-      bindkey '^[[A' history-substring-search-up
-      bindkey '^[[B' history-substring-search-down
-
-      # [New] Pyenv 초기화 (설치되어 있을 경우에만)
-      if command -v pyenv &>/dev/null; then
-        eval "$(pyenv init -)"
-        eval "$(pyenv virtualenv-init -)"
-      fi
-
-      # ---------------------------------------------------------
-      # [New] Welcome Message for Zellij Sessions
-      # ---------------------------------------------------------
-      if [[ -n "$ZELLIJ" ]]; then
-        # 줄바꿈 비활성화
-        printf "\e[?7l"
-
-        cat << 'EOF' | lolcat 
-                                                                                                               
-
- ███          █████ █████                              ██████   ██████  ███                                  ███ 
-░░░███       ░░███ ░░███                              ░░██████ ██████  ░░░                                  ░░░  
-  ░░░███      ░░███ ███    ██████  ████████    ███████ ░███░█████░███  ████  ████████    ██████   ████████  ████ 
-    ░░░███     ░░█████    ███░░███░░███░░███  ███░░███ ░███░░███ ░███ ░░███ ░░███░░███  ░░░░░███ ░░███░░███░░███ 
-     ███░       ░░███    ░███ ░███ ░███ ░███ ░███ ░███ ░███ ░░░  ░███  ░███  ░███ ░███   ███████  ░███ ░░░  ░███ 
-   ███░          ░███    ░███ ░███ ░███ ░███ ░███ ░███ ░███      ░███  ░███  ░███ ░███  ███░░███  ░███      ░███ 
- ███░            █████   ░░██████  ████ █████░░███████ █████     █████ █████ ████ █████░░████████ █████     █████
-░░░             ░░░░░     ░░░░░░  ░░░░ ░░░░░  ░░░░░███░░░░░     ░░░░░ ░░░░░ ░░░░ ░░░░░  ░░░░░░░░ ░░░░░     ░░░░░ 
-                                              ███ ░███                                                           
-                                             ░░██████                                                            
-                                              ░░░░░░                                                                                                                                                                                                     
-EOF
-
-        # 시스템 정보 출력
-        echo "\x1b[1;31m $(lsb_release -d 2>/dev/null | cut -f2 || echo "Linux")"
-        echo "\x1b[1;33m HOST      : $(uname -n)"
-        echo "\x1b[1;32m SESSION   : Zellij (Modern Terminal Workspace)"
-        echo "\x1b[1;34m Kernel    : $(uname -r)"
-        echo "\x1b[1;35m Date      : $(date +'%Y-%m-%d %H:%M:%S')"
-        echo "\x1b[1;36m Shell     : $(zsh --version | awk '{print $1, $2}')"
-        echo "\x1b[1;37m Who       : $(whoami)\x1b[0m"
-
-        echo "\nWelcome to \x1b[94mZsh\x1b[94m, \x1b[1m$USER!\x1b[0m"
-        
-        # 줄바꿈 다시 활성화
-        printf "\e[?7h"
-      fi      
-
-      # ---------------------------------------------------------
-      # [New] Zellij 자동 실행
-      # ---------------------------------------------------------
-      function is_vscode() {
-        [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TERM_PROGRAM" == "vscode" ]]
-      }
-
-      # 대화형 쉘 + Zellij 밖 + VSCode 아님 + SSH 아님 -> 자동 실행
-      if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && ! is_vscode && [[ -z "$SSH_TTY" ]]; then
-        exec zellij
-      fi
-    '';
   };
 }

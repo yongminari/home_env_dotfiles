@@ -29,6 +29,14 @@
           };
         };
 
+        pane = {
+          unbind = [ "x" ];
+          "bind \"Ctrl x\"" = {
+            CloseFocus = { };
+            SwitchToMode = "Normal";
+          };
+        };
+
         shared_except = {
           _args = [ "locked" ];
           "bind \"Alt h\"" = { MoveFocusOrTab = "Left"; };

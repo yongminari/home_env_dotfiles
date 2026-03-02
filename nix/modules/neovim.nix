@@ -211,6 +211,34 @@
         }
       end)
 
+      -- [진단(Diagnostics) 설정]
+      vim.diagnostic.config({
+        virtual_text = {
+          prefix = '●', -- 오류 앞에 표시될 아이콘
+          severity_sort = true,
+        },
+        signs = true,    -- 왼쪽 숫자 옆에 아이콘 표시
+        underline = true, -- 오류 부분에 밑줄 표시
+        update_in_insert = false,
+        severity_sort = true,
+        float = {
+          border = 'rounded',
+          source = 'always', -- 어느 LSP에서 보낸 에러인지 표시
+        },
+      })
+
+      -- 진단 관련 아이콘 설정 (Sign Column)
+      local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = "󱩎 " }
+      for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+      end
+
+      -- 진단 상세 보기 단축키
+      vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = "Show line diagnostics" })
+      vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Go to previous diagnostic" })
+      vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Go to next diagnostic" })
+
       -- [LSP & Autocomplete 설정]
       local cmp_ok, cmp = pcall(require, "cmp")
       if cmp_ok then
@@ -264,6 +292,11 @@
           for _, lsp in ipairs(servers) do
             lspconfig[lsp].setup { capabilities = capabilities }
           end
+          -- clangd fallback setup
+          lspconfig.clangd.setup {
+            capabilities = capabilities,
+            cmd = { "clangd", "--offset-encoding=utf-16" }
+          }
         end
       end
     '';

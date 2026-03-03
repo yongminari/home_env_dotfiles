@@ -32,6 +32,7 @@
       trouble-nvim      # 에러 목록
       toggleterm-nvim   # 터미널 관리 (Ctrl+/)
       lazygit-nvim      # Lazygit 통합
+      nvim-osc52        # SSH 클립보드 (OSC 52) 지원
       
       # LSP & Completion
       nvim-lspconfig
@@ -61,21 +62,26 @@
       vim.opt.clipboard = "unnamedplus"
       vim.opt.termguicolors = true
       
-      -- [OSC 52 클립보드 설정 (SSH 전용)]
-      -- SSH로 접속했을 때 Windows Terminal 등의 클립보드와 연동되도록 합니다.
-      if vim.env.SSH_TTY then
-        vim.g.clipboard = {
-          name = 'OSC 52',
-          copy = {
-            ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-            ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-          },
-          paste = {
-            ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-            ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-          },
-        }
-      end
+      -- [OSC 52 클립보드 설정]
+      -- nvim-osc52 플러그인을 사용하여 모든 환경에서 클립보드 동기화
+      safe_require("osc52", function(osc52)
+        osc52.setup({
+          max_length = 0,      -- 텍스트 길이 제한 없음
+          silent = false,      -- 복사 시 메시지 표시 여부
+          trim = false,        -- 텍스트 앞뒤 공백 제거 여부
+        })
+        
+        -- yank 이벤트를 감지하여 OSC 52 신호 전송
+        local function copy()
+          if vim.v.event.operator == "y" and vim.v.event.regname == "" then
+            osc52.copy_register("+")
+          end
+        end
+        
+        vim.api.nvim_create_autocmd('TextYankPost', {
+          callback = copy,
+        })
+      end)
 
       vim.opt.laststatus = 3        -- 전역 상태줄 (Global Statusline)
       vim.opt.cmdheight = 1         -- 커맨드 라인 높이 유지

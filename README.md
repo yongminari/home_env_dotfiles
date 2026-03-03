@@ -118,6 +118,18 @@ nix flake update
 hms
 ```
 
+## 🗑️ Uninstallation
+
+Nix와 Home Manager를 안전하게 제거하려면 포함된 언인스톨러 스크립트를 사용하세요. 이 스크립트는 셸 복구, 서비스 중지, 그리고 `/nix` 디렉토리 정리를 자동으로 수행합니다.
+
+```bash
+# 스크립트에 실행 권한 부여 및 실행
+chmod +x uninstall-nix.sh
+./uninstall-nix.sh
+```
+
+> **Note:** 스크립트 실행 후 시스템을 재부팅하거나 로그아웃 후 다시 로그인하여 환경 변수를 완전히 정리하는 것을 권장합니다.
+
 ---
 
 **Note:** Ghostty configuration is managed, but the binary should be installed manually on Native Linux.

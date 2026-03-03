@@ -276,3 +276,23 @@ fnm default lts-latest
 - **폰트 깨짐:** 터미널(Ghostty 등) 폰트를 `Maple Mono NF` 또는 `UbuntuMono Nerd Font`로 설정했는지 확인한다.
 - **Vim 단축키 충돌:** NeoVim 사용 시 `Ctrl+g`를 눌러 Zellij를 **Locked 모드**로 전환하면 NeoVim의 모든 단축키를 그대로 사용할 수 있다.
 - **패키지 업데이트:** `nix flake update` 후 `hms`를 실행한다.
+
+## 7. 제거 (Uninstallation)
+
+Nix 환경을 완전히 제거하고 시스템을 이전 상태로 복구해야 할 경우, 프로젝트 루트에 포함된 `uninstall-nix.sh` 스크립트를 사용한다.
+
+### 7.1 제거 스크립트 실행
+```bash
+chmod +x uninstall-nix.sh
+./uninstall-nix.sh
+```
+
+### 7.2 스크립트가 수행하는 작업
+- **셸 복구:** Nix Zsh에서 시스템 기본 Bash(`/bin/bash`)로 자동 전환
+- **프로파일 정리:** Home Manager가 생성한 심볼릭 링크 및 프로파일 삭제
+- **서비스 중지:** `nix-daemon` 서비스 및 소켓 중지/비활성화
+- **사용자 삭제:** Nix 빌드용 사용자(`nixbld1~32`) 및 그룹 제거
+- **디렉토리 삭제:** `/nix`, `/etc/nix`, `~/.nix-profile` 등 관련 경로 완전 삭제
+
+### 7.3 사후 확인
+스크립트 실행 후에는 반드시 **로그아웃 후 다시 로그인**하거나 **재부팅**하여 모든 환경 변수 및 경로 설정을 초기화해야 한다.

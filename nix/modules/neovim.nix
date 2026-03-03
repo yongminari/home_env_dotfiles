@@ -60,6 +60,23 @@
       vim.g.mapleader = " "         
       vim.opt.clipboard = "unnamedplus"
       vim.opt.termguicolors = true
+      
+      -- [OSC 52 클립보드 설정 (SSH 전용)]
+      -- SSH로 접속했을 때 Windows Terminal 등의 클립보드와 연동되도록 합니다.
+      if vim.env.SSH_TTY then
+        vim.g.clipboard = {
+          name = 'OSC 52',
+          copy = {
+            ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+            ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+          },
+          paste = {
+            ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+            ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+          },
+        }
+      end
+
       vim.opt.laststatus = 3        -- 전역 상태줄 (Global Statusline)
       vim.opt.cmdheight = 1         -- 커맨드 라인 높이 유지
 

@@ -19,5 +19,10 @@
   targets.genericLinux.enable = true;
   fonts.fontconfig.enable = true;
 
+  # Silence 'options.json' context warning by disabling manual generation
+  manual.manpages.enable = false;
+  manual.html.enable = false;
+  manual.json.enable = false;
+
   programs.home-manager.enable = true;
 }

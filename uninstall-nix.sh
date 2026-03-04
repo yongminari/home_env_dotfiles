@@ -11,7 +11,20 @@ if [[ $EUID -eq 0 ]]; then
    exit 1
 fi
 
-echo "⚠️  WARNING: This will permanently remove Nix, Home Manager, and all installed packages."
+# Check for Determinate Systems uninstaller
+if [ -f "/nix/nix-installer" ]; then
+    echo "💡 NOTICE: Determinate Systems installer detected."
+    echo "It is HIGHLY RECOMMENDED to use their official uninstaller instead:"
+    echo "   /nix/nix-installer uninstall"
+    echo ""
+    read -p "Do you still want to proceed with this manual script? (y/N) " detsys_confirm
+    if [[ $detsys_confirm != [yY] ]]; then
+        echo "Aborted. Please run '/nix/nix-installer uninstall' instead."
+        exit 0
+    fi
+fi
+
+echo "⚠️  WARNING: This will permanently remove Nix, Home Manager, and all installed packages (Zsh, Nushell, etc.)."
 echo "Any configuration managed by Nix in your home directory will be disconnected (broken symlinks)."
 read -p "Are you sure you want to proceed? (y/N) " confirm
 if [[ $confirm != [yY] ]]; then
@@ -21,7 +34,7 @@ fi
 
 # --- 1. Restore Default Shell ---
 CURRENT_SHELL=$(getent passwd "$USER" | cut -d: -f7)
-if [[ "$CURRENT_SHELL" == *".nix-profile"* ]] || [[ "$CURRENT_SHELL" == *"/nix/store"* ]]; then
+if [[ "$CURRENT_SHELL" == *".nix-profile"* ]] || [[ "$CURRENT_SHELL" == *"/nix/store"* ]] || [[ "$CURRENT_SHELL" == *"zsh"* ]] || [[ "$CURRENT_SHELL" == *"nu"* ]]; then
     echo "🔄 Restoring default shell to /bin/bash..."
     # Try to find a safe system shell
     SAFE_SHELL="/bin/bash"
@@ -42,7 +55,7 @@ fi
 
 # --- 3. Stop and Disable Nix Daemon ---
 echo "🛑 Stopping Nix daemon services..."
-if systemctl is-active --quiet nix-daemon.service; then
+if systemctl is-active --quiet nix-daemon.service 2>/dev/null; then
     sudo systemctl stop nix-daemon.socket nix-daemon.service
     sudo systemctl disable nix-daemon.socket nix-daemon.service
     sudo systemctl daemon-reload
@@ -78,12 +91,20 @@ rm -rf ~/.nix-channels
 rm -rf ~/.config/nix
 rm -rf ~/.cache/nix
 
+# Cleanup Home Manager symlinks (including Nushell)
+echo "🔗 Cleaning up broken Home Manager symlinks..."
+find ~/.config -maxdepth 2 -type l -lname '/nix/store/*' -delete 2>/dev/null || true
+# Explicitly check for nushell config if it's a directory containing symlinks
+if [ -d "$HOME/.config/nushell" ]; then
+    find ~/.config/nushell -type l -lname '/nix/store/*' -delete 2>/dev/null || true
+fi
+
 # --- 7. Final Instructions ---
 echo "----------------------------------------------------"
 echo "✅ Uninstallation complete!"
 echo "----------------------------------------------------"
 echo "Manual steps remaining:"
 echo "1. Remove any Nix-related lines from your ~/.bashrc, ~/.zshrc, or ~/.profile if they exist."
-echo "2. Check /etc/shells and remove any Nix-provided shell paths if you added them manually."
+echo "2. Check /etc/shells and remove any Nix-provided shell paths (e.g., zsh, nu) if you added them manually."
 echo "3. RESTART your computer or log out and log back in to ensure all environment variables are cleared."
 echo "----------------------------------------------------"

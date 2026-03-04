@@ -5,7 +5,7 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 
 ## ✨ Features
 
-- **⚡ Shell:** Zsh optimized with **Starship (Jetpack Theme)**.
+- **⚡ Shell:** Zsh (Main) and **Nushell (Experimental)** optimized with **Starship (Jetpack Theme)**.
 - **🛠️ Modern Core Utils:** Replaces legacy tools with modern Rust alternatives.
   - `ls` -> `eza` (Icons & Git status)
   - `cd` -> `zoxide` (Smarter navigation)
@@ -40,16 +40,30 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 
 ## 🚀 Installation
 
-### 1. Install Nix & Enable Flakes
+### 1. Install Nix
 
+Choose one of the following two installation methods depending on your system environment.
+
+#### Method A: Determinate Systems Installer (Recommended - RedHat, Fedora, Modern Linux)
+A modern installer that resolves SELinux and systemd issues in RedHat-based systems. **Flakes are enabled by default**.
+```bash
+curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+```
+
+#### Method B: Official Install Script (Legacy - Ubuntu, WSL, etc.)
+Traditional multi-user installation. Requires manual Flakes activation after installation.
 ```bash
 sh <(curl -L https://nixos.org/nix/install) --daemon
-# Restart terminal, then:
+```
+
+### 2. Enable Flakes (Required for Method B)
+Only required if you used the official install script (Method B). (Skip if you used Method A).
+```bash
 mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
-### 2. Clone & Setup
+### 3. Clone & Setup
 
 ```bash
 # Clone this repo to ~/home_env_dotfiles
@@ -57,16 +71,16 @@ git clone <YOUR_REPO_URL> ~/home_env_dotfiles
 cd ~/home_env_dotfiles
 ```
 
-### 3. Apply Configuration
+### 4. Apply Configuration
 
 ```bash
 # Apply for both Native Linux and WSL
 nix run home-manager/master -- switch --flake .#yongminari -b backup
 ```
 
-### 4. Node.js Setup (via fnm)
+### 5. Node.js Setup (via fnm)
 
-이 설정은 Node.js 관리를 위해 `fnm`을 포함하고 있습니다. 최초 설치 후 다음 명령어를 통해 Node.js를 설치하세요.
+This configuration includes `fnm` for Node.js management. Install Node.js after the initial setup using the following commands.
 
 ```bash
 fnm install --lts
@@ -120,10 +134,17 @@ hms
 
 ## 🗑️ Uninstallation
 
-Nix와 Home Manager를 안전하게 제거하려면 포함된 언인스톨러 스크립트를 사용하세요. 이 스크립트는 셸 복구, 서비스 중지, 그리고 `/nix` 디렉토리 정리를 자동으로 수행합니다.
+To completely remove the Nix environment, choose one of the following methods depending on your installation.
 
+### If installed via Method A (Determinate Systems)
+Use the dedicated uninstaller for the cleanest removal.
 ```bash
-# 스크립트에 실행 권한 부여 및 실행
+/nix/nix-installer uninstall
+```
+
+### If installed via Method B (Official Script) or for forced removal
+Use the included uninstaller script. This script automatically handles shell restoration, service stopping, and `/nix` directory cleanup.
+```bash
 chmod +x uninstall-nix.sh
 ./uninstall-nix.sh
 ```

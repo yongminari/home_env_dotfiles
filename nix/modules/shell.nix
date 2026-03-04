@@ -245,7 +245,7 @@ EOF
         if ($env.ZELLIJ? != null) or (is-ssh) {
           let host_info = (try { sys host } catch { {hostname: "unknown", kernel_version: "unknown"} })
           # print 시 이스케이프 문자 최소화
-          print $"(ansi light_cyan)Welcome to Nushell Experimental Workspace! (Sub-shell Mode)(ansi reset)"
+          print $"(ansi light_cyan)Welcome to Nushell Experimental Workspace! \(Sub-shell Mode\)(ansi reset)"
           print $"(ansi yellow_bold) HOST      : ($host_info.hostname)(ansi reset)"
           print $"(ansi green_bold) SESSION   : Nushell Trial(ansi reset)"
           print $"(ansi cyan_bold) Shell     : Nushell (version | get version)(ansi reset)"

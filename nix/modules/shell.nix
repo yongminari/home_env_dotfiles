@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  home.file.".config/starship-ssh.toml".source = ./starship-ssh.toml;
+
   # 1. Starship 프롬프트 (공통 활성화)
   programs.starship = {
     enable = true;
@@ -82,6 +84,10 @@
           [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] || \
           [[ "$(ps -o comm= -p $PPID 2>/dev/null)" == "sshd" ]]
         }
+
+        if is_ssh; then
+          export STARSHIP_CONFIG="$HOME/.config/starship-ssh.toml"
+        fi
       '')
       ''
         if command -v fnm &>/dev/null; then
@@ -225,6 +231,10 @@ EOF
       }
 
       def is-ssh [] { ($env.SSH_CLIENT? != null) or ($env.SSH_TTY? != null) or ($env.SSH_CONNECTION? != null) }
+
+      if (is-ssh) {
+          $env.STARSHIP_CONFIG = ($env.HOME | path join ".config" "starship-ssh.toml")
+      }
 
       # [ROS2 Bridge]
       def --env source-ros [distro: string = "humble"] {

@@ -35,5 +35,6 @@
     monaspace
     nerd-fonts.jetbrains-mono
     fnm
+    nushell
   ];
 }

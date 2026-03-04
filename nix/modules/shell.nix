@@ -1,17 +1,19 @@
 { config, pkgs, lib, ... }:
 
 {
-  # 1. Starship 프롬프트
+  # 1. Starship 프롬프트 (공통 활성화)
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
+    enableNushellIntegration = true;
     settings = lib.importTOML ./starship.toml;
   };
 
-  # 2. Eza (ls 대체)
+  # 2. Eza (ls 보조)
   programs.eza = {
     enable = true;
     enableZshIntegration = true;
+    enableNushellIntegration = false; 
     icons = "auto";
     git = true;
   };
@@ -20,41 +22,40 @@
   programs.zoxide = {
     enable = true;
     enableZshIntegration = true;
+    enableNushellIntegration = true;
     options = [ "--cmd cd" ];
   };
 
-  # 4. [New] Bat (cat 대체 - Syntax Highlight)
+  # 4. Bat (cat 대체)
   programs.bat = {
     enable = true;
-    config = {
-      theme = "Dracula"; # 원하는 테마 설정 가능
-    };
+    config = { theme = "Dracula"; };
   };
 
-  # 5. [New] FZF (Fuzzy Finder)
+  # 5. FZF (Fuzzy Finder)
   programs.fzf = {
     enable = true;
     enableZshIntegration = true;
-    # Ctrl+R(히스토리), Ctrl+T(파일찾기) 활성화
   };
 
-  # 6. [New] Direnv
+  # 6. Direnv
   programs.direnv = {
     enable = true;
     enableZshIntegration = true;
+    enableNushellIntegration = true;
     nix-direnv.enable = true;
   };
 
-  # 7. Zsh 설정
+  # ---------------------------------------------------------
+  # 7. Zsh 설정 (메인 쉘)
+  # ---------------------------------------------------------
   programs.zsh = {
     enable = true;
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    # [.zshenv] 가장 먼저 실행되는 설정 (TERM 보정 등)
     envExtra = ''
-      # [Terminal Compatibility] xterm-ghostty terminfo가 없으면 표준으로 대체
       if [[ "$TERM" == "xterm-ghostty" ]] && ! command -v infocmp &>/dev/null; then
         export TERM=xterm-256color
       elif [[ "$TERM" == "xterm-ghostty" ]] && ! infocmp xterm-ghostty &>/dev/null; then
@@ -64,7 +65,6 @@
 
     initContent = lib.mkMerge [
       (lib.mkBefore ''
-        # [Ghostty] Shell Integration (ONLY if running INSIDE Ghostty)
         if [[ -n "$GHOSTTY_RESOURCES_DIR" ]]; then
           if [[ -f "/usr/share/ghostty/shell-integration/zsh/ghostty-integration" ]]; then
             source "/usr/share/ghostty/shell-integration/zsh/ghostty-integration"
@@ -78,48 +78,36 @@
           export ZELLIJ_SKIP_AUTOSTART=true
         fi
 
-        # [SSH Detection] More robust check
         function is_ssh() {
           [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] || \
           [[ "$(ps -o comm= -p $PPID 2>/dev/null)" == "sshd" ]]
         }
       '')
       ''
-        # [추가] fnm 초기화 코드 (fnm이 설치되어 있다면 실행)
         if command -v fnm &>/dev/null; then
           eval "$(fnm env --use-on-cd --shell zsh)"
         fi
 
         export PATH=$HOME/.local/bin:$PATH
 
-        # [Key Bindings] 더 넓은 터미널 호환성을 위해 바인딩 보강
-        bindkey '^[[A' history-substring-search-up    # Arrow Up
-        bindkey '^[[B' history-substring-search-down  # Arrow Down
-        bindkey '^[OA' history-substring-search-up    # Arrow Up (Application Mode)
-        bindkey '^[OB' history-substring-search-down  # Arrow Down (Application Mode)
+        bindkey '^[[A' history-substring-search-up
+        bindkey '^[[B' history-substring-search-down
+        bindkey '^[OA' history-substring-search-up
+        bindkey '^[OB' history-substring-search-down
 
-        # [New] Pyenv 초기화 (설치되어 있을 경우에만)
         if command -v pyenv &>/dev/null; then
           eval "$(pyenv init -)"
           eval "$(pyenv virtualenv-init -)"
         fi
 
-        # ---------------------------------------------------------
-        # [New] Welcome Message for Zellij Sessions or SSH
-        # ---------------------------------------------------------
         if [[ -n "$ZELLIJ" ]] || is_ssh; then
-          # 줄바꿈 비활성화
           printf "\e[?7l"
-
-          # Fast OS detection
           local os_name="Linux"
           if [[ -f /etc/os-release ]]; then
             os_name=$(grep PRETTY_NAME /etc/os-release | cut -d '"' -f2)
           fi
 
-          # Determine which ASCII art to show
           if is_ssh; then
-            # SSH: Always show the small version
             cat << 'EOF'
  ███                         █████                         █████     
 ░░░███                      ░░███                         ░░███      
@@ -133,11 +121,8 @@
                   ░░██████                                           
                    ░░░░░░
 EOF
-          elif command -v lolcat &>/dev/null; then
-            # Local Zellij: Show large version with lolcat
-            cat << 'EOF' | lolcat 
-                                                                                                                 
-
+          else
+            cat << 'EOF'
    ███             █████ █████                              ██████   ██████  ███                                  ███ 
   ░░░███          ░░███ ░░███                              ░░██████ ██████  ░░░                                  ░░░  
     ░░░███         ░░███ ███    ██████  ████████    ███████ ░███░█████░███  ████  ████████    ██████   ████████  ████ 
@@ -146,51 +131,25 @@ EOF
      ███░             ░███    ░███ ░███ ░███ ░███ ░███ ░███ ░███      ░███  ░███  ░███ ░███  ███░░███  ░███      ░███ 
    ███░     ██████    █████   ░░██████  ████ █████░░███████ █████     █████ █████ ████ █████░░████████ █████     █████
   ░░░      ░░░░░░    ░░░░░     ░░░░░░  ░░░░ ░░░░░  ░░░░░███░░░░░     ░░░░░ ░░░░░ ░░░░ ░░░░░  ░░░░░░░░ ░░░░░     ░░░░░ 
-                                                   ███ ░███                                                           
-                                                  ░░██████                                                            
-                                                   ░░░░░░                                                                                                                                                                                                     
-EOF
-          else
-            # Local Zellij (no lolcat): Show small version
-            cat << 'EOF'
- ███                         █████                         █████     
-░░░███                      ░░███                         ░░███      
-  ░░░███          █████ ████ ░███████       █████   █████  ░███████  
-    ░░░███       ░░███ ░███  ░███░░███     ███░░   ███░░   ░███░░███ 
-     ███░         ░███ ░███  ░███ ░███    ░░█████ ░░█████  ░███ ░███ 
-   ███░           ░███ ░███  ░███ ░███     ░░░░███ ░░░░███ ░███ ░███ 
- ███░             ░░███████  ████ █████    ██████  ██████  ████ █████
-░░░       ██████   ░░░░░███ ░░░░ ░░░░░    ░░░░░░  ░░░░░░  ░░░░ ░░░░░ 
-         ░░░░░░    ███ ░███                                          
-                  ░░██████                                           
-                   ░░░░░░
 EOF
           fi
 
           echo "\x1b[1;31m $os_name"
           echo "\x1b[1;33m HOST      : $(uname -n)"
-          echo "\x1b[1;32m SESSION   : Zellij (Modern Terminal Workspace)"
+          echo "\x1b[1;32m SESSION   : Zellij (Stable Zsh Workspace)"
           echo "\x1b[1;34m Kernel    : $(uname -r)"
           echo "\x1b[1;35m Date      : $(date +'%Y-%m-%d %H:%M:%S')"
-          echo "\x1b[1;36m Shell     : $(zsh --version | awk '{print $1, $2}')"
+          echo "\x1b[1;36m Shell     : Zsh $(zsh --version | awk '{print $2}')"
           echo "\x1b[1;37m Who       : $(whoami)\x1b[0m"
 
-          echo "\nWelcome to \x1b[94mZsh\x1b[94m, \x1b[1m$USER!\x1b[0m"
-
-          # 줄바꿈 다시 활성화
+          echo "\nWelcome back to \x1b[94mZsh\x1b[94m, \x1b[1m$USER!\x1b[0m"
           printf "\e[?7h"
         fi      
 
-        # ---------------------------------------------------------
-        # [New] Zellij 자동 실행
-        # ---------------------------------------------------------
         function is_vscode() {
           [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TERM_PROGRAM" == "vscode" ]]
         }
-
-        # 대화형 쉘 + Zellij 밖 + VSCode 아님 + SSH 아님 -> 자동 실행
         if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$ZELLIJ_SKIP_AUTOSTART" ]] && ! is_vscode && ! is_ssh; then
-          # 새로운 세션으로 실행 (복제 방지)
           exec zellij
         fi
       ''
@@ -205,34 +164,109 @@ EOF
       ls = "eza";
       ll = "eza -l --icons --git -a";
       lt = "eza --tree --level=2 --long --icons --git";
-      
-      # [New] cat -> bat 매핑
       cat = "bat";
-      
-      # [New] 클립보드 복사 Alias
       tocb = "xclip -selection clipboard";
-
       hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
       vi = "nvim";
       vim = "nvim";
       zj = "zellij";
-      
-      zj_shortcuts = ''echo -e "\033[1;34m=== Zellij Custom Shortcuts (Tmux Style) ===\033[0m" && \
-                        echo -e "\033[1;33m[ Quick Actions (Alt Key) ]\033[0m" && \
-                        echo "  Alt + n       : New Pane (Right)" && \
-                        echo "  Alt + h/j/k/l : Move focus (Left/Down/Up/Right)" && \
-                        echo "  Alt + i/o     : Move Tab (Prev/Next)" && \
-                        echo "  Alt + =/-     : Resize Pane (Increase/Decrease)" && \
-                        echo -e "\033[1;33m[ Core Modes (Prefix) ]\033[0m" && \
-                        echo "  Ctrl + g      : LOCKED Mode (Essential for NeoVim!)" && \
-                        echo "  Ctrl + s      : SCROLL/COPY Mode (Like tmux prefix + [)" && \
-                        echo "                  -> v: Select, y/Enter: Copy" && \
-                        echo "  Ctrl + p      : PANE Mode (Split, Resize, etc.)" && \
-                        echo "  Ctrl + t      : TAB Mode (New, Rename, etc.)" && \
-                        echo "  Ctrl + n      : RESIZE Mode" && \
-                        echo "  Ctrl + o      : SESSION Mode" && \
-                        echo "  Ctrl + q      : QUIT Zellij" && \
-                        echo -e "\033[1;32mTip: Bottom bar changes based on these modes!\033[0m" '';
     };
+  };
+
+  # ---------------------------------------------------------
+  # 8. Nushell 설정 (보조/실험용 쉘)
+  # ---------------------------------------------------------
+  programs.nushell = {
+    enable = true;
+    
+    envFile.text = ''
+      $env.ENV_CONVERSIONS = {
+        "PATH": {
+          from_string: { |s| $s | split row (char esep) | path expand --no-symlink }
+          to_string: { |v| $v | path expand --no-symlink | str join (char esep) }
+        }
+        "PYTHONPATH": {
+          from_string: { |s| $s | split row (char esep) | path expand --no-symlink }
+          to_string: { |v| $v | path expand --no-symlink | str join (char esep) }
+        }
+        "LD_LIBRARY_PATH": {
+          from_string: { |s| $s | split row (char esep) | path expand --no-symlink }
+          to_string: { |v| $v | path expand --no-symlink | str join (char esep) }
+        }
+      }
+      # Ghostty에서 수동 TERM 변환은 때때로 ANSI 릭을 발생시킵니다. 
+      # 시스템 기본값을 따르도록 주석 처리하거나 제거합니다.
+      # if ($env.TERM? == "xterm-ghostty") { $env.TERM = "xterm-256color" }
+    '';
+
+    configFile.text = ''
+      $env.config = {
+        show_banner: false
+        edit_mode: vi
+        # 커서 위치 응답 누수 방지를 위해 렌더링 방식 조정
+        render_right_prompt_on_last_line: true 
+        
+        keybindings: [
+          {
+            name: fzf_history
+            modifier: control
+            keycode: char_r
+            mode: [emacs, vi_insert, vi_normal]
+            event: [ { send: executehostcommand, cmd: "commandline edit --insert (history | get command | reverse | uniq | str join (char nl) | fzf --layout=reverse --height=40% --query (commandline) | decode utf-8 | str trim)" } ]
+          }
+          {
+            name: fzf_files
+            modifier: control
+            keycode: char_t
+            mode: [emacs, vi_insert, vi_normal]
+            event: [ { send: executehostcommand, cmd: "commandline edit --insert (fzf --layout=reverse --height=40% | decode utf-8 | str trim)" } ]
+          }
+        ]
+      }
+
+      def is-ssh [] { ($env.SSH_CLIENT? != null) or ($env.SSH_TTY? != null) or ($env.SSH_CONNECTION? != null) }
+
+      # [ROS2 Bridge]
+      def --env source-ros [distro: string = "humble"] {
+        let setup_path = $"/opt/ros/($distro)/setup.bash"
+        if ($setup_path | path exists) {
+          print $"Sourcing ROS 2 ($distro)..."
+          let env_vars = (bash -c $"source ($setup_path) && env" | lines | where { $in =~ "=" } | split column "=" name value)
+          for row in $env_vars {
+            if ($row.name | str contains "ROS") or ($row.name in ["PATH", "PYTHONPATH", "LD_LIBRARY_PATH", "AMENT_PREFIX_PATH", "CMAKE_PREFIX_PATH"]) {
+              load-env { ($row.name): $row.value }
+            }
+          }
+          print $"(ansi green_bold)ROS 2 ($distro) environment loaded.(ansi reset)"
+        }
+      }
+
+      def show_welcome [] {
+        if ($env.ZELLIJ? != null) or (is-ssh) {
+          let host_info = (try { sys host } catch { {hostname: "unknown", kernel_version: "unknown"} })
+          # print 시 이스케이프 문자 최소화
+          print $"(ansi light_cyan)Welcome to Nushell Experimental Workspace! (Sub-shell Mode)(ansi reset)"
+          print $"(ansi yellow_bold) HOST      : ($host_info.hostname)(ansi reset)"
+          print $"(ansi green_bold) SESSION   : Nushell Trial(ansi reset)"
+          print $"(ansi cyan_bold) Shell     : Nushell (version | get version)(ansi reset)"
+          print ""
+          print "Type 'exit' to return to Zsh."
+        }
+      }
+      
+      # 동기화를 위해 짧은 지연 후 실행하거나 필요할 때만 호출 가능
+      show_welcome
+    '';
+
+    shellAliases = {
+      ll = "eza -l --icons --git -a";
+      lt = "eza --tree --level=2 --long --icons --git";
+      hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
+    };
+  };
+
+  # Bash는 기본 호환성을 위해 유지
+  programs.bash = {
+    enable = true;
   };
 }

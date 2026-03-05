@@ -179,6 +179,9 @@ EOF
       cat = "bat";
       tocb = "xclip -selection clipboard";
       hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
+      hmsx = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-x86-linux";
+      hmsa = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-linux";
+      hmsm = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-mac";
       vi = "nvim";
       vim = "nvim";
       zj = "zellij";
@@ -239,7 +242,7 @@ EOF
       def is-ssh [] { ($env.SSH_CLIENT? != null) or ($env.SSH_TTY? != null) or ($env.SSH_CONNECTION? != null) }
 
       if (is-ssh) {
-          $env.STARSHIP_CONFIG = ($env.HOME | path join ".config" "starship-ssh.toml")
+          $env.STARSHIP_CONFIG = $"($env.HOME)/.config/starship-ssh.toml"
       }
 
       # [ROS2 Bridge]
@@ -278,12 +281,21 @@ EOF
       ll = "eza -l --icons --git -a";
       lt = "eza --tree --level=2 --long --icons --git";
       hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
+      hmsx = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-x86-linux";
+      hmsa = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-linux";
+      hmsm = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-mac";
     };
   };
 
   # Bash는 기본 호환성을 위해 유지
   programs.bash = {
     enable = true;
+    shellAliases = {
+      hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
+      hmsx = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-x86-linux";
+      hmsa = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-linux";
+      hmsm = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-mac";
+    };
     initExtra = ''
       # SSH 접속 여부 확인 함수
       function is_ssh() {

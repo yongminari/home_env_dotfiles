@@ -209,9 +209,17 @@ EOF
           to_string: { |v| $v | path expand --no-symlink | str join (char esep) }
         }
       }
-      # Ghostty에서 수동 TERM 변환은 때때로 ANSI 릭을 발생시킵니다. 
-      # 시스템 기본값을 따르도록 주석 처리하거나 제거합니다.
-      # if ($env.TERM? == "xterm-ghostty") { $env.TERM = "xterm-256color" }
+
+      # SSH 접속 감지 및 Starship 설정 변경
+      let is_ssh = (
+        ($env.SSH_CLIENT? != null) or 
+        ($env.SSH_TTY? != null) or 
+        ($env.SSH_CONNECTION? != null)
+      )
+
+      if $is_ssh {
+        $env.STARSHIP_CONFIG = $"($env.HOME)/.config/starship-ssh.toml"
+      }
     '';
 
     configFile.text = ''
@@ -239,12 +247,6 @@ EOF
         ]
       }
 
-      def is-ssh [] { ($env.SSH_CLIENT? != null) or ($env.SSH_TTY? != null) or ($env.SSH_CONNECTION? != null) }
-
-      if (is-ssh) {
-          $env.STARSHIP_CONFIG = $"($env.HOME)/.config/starship-ssh.toml"
-      }
-
       # [ROS2 Bridge]
       def --env source-ros [distro: string = "humble"] {
         let setup_path = $"/opt/ros/($distro)/setup.bash"
@@ -261,7 +263,8 @@ EOF
       }
 
       def show_welcome [] {
-        if ($env.ZELLIJ? != null) or (is-ssh) {
+        let is_ssh = (($env.SSH_CLIENT? != null) or ($env.SSH_TTY? != null) or ($env.SSH_CONNECTION? != null))
+        if ($env.ZELLIJ? != null) or $is_ssh {
           let host_info = (try { sys host } catch { {hostname: "unknown", kernel_version: "unknown"} })
           # print 시 이스케이프 문자 최소화
           print $"(ansi light_cyan)Welcome to Nushell Experimental Workspace! \(Sub-shell Mode\)(ansi reset)"

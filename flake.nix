@@ -14,15 +14,21 @@
 
   outputs = { self, nixpkgs, home-manager, ... }:
     let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      mkConfig = system: home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.${system};
+        modules = [ ./nix/home.nix ];
+      };
     in {
       homeConfigurations = {
-        # 1. Native Linux & WSL (Unified)
-        "yongminari" = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ./nix/home.nix ];
-        };
+        # 1. Native Linux & WSL (Unified x86_64)
+        "yongminari-x86-linux"   = mkConfig "x86_64-linux";
+        # 2. Native Linux & WSL (Unified aarch64)
+        "yongminari-aarch-linux" = mkConfig "aarch64-linux";
+        # 3. Apple Silicon Mac (aarch64-darwin)
+        "yongminari-aarch-mac"   = mkConfig "aarch64-darwin";
+
+        # [기존 호환성] "yongminari"로 실행 시 x86_64-linux를 기본으로 유지
+        "yongminari"             = mkConfig "x86_64-linux";
       };
     };
 }

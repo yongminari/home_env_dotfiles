@@ -3,7 +3,7 @@
 {
   # [사용자 정보]
   home.username = "yongminari";
-  home.homeDirectory = "/home/yongminari";
+  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/yongminari" else "/home/yongminari";
   home.stateVersion = "25.11"; 
 
   # [모듈 로드] 기능별 파일들을 여기서 불러옴
@@ -16,7 +16,7 @@
     ./modules/ghostty.nix
   ];
 
-  targets.genericLinux.enable = true;
+  targets.genericLinux.enable = pkgs.stdenv.isLinux;
   fonts.fontconfig.enable = true;
 
   # Silence 'options.json' context warning by disabling manual generation

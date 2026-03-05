@@ -6,6 +6,7 @@
   # 1. Starship 프롬프트 (공통 활성화)
   programs.starship = {
     enable = true;
+    enableBashIntegration = true;
     enableZshIntegration = true;
     enableNushellIntegration = true;
     settings = lib.importTOML ./starship.toml;
@@ -283,5 +284,17 @@ EOF
   # Bash는 기본 호환성을 위해 유지
   programs.bash = {
     enable = true;
+    initExtra = ''
+      # SSH 접속 여부 확인 함수
+      function is_ssh() {
+        [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] || \
+        [[ "$(ps -o comm= -p $PPID 2>/dev/null)" == "sshd" ]]
+      }
+
+      # SSH 접속 시 Starship 전용 설정 적용
+      if is_ssh; then
+        export STARSHIP_CONFIG="$HOME/.config/starship-ssh.toml"
+      fi
+    '';
   };
 }

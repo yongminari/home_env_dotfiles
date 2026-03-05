@@ -212,9 +212,9 @@ EOF
 
       # SSH 접속 감지 및 Starship 설정 변경
       let is_ssh = (
-        (not ($env | get -i SSH_CLIENT | is-empty)) or 
-        (not ($env | get -i SSH_TTY | is-empty)) or 
-        (not ($env | get -i SSH_CONNECTION | is-empty))
+        (not ($env | get -o SSH_CLIENT | is-empty)) or 
+        (not ($env | get -o SSH_TTY | is-empty)) or 
+        (not ($env | get -o SSH_CONNECTION | is-empty))
       )
 
       if $is_ssh {

@@ -20,8 +20,8 @@ $time\
 \n$character"""
 
 [custom.address]
-# Linux(hostname -I)와 Mac(ipconfig) 대응을 위한 명령어
-command = "hostname -I | awk '{print $1}' 2>/dev/null || ipconfig getifaddr en0 2>/dev/null || hostname"
+# 어떤 쉘에서든 bash -c를 통해 안전하게 IP를 가져오도록 수정
+command = "bash -c \"hostname -I | awk '{print $1}' || ipconfig getifaddr en0 || hostname\""
 when = "true"
 style = "bg:#ee99a0 fg:#1e1e2e"
 format = "[$output ]($style)"

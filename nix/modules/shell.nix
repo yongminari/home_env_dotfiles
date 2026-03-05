@@ -212,13 +212,13 @@ EOF
 
       # SSH 접속 감지 및 Starship 설정 변경
       let is_ssh = (
-        ($env.SSH_CLIENT? != null) or 
-        ($env.SSH_TTY? != null) or 
-        ($env.SSH_CONNECTION? != null)
+        (not ($env | get -i SSH_CLIENT | is-empty)) or 
+        (not ($env | get -i SSH_TTY | is-empty)) or 
+        (not ($env | get -i SSH_CONNECTION | is-empty))
       )
 
       if $is_ssh {
-        $env.STARSHIP_CONFIG = $"($env.HOME)/.config/starship-ssh.toml"
+        $env.STARSHIP_CONFIG = ($env.HOME | path join ".config" "starship-ssh.toml")
       }
     '';
 

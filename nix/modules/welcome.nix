@@ -13,7 +13,7 @@ let
     if [[ -n "$ZELLIJ" ]] || is_ssh; then
       printf "\e[?7l" # 줄바꿈 제한 해제 (이미지 깨짐 방지)
       
-      local os_name="Linux"
+      os_name="Linux"
       if [[ -f /etc/os-release ]]; then
         os_name=$(grep PRETTY_NAME /etc/os-release | cut -d '"' -f2)
       fi

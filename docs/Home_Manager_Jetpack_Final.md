@@ -11,6 +11,7 @@ Native Linux(Ubuntu 등)와 WSL 환경을 하나의 통합된 코드베이스로
 - **Editor:** Neovim (Tokyonight, LSP, Treesitter, Telescope, Neo-tree, oil.nvim, etc.)
 - **Terminal:** Zellij (Modern Rust-based Terminal Workspace, Prefix Ctrl+g, Modern UI)
 - **Auto-Install:** Gemini CLI, Tree-sitter CLI (via Nix)
+- **Cloud Storage:** rclone mount (Google Drive, OneDrive)
 - **Dev Tools:** gcc, clang, make, cmake, go, gopls
 
 ## 2. 필수 사전 준비 (Manual Steps)
@@ -295,6 +296,23 @@ home-manager switch --flake .#yongminari -b backup
 fnm install --lts
 fnm default lts-latest
 ```
+
+### 5.1 클라우드 드라이브 설정 (rclone)
+
+Google Drive와 OneDrive를 자동 마운트하여 로컬 디렉토리처럼 사용하기 위한 절차입니다.
+
+1.  **FUSE3 설치:** `sudo apt install fuse3 -y`
+2.  **rclone config 실행:**
+    - `rclone config` 명령어를 입력합니다.
+    - `n` (New remote) 선택 후 이름을 **`gdrive`**로 설정하고 드라이브 타입을 선택하여 인증을 마칩니다.
+    - 같은 방식으로 **`onedrive`** 원격 저장소를 만듭니다.
+3.  **systemd 서비스 활성화:**
+    ```bash
+    systemctl --user daemon-reload
+    systemctl --user enable --now rclone-mount-gdrive
+    systemctl --user enable --now rclone-mount-onedrive
+    ```
+4.  **확인:** 드라이브가 `~/mnt/gdrive`, `~/mnt/onedrive`에 정상적으로 마운트되었는지 확인합니다.
 
 ## 6. 트러블슈팅
 

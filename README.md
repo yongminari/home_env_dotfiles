@@ -19,6 +19,9 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
   - Seamless navigation and integration with Neovim.
 - **📝 Editor:** **Neovim** (IDE-like setup).
   - Lazy loading, Telescope, Neo-tree, Treesitter, LSP (C++, Go, Node).
+- **☁️ Cloud Storage:** **rclone** automated mounting.
+  - Google Drive & OneDrive auto-mount via systemd.
+  - Mount paths: `~/mnt/gdrive`, `~/mnt/onedrive`.
 - **🤖 AI:** Auto-installation of `@google/gemini-cli`.
 - **📦 Modular:** Clean file structure separated by function (`modules/*.nix`).
 
@@ -102,6 +105,19 @@ sudo sh -c "echo $(which zsh) >> /etc/shells"
 # 3. 기본 셸 변경
 chsh -s $(which zsh)
 ```
+
+### 6. Cloud Drive Setup (rclone)
+
+Google Drive와 OneDrive를 자동 마운트하려면 다음 단계를 따르세요.
+
+1. **FUSE3 설치:** `sudo apt install fuse3 -y`
+2. **rclone 설정:** `rclone config` 명령어로 `gdrive`와 `onedrive`라는 이름의 원격 저장소를 만듭니다.
+3. **서비스 활성화:**
+   ```bash
+   systemctl --user daemon-reload
+   systemctl --user enable --now rclone-mount-gdrive
+   systemctl --user enable --now rclone-mount-onedrive
+   ```
 
 ## ⌨️ Cheat Sheet
 

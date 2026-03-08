@@ -33,11 +33,28 @@
     '';
 
     configFile.text = ''
+      # [Carapace Completion Helper]
+      let carapace_completer = { |spans|
+        carapace $spans.0 nushell ...$spans | from json
+      }
+
       $env.config = {
         show_banner: false
         edit_mode: vi
         render_right_prompt_on_last_line: true 
         
+        completions: {
+          case_sensitive: false # case-insensitive completion
+          quick: true    # set this to false to prevent auto-selecting completions
+          partial: true  # set this to false to prevent partial filling of the prompt
+          algorithm: "fuzzy" # fuzzy matching
+          external: {
+            enable: true
+            max_results: 100
+            completer: $carapace_completer
+          }
+        }
+
         keybindings: [
           {
             name: fzf_history

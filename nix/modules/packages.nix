@@ -8,7 +8,7 @@
   home.packages = with pkgs; [
     # [시스템 유틸 및 CLI 도구]
     # 순수하게 도구로서 작동하며 시스템 라이브러리와 충돌이 적은 것들 위주
-    neofetch 
+    fastfetch 
     htop 
     ripgrep 
     fd 
@@ -36,5 +36,6 @@
     nerd-fonts.jetbrains-mono
     fnm
     nushell
+    carapace
   ];
 }

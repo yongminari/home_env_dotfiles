@@ -58,6 +58,8 @@
       vim.opt.tabstop = 4
       vim.opt.shiftwidth = 4
       vim.opt.expandtab = true
+      vim.opt.ignorecase = true     -- Case insensitive searching
+      vim.opt.smartcase = true      -- Smart case (override ignorecase if uppercase used)
       vim.g.mapleader = " "         
       vim.opt.clipboard = "unnamedplus"
       vim.opt.termguicolors = true

@@ -92,27 +92,27 @@ fnm default lts-latest
 
 ### 5. Set Zsh as Default Shell (chsh)
 
-Nix로 설치된 Zsh는 경로가 다르기 때문에 시스템이 기본 셸로 바로 인식하지 못할 수 있습니다. 다음 단계를 따라 전환하세요.
+Since Zsh installed via Nix has a different path, the system may not recognize it as a default shell immediately. Follow these steps to switch.
 
 ```bash
-# 1. Nix Zsh 경로 확인
+# 1. Check Nix Zsh path
 which zsh
-# 보통 ~/.nix-profile/bin/zsh
+# Usually ~/.nix-profile/bin/zsh
 
-# 2. 유효한 셸 목록에 추가 (Root 권한 필요)
+# 2. Add to valid shells list (Requires root)
 sudo sh -c "echo $(which zsh) >> /etc/shells"
 
-# 3. 기본 셸 변경
+# 3. Change default shell
 chsh -s $(which zsh)
 ```
 
 ### 6. Cloud Drive Setup (rclone)
 
-Google Drive와 OneDrive를 자동 마운트하려면 다음 단계를 따르세요.
+Follow these steps to auto-mount Google Drive and OneDrive.
 
-1. **FUSE3 설치:** `sudo apt install fuse3 -y`
-2. **rclone 설정:** `rclone config` 명령어로 `gdrive`와 `onedrive`라는 이름의 원격 저장소를 만듭니다.
-3. **서비스 활성화:**
+1. **Install FUSE3:** `sudo apt install fuse3 -y`
+2. **Setup rclone:** Create remotes named `gdrive` and `onedrive` using the `rclone config` command.
+3. **Enable Services:**
    ```bash
    systemctl --user daemon-reload
    systemctl --user enable --now rclone-mount-gdrive
@@ -138,13 +138,13 @@ Google Drive와 OneDrive를 자동 마운트하려면 다음 단계를 따르세
 
 ### Update Packages & Configuration
 
-Nix 및 Home Manager에 등록된 모든 패키지를 최신 버전으로 업데이트하려면 다음 명령어를 순서대로 실행하세요.
+To update all packages registered in Nix and Home Manager to the latest version, run the following commands in order.
 
 ```bash
-# 1. 패키지 레시피(flake.lock)를 최신 상태로 갱신
+# 1. Update the package recipe (flake.lock)
 nix flake update
 
-# 2. 업데이트된 내용 적용
+# 2. Apply the updates
 hms
 ```
 
@@ -165,7 +165,7 @@ chmod +x uninstall-nix.sh
 ./uninstall-nix.sh
 ```
 
-> **Note:** 스크립트 실행 후 시스템을 재부팅하거나 로그아웃 후 다시 로그인하여 환경 변수를 완전히 정리하는 것을 권장합니다.
+> **Note:** It is recommended to reboot the system or log out and log back in after running the script to fully clear environment variables.
 
 ---
 

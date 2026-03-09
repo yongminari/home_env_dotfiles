@@ -198,34 +198,47 @@
 
       -- [Obsidian.nvim 설정]
       safe_require("obsidian", function(obsidian)
-        obsidian.setup({
-          workspaces = {
-            {
-              name = "notes",
-              path = "~/Documents/obsidian_personal_note",
-            },
-          },
-          -- Markdown 파일 전용 설정
-          notes_subdir = "",
-          new_notes_location = "notes_subdir",
-          
-          -- 최신 UI 설정
-          ui = {
-            enable = true,
-            update_debounce = 200,
-            concealcursor = "nv", -- 노멀, 비주얼 모드에서 아이콘 유지
-            -- 체크박스 시각적 설정은 ui 내부에 있어야 함
-            checkboxes = {
-              [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-              ["x"] = { char = "", hl_group = "ObsidianDone" },
-              ["v"] = { char = "", hl_group = "ObsidianCheck" }, -- v는 체크만 (취소선 X)
-            },
-          },
-          -- 체크박스 설정 (시각적 효과만 정의, 순서는 전역으로 강제하지 않음)
-          -- 경고 제거 및 새 명령 체계 활성화
-          legacy_commands = false,
-        })
+        local vault_path = vim.fn.expand("~/Documents/obsidian_personal_note")
+        local workspaces = {}
         
+        -- 폴더가 있을 때만 워크스페이스 목록에 추가
+        if vim.fn.isdirectory(vault_path) == 1 then
+          table.insert(workspaces, {
+            name = "notes",
+            path = vault_path,
+          })
+        end
+
+        -- 워크스페이스가 하나라도 있을 때만 setup 실행 (에러 방지)
+        if #workspaces > 0 then
+          obsidian.setup({
+            workspaces = workspaces,
+            notes_subdir = "",
+            new_notes_location = "notes_subdir",
+            
+            -- 최신 UI 설정
+            ui = {
+              enable = true,
+              update_debounce = 200,
+              concealcursor = "nv",
+              -- [중요] 체크박스 시각적 아이콘 설정은 ui 내부에 있어야 렌더링됨
+              checkboxes = {
+                [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
+                ["x"] = { char = "", hl_group = "ObsidianDone" },
+                ["v"] = { char = "", hl_group = "ObsidianCheck" },
+              },
+            },
+            -- [중요] 체크박스 토글 순서 설정 (ui 외부)
+            checkbox = {
+              order = { " ", "v", "x" },
+            },
+            legacy_commands = false,
+          })
+        else
+          -- 워크스페이스가 없을 경우 사용자에게 알림 (선택 사항)
+          -- print("Obsidian vault directory not found. Plugin not loaded.")
+        end
+
         -- 전역 키맵 (최신 명령어 체계: Obsidian <subcommand>)
         vim.keymap.set("n", "<leader>on", "<cmd>Obsidian new<cr>", { desc = "New Obsidian note" })
         vim.keymap.set("n", "<leader>os", "<cmd>Obsidian search<cr>", { desc = "Search Obsidian notes" })

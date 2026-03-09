@@ -196,11 +196,14 @@
             enable = true,
             update_debounce = 200,
           },
-          -- 체크박스 설정 (최상위 옵션으로 이동)
+          -- 체크박스 설정 (v를 추가하여 - [v] 도 지원)
           checkboxes = {
             [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
             ["x"] = { char = "", hl_group = "ObsidianDone" },
+            ["v"] = { char = "", hl_group = "ObsidianDone" },
           },
+          -- 체크박스 순서 (토글 시 순서)
+          checkbox_order = { " ", "x" },
           -- 경고 제거 및 새 명령 체계 활성화
           legacy_commands = false,
         })

@@ -228,10 +228,11 @@
                 ["v"] = { char = "", hl_group = "ObsidianCheck" },
               },
             },
-            -- [중요] 체크박스 토글 순서 설정 (ui 외부)
-            checkbox = {
-              order = { " ", "v", "x" },
-            },
+            -- 체크박스 토글 순서 (ui 외부)
+            -- [참고] 여기서 order를 설정하면 leader ch가 영향을 받으므로 주석 처리하거나 제거
+            -- checkbox = {
+            --   order = { " ", "v", "x" },
+            -- },
             legacy_commands = false,
           })
         else

@@ -98,12 +98,15 @@
 
       -- [테마 설정]
       safe_require("tokyonight", function(tokyonight)
+        local is_ssh = os.getenv("SSH_CONNECTION") ~= nil
+        local theme_style = is_ssh and "day" or "moon"
+        
         tokyonight.setup({
-          style = "moon", -- storm, night, moon, day
-          transparent = true,
+          style = theme_style, -- SSH면 day (밝음), 로컬이면 moon (어둠)
+          transparent = not is_ssh, -- SSH일 때는 배경색을 꽉 채워서 더 확실하게 구분
           styles = {
-            sidebars = "transparent",
-            floats = "transparent",
+            sidebars = is_ssh and "dark" or "transparent",
+            floats = is_ssh and "dark" or "transparent",
           },
         })
         vim.cmd.colorscheme "tokyonight"

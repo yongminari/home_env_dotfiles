@@ -33,6 +33,7 @@
       toggleterm-nvim   # 터미널 관리 (Ctrl+/)
       lazygit-nvim      # Lazygit 통합
       nvim-osc52        # SSH 클립보드 (OSC 52) 지원
+      obsidian-nvim     # Obsidian 통합
       
       # LSP & Completion
       nvim-lspconfig
@@ -63,6 +64,7 @@
       vim.g.mapleader = " "         
       vim.opt.clipboard = "unnamedplus"
       vim.opt.termguicolors = true
+      vim.opt.conceallevel = 2      -- Obsidian.nvim UI 기능을 위해 필요
       
       -- [OSC 52 클립보드 설정]
       -- nvim-osc52 플러그인을 사용하여 모든 환경에서 클립보드 동기화
@@ -174,6 +176,54 @@
       -- [Lazygit 설정]
       safe_require("lazygit", function(lazygit)
         vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<cr>", { desc = "Open LazyGit" })
+      end)
+
+      -- [Obsidian.nvim 설정]
+      safe_require("obsidian", function(obsidian)
+        obsidian.setup({
+          workspaces = {
+            {
+              name = "notes",
+              path = "~/Documents/obsidian_personal_note",
+            },
+          },
+          -- Markdown 파일 전용 설정
+          notes_subdir = "",
+          new_notes_location = "notes_subdir",
+          
+          -- 최신 UI 설정
+          ui = {
+            enable = true,
+            update_debounce = 200,
+          },
+          -- 체크박스 설정 (최상위 옵션으로 이동)
+          checkboxes = {
+            [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
+            ["x"] = { char = "", hl_group = "ObsidianDone" },
+          },
+          -- 경고 제거 및 새 명령 체계 활성화
+          legacy_commands = false,
+        })
+        
+        -- 전역 키맵 (최신 명령어 체계: Obsidian <subcommand>)
+        vim.keymap.set("n", "<leader>on", "<cmd>Obsidian new<cr>", { desc = "New Obsidian note" })
+        vim.keymap.set("n", "<leader>os", "<cmd>Obsidian search<cr>", { desc = "Search Obsidian notes" })
+        vim.keymap.set("n", "<leader>ot", "<cmd>Obsidian today<cr>", { desc = "Today's Obsidian note" })
+        vim.keymap.set("n", "<leader>ob", "<cmd>Obsidian backlinks<cr>", { desc = "Show Backlinks" })
+        
+        -- 체크박스 토글 (표준 키맵 방식)
+        vim.keymap.set("n", "<leader>ch", function()
+          return require("obsidian").util.toggle_checkbox()
+        end, { desc = "Toggle checkbox" })
+
+        -- "gf" 기능 강화
+        vim.keymap.set("n", "gf", function()
+          if require("obsidian").util.cursor_on_markdown_link() then
+            return "<cmd>Obsidian follow<CR>"
+          else
+            return "gf"
+          end
+        end, { noremap = false, expr = true, desc = "Follow Obsidian link" })
       end)
 
       -- [Neo-tree 설정]

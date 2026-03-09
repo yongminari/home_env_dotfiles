@@ -44,6 +44,25 @@ if [[ "$CURRENT_SHELL" == *".nix-profile"* ]] || [[ "$CURRENT_SHELL" == *"/nix/s
     echo "✅ Shell changed to $SAFE_SHELL. Please restart your terminal after this script finishes."
 fi
 
+# --- 1.5 Unmount and Cleanup rclone ---
+echo "☁️  Unmounting rclone drives and cleaning up..."
+for drive in "gdrive" "onedrive"; do
+    mnt_path="$HOME/mnt/$drive"
+    if [ -d "$mnt_path" ]; then
+        # Check if it is a mount point
+        if grep -q "$mnt_path" /proc/mounts 2>/dev/null; then
+            echo "   Unmounting $mnt_path..."
+            fusermount3 -u "$mnt_path" 2>/dev/null || umount "$mnt_path" 2>/dev/null || true
+        fi
+        # Remove the directory
+        rm -rf "$mnt_path" 2>/dev/null || true
+    fi
+done
+# Remove rclone config and parent mnt directory
+rm -rf ~/.config/rclone 2>/dev/null || true
+rmdir "$HOME/mnt" 2>/dev/null || true
+echo "✅ rclone mounts and configurations cleaned up."
+
 # --- 2. Cleanup Home Manager ---
 echo "🧹 Cleaning up Home Manager profiles..."
 if command -v nix-env &> /dev/null; then

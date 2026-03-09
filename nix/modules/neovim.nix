@@ -147,7 +147,8 @@
 
       -- [Trouble 설정]
       safe_require("trouble", function(trouble)
-        vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>")
+        trouble.setup({})
+        vim.keymap.set("n", "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", { desc = "Toggle Trouble (Diagnostics)" })
       end)
 
       -- [ToggleTerm 설정]
@@ -217,8 +218,7 @@
               ["v"] = { char = "", hl_group = "ObsidianCheck" }, -- v는 체크만 (취소선 X)
             },
           },
-          -- 체크박스 순서 (토글 시 순서: 빈칸 -> v -> x)
-          checkbox_order = { " ", "v", "x" },
+          -- 체크박스 설정 (시각적 효과만 정의, 순서는 전역으로 강제하지 않음)
           -- 경고 제거 및 새 명령 체계 활성화
           legacy_commands = false,
         })
@@ -229,10 +229,32 @@
         vim.keymap.set("n", "<leader>ot", "<cmd>Obsidian today<cr>", { desc = "Today's Obsidian note" })
         vim.keymap.set("n", "<leader>ob", "<cmd>Obsidian backlinks<cr>", { desc = "Show Backlinks" })
         
-        -- 체크박스 토글 (표준 키맵 방식)
+        -- [체크박스 토글 기능 분리]
+        -- 1. <leader>ch: 기존 방식 (Obsidian 기본값 전체 순환: >, !, ~ 등 포함)
         vim.keymap.set("n", "<leader>ch", function()
           return require("obsidian").util.toggle_checkbox()
-        end, { desc = "Toggle checkbox" })
+        end, { desc = "Toggle Checkbox (Default)" })
+
+        -- 2. <leader>ck: 요청하신 방식 (v와 x만 순환: [ ] -> [v] -> [x])
+        vim.keymap.set("n", "<leader>ck", function()
+          local line = vim.api.nvim_get_current_line()
+          -- 패턴: 줄 시작 + 공백(옵션) + "- [" + 한 글자 + "]"
+          local new_line = line:gsub("^(%s*-%s%[)(.?)(%])", function(prefix, char, suffix)
+            local next_char = " "
+            if char == " " then next_char = "v"
+            elseif char == "v" then next_char = "x"
+            end
+            return prefix .. next_char .. suffix
+          end)
+          
+          if line ~= new_line then
+            vim.api.nvim_set_current_line(new_line)
+          else
+            -- 체크박스가 없는 줄이면 새로 생성
+            new_line = line:gsub("^%s*", "%0- [ ] ")
+            vim.api.nvim_set_current_line(new_line)
+          end
+        end, { desc = "Toggle Checkbox (v/x Only)" })
 
         -- "gf" 기능 강화
         vim.keymap.set("n", "gf", function()

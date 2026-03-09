@@ -178,6 +178,20 @@
         vim.keymap.set("n", "<leader>gg", "<cmd>LazyGit<cr>", { desc = "Open LazyGit" })
       end)
 
+      -- [Obsidian.nvim 추가 스타일 및 하이라이트]
+      -- x (취소선 + 아이콘) / v (아이콘만)
+      vim.api.nvim_set_hl(0, "ObsidianDone", { strikethrough = true, fg = "#565f89" })
+      vim.api.nvim_set_hl(0, "ObsidianCheck", { strikethrough = false, fg = "#89ddff" })
+      vim.api.nvim_set_hl(0, "ObsidianDoneLine", { strikethrough = true, fg = "#565f89" })
+
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "markdown",
+        callback = function()
+          -- - [x] 로 시작하는 줄 전체에 취소선 적용 (이미 있으면 무시)
+          vim.fn.matchadd("ObsidianDoneLine", [[^\s*-\s\[x\].*$]])
+        end,
+      })
+
       -- [Obsidian.nvim 설정]
       safe_require("obsidian", function(obsidian)
         obsidian.setup({
@@ -195,15 +209,16 @@
           ui = {
             enable = true,
             update_debounce = 200,
+            concealcursor = "nv", -- 노멀, 비주얼 모드에서 아이콘 유지
+            -- 체크박스 시각적 설정은 ui 내부에 있어야 함
+            checkboxes = {
+              [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
+              ["x"] = { char = "", hl_group = "ObsidianDone" },
+              ["v"] = { char = "", hl_group = "ObsidianCheck" }, -- v는 체크만 (취소선 X)
+            },
           },
-          -- 체크박스 설정 (v를 추가하여 - [v] 도 지원)
-          checkboxes = {
-            [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-            ["x"] = { char = "", hl_group = "ObsidianDone" },
-            ["v"] = { char = "", hl_group = "ObsidianDone" },
-          },
-          -- 체크박스 순서 (토글 시 순서)
-          checkbox_order = { " ", "x" },
+          -- 체크박스 순서 (토글 시 순서: 빈칸 -> v -> x)
+          checkbox_order = { " ", "v", "x" },
           -- 경고 제거 및 새 명령 체계 활성화
           legacy_commands = false,
         })

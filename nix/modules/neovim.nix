@@ -65,34 +65,34 @@
       vim.opt.smartcase = true      -- Smart case (override ignorecase if uppercase used)
       vim.g.mapleader = " "         
       
-      -- 클립보드: 로컬일 때만 unnamedplus 사용 (SSH 에러 방지)
-      if not is_ssh then
-        vim.opt.clipboard = "unnamedplus"
+      -- 클립보드 설정
+      vim.opt.clipboard = "unnamedplus"
+      
+      -- SSH 환경을 위한 OSC 52 클립보드 프로바이더 설정
+      -- 네오비임 내장 기능을 사용하여 외부 도구(xclip 등) 없이 복사 가능하게 함
+      if is_ssh then
+        vim.g.clipboard = {
+          name = 'OSC 52',
+          copy = {
+            ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+            ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+          },
+          paste = {
+            ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+            ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+          },
+        }
       end
       
       vim.opt.termguicolors = true
       vim.opt.conceallevel = 2      -- Obsidian.nvim UI 기능을 위해 필요
       
-      -- [OSC 52 클립보드 설정]
-      -- nvim-osc52 플러그인을 사용하여 모든 환경(특히 SSH)에서 클립보드 동기화
+      -- [OSC 52 플러그인 설정 (하위 호환 및 보조용)]
       safe_require("osc52", function(osc52)
         osc52.setup({
-          max_length = 0,      -- 텍스트 길이 제한 없음
-          silent = true,       -- 복사 메시지 숨김 (0 character copied 방지)
+          max_length = 0,
+          silent = true,
           trim = false,
-        })
-        
-        -- yank 이벤트를 감지하여 OSC 52 신호 전송
-        local function copy()
-          -- 'y' 연산자가 사용되었을 때만 OSC 52로 전송
-          if vim.v.event.operator == "y" then
-            -- 익명 레지스터(") 또는 클립보드 레지스터(+) 내용을 복사
-            osc52.copy_register(vim.v.event.regname == "" and "\"" or vim.v.event.regname)
-          end
-        end
-        
-        vim.api.nvim_create_autocmd('TextYankPost', {
-          callback = copy,
         })
       end)
 

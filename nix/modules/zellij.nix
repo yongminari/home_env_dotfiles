@@ -69,7 +69,8 @@
 
       mouse_mode = true;
       copy_on_select = true;
-      copy_command = if config.targets.genericLinux.enable then "wl-copy" else "";
+      # X11과 Wayland 모두 지원하기 위해, wl-copy가 작동하지 않으면 xclip을 쓰도록 설정
+      copy_command = "bash -c 'if [ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-copy >/dev/null; then wl-copy; else xclip -selection clipboard; fi'";
     };
   };
 }

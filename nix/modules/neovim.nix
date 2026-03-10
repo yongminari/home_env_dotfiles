@@ -65,23 +65,30 @@
       vim.g.mapleader = " "         
       
       -- [클립보드 설정]
-      -- SSH 환경에서도 'No clipboard tool' 에러를 방지하고 기능을 활성화하기 위해
-      -- Neovim 0.10+ 내장 OSC 52 클립보드 프로바이더를 사용합니다.
-      if is_ssh then
-        vim.g.clipboard = {
-          name = 'OSC 52',
-          copy = {
-            ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-            ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-          },
-          paste = {
-            ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-            ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-          },
-        }
-      end
-
+      -- 1. Neovim 0.10+ 내장 OSC 52 기능을 기본으로 사용 (로컬/원격 공용)
       vim.opt.clipboard = "unnamedplus"
+
+      -- 2. Zellij 환경에서 OSC 52가 차단되는 문제 해결 (Passthrough)
+      -- 복사가 일어날 때마다 Zellij가 Ghostty로 직접 신호를 보내도록 처리합니다.
+      if os.getenv("ZELLIJ") ~= nil or os.getenv("SSH_CONNECTION") ~= nil then
+        vim.api.nvim_create_autocmd("TextYankPost", {
+          callback = function()
+            if vim.v.event.operator == "y" then
+              local content = table.concat(vim.v.event.regcontents, "\n")
+              local base64 = vim.base64.encode(content)
+              local osc52 = string.format("\x1b]52;c;%s\x07", base64)
+              
+              if os.getenv("ZELLIJ") ~= nil then
+                -- Zellij Passthrough 시퀀스 적용
+                osc52 = "\x1bPzellij;" .. osc52 .. "\x1b\\"
+              end
+              
+              -- stderr를 통해 터미널에 직접 전송 (가장 확실한 방법)
+              vim.fn.chansend(vim.v.stderr, osc52)
+            end
+          end,
+        })
+      end
       
       vim.opt.termguicolors = true
       vim.opt.conceallevel = 2      -- Obsidian.nvim UI 기능을 위해 필요

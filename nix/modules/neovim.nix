@@ -66,38 +66,45 @@
       vim.g.mapleader = " "         
       
       -- [클립보드 설정]
-      if is_ssh then
-        -- SSH 환경: 'No clipboard tool' 에러 방지를 위해 기본 클립보드 기능은 끄고
-        -- 아래의 OSC 52 자동 명령(autocmd)으로만 복사 처리
-        vim.opt.clipboard = ""
-      else
-        -- 로컬 환경: 시스템 클립보드 도구(xclip 등) 사용
-        vim.opt.clipboard = "unnamedplus"
-      end
+      -- SSH 환경에서도 'No clipboard tool' 에러를 방지하고 기능을 활성화하기 위해
+      -- nvim-osc52를 활용한 가상 클립보드 프로바이더를 직접 정의합니다.
+      safe_require("osc52", function(osc52)
+        osc52.setup({
+          max_length = 0,
+          silent = true,
+          trim = false,
+        })
+
+        if is_ssh then
+          -- 네오비임에게 시스템 도구 대신 이 Lua 함수를 클립보드 도구로 쓰라고 명령
+          vim.g.clipboard = {
+            name = 'osc52-custom',
+            copy = {
+              ['+'] = function(lines) osc52.copy(table.concat(lines, "\n")) end,
+              ['*'] = function(lines) osc52.copy(table.concat(lines, "\n")) end,
+            },
+            paste = {
+              ['+'] = function() return {vim.fn.getreg('+'), vim.fn.getregtype('+')} end,
+              ['*'] = function() return {vim.fn.getreg('*'), vim.fn.getregtype('*')} end,
+            },
+          }
+        end
+      end)
+
+      vim.opt.clipboard = "unnamedplus"
       
       vim.opt.termguicolors = true
       vim.opt.conceallevel = 2      -- Obsidian.nvim UI 기능을 위해 필요
       
-      -- [OSC 52 설정]
-      -- nvim-osc52 플러그인을 사용하여 SSH/Zellij 환경에서 클립보드 동기화
-      safe_require("osc52", function(osc52)
-        osc52.setup({
-          max_length = 0,
-          silent = true, -- '0 character copied' 메시지 방지
-          trim = false,
-        })
-        
-        -- 모든 yank(y, yy, yiw 등) 발생 시 자동으로 OSC 52 전송
-        vim.api.nvim_create_autocmd("TextYankPost", {
-          callback = function()
-            -- operator가 'y'(yank)일 때만 동작
-            if vim.v.event.operator == "y" then
-              -- 사용된 레지스터에 상관없이 터미널로 복사 신호 전송
-              osc52.copy_register(vim.v.event.regname == "" and "\"" or vim.v.event.regname)
-            end
-          end,
-        })
-      end)
+      -- [기타 OSC 52 보조 설정]
+      -- (프로바이더가 작동하지 않을 경우를 대비한 백업 자동 명령)
+      vim.api.nvim_create_autocmd("TextYankPost", {
+        callback = function()
+          if vim.v.event.operator == "y" and is_ssh then
+            pcall(require('osc52').copy_register, vim.v.event.regname == "" and "\"" or vim.v.event.regname)
+          end
+        end,
+      })
 
       vim.opt.laststatus = 3        -- 전역 상태줄 (Global Statusline)
       vim.opt.cmdheight = 1         -- 커맨드 라인 높이 유지

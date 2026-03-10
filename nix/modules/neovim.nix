@@ -65,34 +65,37 @@
       vim.opt.smartcase = true      -- Smart case (override ignorecase if uppercase used)
       vim.g.mapleader = " "         
       
-      -- 클립보드 설정
-      vim.opt.clipboard = "unnamedplus"
-      
-      -- SSH 환경을 위한 OSC 52 클립보드 프로바이더 설정
-      -- 네오비임 내장 기능을 사용하여 외부 도구(xclip 등) 없이 복사 가능하게 함
+      -- [클립보드 설정]
       if is_ssh then
-        vim.g.clipboard = {
-          name = 'OSC 52',
-          copy = {
-            ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-            ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
-          },
-          paste = {
-            ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-            ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
-          },
-        }
+        -- SSH 환경: 'No clipboard tool' 에러 방지를 위해 기본 클립보드 기능은 끄고
+        -- 아래의 OSC 52 자동 명령(autocmd)으로만 복사 처리
+        vim.opt.clipboard = ""
+      else
+        -- 로컬 환경: 시스템 클립보드 도구(xclip 등) 사용
+        vim.opt.clipboard = "unnamedplus"
       end
       
       vim.opt.termguicolors = true
       vim.opt.conceallevel = 2      -- Obsidian.nvim UI 기능을 위해 필요
       
-      -- [OSC 52 플러그인 설정 (하위 호환 및 보조용)]
+      -- [OSC 52 설정]
+      -- nvim-osc52 플러그인을 사용하여 SSH/Zellij 환경에서 클립보드 동기화
       safe_require("osc52", function(osc52)
         osc52.setup({
           max_length = 0,
-          silent = true,
+          silent = true, -- '0 character copied' 메시지 방지
           trim = false,
+        })
+        
+        -- 모든 yank(y, yy, yiw 등) 발생 시 자동으로 OSC 52 전송
+        vim.api.nvim_create_autocmd("TextYankPost", {
+          callback = function()
+            -- operator가 'y'(yank)일 때만 동작
+            if vim.v.event.operator == "y" then
+              -- 사용된 레지스터에 상관없이 터미널로 복사 신호 전송
+              osc52.copy_register(vim.v.event.regname == "" and "\"" or vim.v.event.regname)
+            end
+          end,
         })
       end)
 

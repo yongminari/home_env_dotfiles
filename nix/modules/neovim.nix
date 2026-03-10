@@ -54,6 +54,8 @@
       end
 
       -- [기본 옵션]
+      local is_ssh = os.getenv("SSH_CONNECTION") ~= nil
+
       vim.opt.number = true
       vim.opt.relativenumber = true
       vim.opt.tabstop = 4
@@ -62,23 +64,30 @@
       vim.opt.ignorecase = true     -- Case insensitive searching
       vim.opt.smartcase = true      -- Smart case (override ignorecase if uppercase used)
       vim.g.mapleader = " "         
-      vim.opt.clipboard = "unnamedplus"
+      
+      -- 클립보드: 로컬일 때만 unnamedplus 사용 (SSH 에러 방지)
+      if not is_ssh then
+        vim.opt.clipboard = "unnamedplus"
+      end
+      
       vim.opt.termguicolors = true
       vim.opt.conceallevel = 2      -- Obsidian.nvim UI 기능을 위해 필요
       
       -- [OSC 52 클립보드 설정]
-      -- nvim-osc52 플러그인을 사용하여 모든 환경에서 클립보드 동기화
+      -- nvim-osc52 플러그인을 사용하여 모든 환경(특히 SSH)에서 클립보드 동기화
       safe_require("osc52", function(osc52)
         osc52.setup({
           max_length = 0,      -- 텍스트 길이 제한 없음
-          silent = false,      -- 복사 시 메시지 표시 여부
-          trim = false,        -- 텍스트 앞뒤 공백 제거 여부
+          silent = true,       -- 복사 메시지 숨김 (0 character copied 방지)
+          trim = false,
         })
         
         -- yank 이벤트를 감지하여 OSC 52 신호 전송
         local function copy()
-          if vim.v.event.operator == "y" and vim.v.event.regname == "" then
-            osc52.copy_register("+")
+          -- 'y' 연산자가 사용되었을 때만 OSC 52로 전송
+          if vim.v.event.operator == "y" then
+            -- 익명 레지스터(") 또는 클립보드 레지스터(+) 내용을 복사
+            osc52.copy_register(vim.v.event.regname == "" and "\"" or vim.v.event.regname)
           end
         end
         

@@ -65,30 +65,35 @@
       vim.g.mapleader = " "         
       
       -- [클립보드 설정]
-      -- 1. Neovim 0.10+ 내장 OSC 52 기능을 기본으로 사용 (로컬/원격 공용)
+      -- 1. 기본 시스템 클립보드 사용 (로컬에서는 xclip/wl-copy 자동 감지)
       vim.opt.clipboard = "unnamedplus"
 
-      -- 2. Zellij 환경에서 OSC 52가 차단되는 문제 해결 (Passthrough)
-      -- 복사가 일어날 때마다 Zellij가 Ghostty로 직접 신호를 보내도록 처리합니다.
-      if os.getenv("ZELLIJ") ~= nil or os.getenv("SSH_CONNECTION") ~= nil then
-        vim.api.nvim_create_autocmd("TextYankPost", {
-          callback = function()
-            if vim.v.event.operator == "y" then
-              local content = table.concat(vim.v.event.regcontents, "\n")
-              local base64 = vim.base64.encode(content)
-              local osc52 = string.format("\x1b]52;c;%s\x07", base64)
-              
-              if os.getenv("ZELLIJ") ~= nil then
-                -- Zellij Passthrough 시퀀스 적용
-                osc52 = "\x1bPzellij;" .. osc52 .. "\x1b\\"
-              end
-              
-              -- stderr를 통해 터미널에 직접 전송 (가장 확실한 방법)
-              vim.fn.chansend(vim.v.stderr, osc52)
-            end
-          end,
-        })
-      end
+      -- 2. Zellij + Ghostty를 위한 OSC 52 사이드카 (복사 보조)
+      -- Neovim이 시스템 클립보드 도구를 찾지 못하는 환경(SSH 등)에서도 
+      -- 터미널의 OSC 52 기능을 강제로 호출하여 로컬 클립보드로 텍스트를 보냅니다.
+      vim.api.nvim_create_autocmd("TextYankPost", {
+        callback = function()
+          -- 'y' (yank) 연산자가 수행되었을 때만 작동
+          if vim.v.event.operator == "y" then
+            local lines = vim.v.event.regcontents
+            local content = table.concat(lines, "\n")
+            
+            -- Neovim 0.10+ 내장 base64 인코딩
+            local ok, base64 = pcall(function() return vim.base64.encode(content) end)
+            if not ok then return end
+            
+            local osc52 = string.format("\x1b]52;c;%s\x07", base64)
+            
+            -- Zellij가 중간에 있을 때를 대비해 패스스루 시퀀스로 감싸서 보냅니다.
+            -- 이 시퀀스는 Zellij를 통과해 Ghostty에 직접 도달합니다.
+            local wrapped = string.format("\x1bPzellij;%s\x1b\\", osc52)
+            
+            -- 터미널에 직접 이스케이프 시퀀스 출력
+            io.stderr:write(wrapped)
+            io.stderr:flush()
+          end
+        end,
+      })
       
       vim.opt.termguicolors = true
       vim.opt.conceallevel = 2      -- Obsidian.nvim UI 기능을 위해 필요
@@ -227,18 +232,17 @@
               enable = true,
               update_debounce = 200,
               concealcursor = "nv",
-              -- [중요] 체크박스 시각적 아이콘 설정은 ui 내부에 있어야 렌더링됨
-              checkboxes = {
-                [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
-                ["x"] = { char = "", hl_group = "ObsidianDone" },
-                ["v"] = { char = "", hl_group = "ObsidianCheck" },
-              },
             },
-            -- 체크박스 토글 순서 (ui 외부)
-            -- [참고] 여기서 order를 설정하면 leader ch가 영향을 받으므로 주석 처리하거나 제거
-            -- checkbox = {
-            --   order = { " ", "v", "x" },
-            -- },
+            -- [중요] 체크박스 설정이 ui 외부로 이동됨 (최신 버전 대응)
+            checkboxes = {
+              [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
+              ["x"] = { char = "", hl_group = "ObsidianDone" },
+              ["v"] = { char = "", hl_group = "ObsidianCheck" },
+            },
+            -- 체크박스 토글 순서
+            checkbox = {
+              order = { " ", "v", "x" },
+            },
             legacy_commands = false,
           })
         else

@@ -65,31 +65,22 @@
       vim.g.mapleader = " "         
       
       -- [클립보드 설정]
-      -- SSH 환경에서 OSC 52를 통한 클립보드 공유 (Ghostty + Zellij 지원)
-      -- Neovim 0.10+의 내장 기능을 활용하여 로컬 클립보드로 텍스트를 전송합니다.
+      -- SSH 환경에서 Neovim 0.10+ 내장 OSC 52 클립보드 공급자 사용
       if os.getenv("SSH_CONNECTION") ~= nil then
-        local function copy(lines, _)
-          local content = table.concat(lines, "\n")
-          local base64 = vim.base64.encode(content)
-          -- 로컬에서 Zellij를 실행 중이므로, 원격에 ZELLIJ 변수가 없더라도 
-          -- 무조건 Zellij 패스스루 시퀀스로 감싸서 보냅니다.
-          local osc52 = string.format("\x1bPzellij;\x1b]52;c;%s\x07\x1b\\", base64)
-          
-          io.stderr:write(osc52)
-          io.stderr:flush()
-        end
-
         vim.g.clipboard = {
-          name = 'osc52-ssh',
-          copy = { ['+'] = copy, ['*'] = copy },
+          name = 'osc52',
+          copy = {
+            ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+            ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+          },
           paste = {
-            ['+'] = function() return {vim.fn.getreg('+'), vim.fn.getregtype('+')} end,
-            ['*'] = function() return {vim.fn.getreg('*'), vim.fn.getregtype('*')} end,
+            ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
+            ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
           },
         }
       end
 
-      -- 공급자 정의(vim.g.clipboard) 후 클립보드 사용 설정 (순서가 매우 중요합니다)
+      -- 공급자 정의(vim.g.clipboard) 후 클립보드 사용 설정
       vim.opt.clipboard = "unnamedplus"
 
       vim.opt.termguicolors = true

@@ -27,10 +27,10 @@
         fi
 
         # Zellij/SSH helpers
-        if [[ "$TERM" == "zellij" ]]; then
-          export TERM=xterm-256color
-          export ZELLIJ_SKIP_AUTOSTART=true
-        fi
+        # if [[ "$TERM" == "zellij" ]]; then
+        #   export TERM=xterm-256color
+        #   export ZELLIJ_SKIP_AUTOSTART=true
+        # fi
 
         function is_ssh() {
           [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] || \

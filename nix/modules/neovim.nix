@@ -65,36 +65,33 @@
       vim.g.mapleader = " "         
       
       -- [클립보드 설정]
-      -- 1. 기본 시스템 클립보드 사용 (로컬에서는 xclip/wl-copy 자동 감지)
+      -- SSH 환경에서 OSC 52를 통한 클립보드 공유 (Ghostty + Zellij 지원)
+      -- Neovim 0.10+의 내장 기능을 활용하여 로컬 클립보드로 텍스트를 전송합니다.
+      if os.getenv("SSH_CONNECTION") ~= nil then
+        local function copy(lines, _)
+          local content = table.concat(lines, "\n")
+          local base64 = vim.base64.encode(content)
+          -- 로컬에서 Zellij를 실행 중이므로, 원격에 ZELLIJ 변수가 없더라도 
+          -- 무조건 Zellij 패스스루 시퀀스로 감싸서 보냅니다.
+          local osc52 = string.format("\x1bPzellij;\x1b]52;c;%s\x07\x1b\\", base64)
+          
+          io.stderr:write(osc52)
+          io.stderr:flush()
+        end
+
+        vim.g.clipboard = {
+          name = 'osc52-ssh',
+          copy = { ['+'] = copy, ['*'] = copy },
+          paste = {
+            ['+'] = function() return {vim.fn.getreg('+'), vim.fn.getregtype('+')} end,
+            ['*'] = function() return {vim.fn.getreg('*'), vim.fn.getregtype('*')} end,
+          },
+        }
+      end
+
+      -- 공급자 정의(vim.g.clipboard) 후 클립보드 사용 설정 (순서가 매우 중요합니다)
       vim.opt.clipboard = "unnamedplus"
 
-      -- 2. Zellij + Ghostty를 위한 OSC 52 사이드카 (복사 보조)
-      -- Neovim이 시스템 클립보드 도구를 찾지 못하는 환경(SSH 등)에서도 
-      -- 터미널의 OSC 52 기능을 강제로 호출하여 로컬 클립보드로 텍스트를 보냅니다.
-      vim.api.nvim_create_autocmd("TextYankPost", {
-        callback = function()
-          -- 'y' (yank) 연산자가 수행되었을 때만 작동
-          if vim.v.event.operator == "y" then
-            local lines = vim.v.event.regcontents
-            local content = table.concat(lines, "\n")
-            
-            -- Neovim 0.10+ 내장 base64 인코딩
-            local ok, base64 = pcall(function() return vim.base64.encode(content) end)
-            if not ok then return end
-            
-            local osc52 = string.format("\x1b]52;c;%s\x07", base64)
-            
-            -- Zellij가 중간에 있을 때를 대비해 패스스루 시퀀스로 감싸서 보냅니다.
-            -- 이 시퀀스는 Zellij를 통과해 Ghostty에 직접 도달합니다.
-            local wrapped = string.format("\x1bPzellij;%s\x1b\\", osc52)
-            
-            -- 터미널에 직접 이스케이프 시퀀스 출력
-            io.stderr:write(wrapped)
-            io.stderr:flush()
-          end
-        end,
-      })
-      
       vim.opt.termguicolors = true
       vim.opt.conceallevel = 2      -- Obsidian.nvim UI 기능을 위해 필요
 

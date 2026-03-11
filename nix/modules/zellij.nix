@@ -69,8 +69,8 @@
 
       mouse_mode = true;
       copy_on_select = true;
-      # X11과 Wayland 모두 지원하기 위해, wl-copy가 작동하지 않으면 xclip을 쓰도록 설정
-      copy_command = "bash -c 'if [ \"$XDG_SESSION_TYPE\" = \"wayland\" ] && command -v wl-copy >/dev/null; then wl-copy; else xclip -selection clipboard; fi'";
+      # Wayland 환경에서 가장 확실한 wl-copy를 직접 사용합니다.
+      copy_command = "wl-copy";
     };
   };
 }

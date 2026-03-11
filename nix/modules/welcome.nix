@@ -29,13 +29,13 @@ let
         # 상단 테두리 (대시 60개)
         echo " ╭────────────────────────────────────────────────────────────╮"
         printf " │  ███                  %-36s │\n" "$os_name"
-        printf " │ ░░░███                HOST      : %-24s │\n" "$host_name"
-        printf " │   ░░░███              SESSION   : %-24s │\n" "$session_type"
-        printf " │     ░░░███            Shell     : %-24s │\n" "$shell_name"
-        printf " │      ███░             Kernel    : %-24s │\n" "$kernel_info"
-        printf " │    ███░               Date      : %-24s │\n" "$current_date"
-        printf " │  ███░      █████████  Who       : %-24s │\n" "$current_user"
-        echo " │ ░░░       ░░░░░░░░░                                        │"
+        printf " │ ░░░███                %-36s │\n" ""
+        printf " │   ░░░███              HOST      : %-24s │\n" "$host_name"
+        printf " │     ░░░███            SESSION   : %-24s │\n" "$session_type"
+        printf " │      ███░             Shell     : %-24s │\n" "$shell_name"
+        printf " │    ███░               Kernel    : %-24s │\n" "$kernel_info"
+        printf " │  ███░      █████████  Date      : %-24s │\n" "$current_date"
+        printf " │ ░░░       ░░░░░░░░░   Who       : %-24s │\n" "$current_user"
         # 하단 테두리 (대시 60개)
         echo " ╰────────────────────────────────────────────────────────────╯"
       } | $LOLCAT

@@ -31,50 +31,68 @@
         #   export TERM=xterm-256color
         #   export ZELLIJ_SKIP_AUTOSTART=true
         # fi
+# Environment Check Functions
+function is_ssh() {
+  [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]]
+}
 
-        function is_ssh() {
-          [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] || \
-          [[ "$(ps -o comm= -p $PPID 2>/dev/null)" == "sshd" ]]
-        }
+function is_docker() {
+  [[ -e /.dockerenv ]] || grep -q "docker" /proc/1/cgroup 2>/dev/null
+}
 
-        if is_ssh; then
-          export STARSHIP_CONFIG="$HOME/.config/starship-ssh.toml"
-        fi
+# SSH or Docker specific settings
+if is_ssh || is_docker; then
+  # 원격지 느낌을 주기 위해 별도의 Starship 설정을 사용하거나 환경 변수를 설정할 수 있습니다.
+  export STARSHIP_CONFIG="$HOME/.config/starship-ssh.toml"
+fi
 
-        # [Welcome Message]
-        if [[ $- == *i* ]]; then
-          welcome-msg
-        fi
-      '')
-      ''
-        # External Tools (fnm, pyenv)
-        if command -v fnm &>/dev/null; then
-          eval "$(fnm env --use-on-cd --shell zsh)"
-        fi
+# [Welcome Message]
+if [[ $- == *i* ]]; then
+  welcome-msg
+fi
+'')
+''
+# External Tools (fnm, pyenv)
+if command -v fnm &>/dev/null; then
+  eval "$(fnm env --use-on-cd --shell zsh)"
+fi
 
-        if command -v pyenv &>/dev/null; then
-          eval "$(pyenv init -)"
-          eval "$(pyenv virtualenv-init -)"
-        fi
+if command -v pyenv &>/dev/null; then
+  eval "$(pyenv init -)"
+  eval "$(pyenv virtualenv-init -)"
+fi
 
-        export PATH=$HOME/.local/bin:$PATH
+export PATH=$HOME/.local/bin:$PATH
 
-        # Keybindings
-        bindkey '^[[A' history-substring-search-up
-        bindkey '^[[B' history-substring-search-down
-        bindkey '^[OA' history-substring-search-up
-        bindkey '^[OB' history-substring-search-down
+# Keybindings
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey '^[OA' history-substring-search-up
+bindkey '^[OB' history-substring-search-down
 
-        # VSCode check
-        function is_vscode() {
-          [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TERM_PROGRAM" == "vscode" ]]
-        }
+# VSCode check
+function is_vscode() {
+  [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TERM_PROGRAM" == "vscode" ]]
+}
 
-        # Auto-start Zellij
-        if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && [[ -z "$ZELLIJ_SKIP_AUTOSTART" ]] && ! is_vscode && ! is_ssh; then
-          exec zellij
-        fi
-      ''
+# Auto-start Zellij with environment-aware config
+if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && ! is_vscode; then
+  if is_ssh || is_docker; then
+    exec zellij --config "$HOME/.config/zellij/remote.kdl"
+  else
+    exec zellij
+  fi
+fi
+
+# Wrapper function for manual execution
+function zellij() {
+  if is_ssh || is_docker; then
+    command zellij --config "$HOME/.config/zellij/remote.kdl" "$@"
+  else
+    command zellij "$@"
+  fi
+}
+''
     ];
 
     oh-my-zsh = {

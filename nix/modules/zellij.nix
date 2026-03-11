@@ -9,7 +9,6 @@ let
     mirror_session_to_terminal_title true
     mouse_mode true
     copy_on_select true
-    copy_command "wl-copy"
 
     keybinds {
       // 1. 잠금 키 설정

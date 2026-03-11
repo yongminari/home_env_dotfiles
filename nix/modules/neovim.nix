@@ -52,9 +52,12 @@
         if ok then config_fn(mod) end
       end
 
-      -- [기본 옵션]
-      local is_ssh = os.getenv("SSH_CONNECTION") ~= nil
+      -- [환경 감지]
+      local is_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("SSH_CLIENT") ~= nil or os.getenv("SSH_TTY") ~= nil
+      local is_multiplexer = os.getenv("ZELLIJ") ~= nil or os.getenv("TMUX") ~= nil
+      local is_remote = is_ssh or is_multiplexer
 
+      -- [기본 옵션]
       vim.opt.number = true
       vim.opt.relativenumber = true
       vim.opt.tabstop = 4
@@ -65,8 +68,8 @@
       vim.g.mapleader = " "         
       
       -- [클립보드 설정]
-      -- SSH 환경에서 Neovim 0.10+ 내장 OSC 52 클립보드 공급자 사용
-      if os.getenv("SSH_CONNECTION") ~= nil then
+      -- 원격 환경이나 멀티플렉서 내부에서는 Neovim 0.10+ 내장 OSC 52 클립보드 공급자 사용
+      if is_remote then
         vim.g.clipboard = {
           name = 'osc52',
           copy = {
@@ -97,15 +100,14 @@
 
       -- [테마 설정]
       safe_require("tokyonight", function(tokyonight)
-        local is_ssh = os.getenv("SSH_CONNECTION") ~= nil
-        local theme_style = is_ssh and "day" or "moon"
+        local theme_style = is_remote and "day" or "moon"
         
         tokyonight.setup({
-          style = theme_style, -- SSH면 day (밝음), 로컬이면 moon (어둠)
-          transparent = not is_ssh, -- SSH일 때는 배경색을 꽉 채워서 더 확실하게 구분
+          style = theme_style, -- SSH/Remote면 day (밝음), 로컬이면 moon (어둠)
+          transparent = not is_remote, -- SSH일 때는 배경색을 꽉 채워서 더 확실하게 구분
           styles = {
-            sidebars = is_ssh and "dark" or "transparent",
-            floats = is_ssh and "dark" or "transparent",
+            sidebars = is_remote and "dark" or "transparent",
+            floats = is_remote and "dark" or "transparent",
           },
         })
         vim.cmd.colorscheme "tokyonight"

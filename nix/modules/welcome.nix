@@ -27,17 +27,16 @@ let
         current_user=$(whoami)
 
         # 상단 테두리 (대시 60개)
-        echo " ╭────────────────────────────────────────────────────────────╮"
-        printf " │  ███                  %-36s │\n" "$os_name"
-        printf " │ ░░░███                %-36s │\n" ""
-        printf " │   ░░░███              HOST      : %-24s │\n" "$host_name"
-        printf " │     ░░░███            SESSION   : %-24s │\n" "$session_type"
-        printf " │      ███░             Shell     : %-24s │\n" "$shell_name"
-        printf " │    ███░               Kernel    : %-24s │\n" "$kernel_info"
-        printf " │  ███░      █████████  Date      : %-24s │\n" "$current_date"
-        printf " │ ░░░       ░░░░░░░░░   Who       : %-24s │\n" "$current_user"
-        # 하단 테두리 (대시 60개)
-        echo " ╰────────────────────────────────────────────────────────────╯"
+        echo   " ╭────────────────────────────────────────────────────────────────────╮"
+        printf " │  ███                  %-44s │\n" "$os_name"
+        printf " │ ░░░███                %-44s │\n" ""
+        printf " │   ░░░███              HOST      : %-32s │\n" "$host_name"
+        printf " │     ░░░███            SESSION   : %-32s │\n" "$session_type"
+        printf " │      ███░             Shell     : %-32s │\n" "$shell_name"
+        printf " │    ███░               Kernel    : %-32s │\n" "$kernel_info"
+        printf " │  ███░      █████████  Date      : %-32s │\n" "$current_date"
+        printf " │ ░░░       ░░░░░░░░░   Who       : %-32s │\n" "$current_user"
+        echo   " ╰────────────────────────────────────────────────────────────────────╯"
       } | $LOLCAT
 
       echo -e "\nWelcome back to \x1b[94mShell\x1b[0m, \x1b[1m$USER!\x1b[0m"

@@ -23,7 +23,7 @@
 
     # [Shell Integration]
     # 쉘 통합 기능은 켜두되, 커서를 얇게 바꾸지 못하게 막음 (no-cursor)
-    shell-integration = auto
+    shell-integration = detect
     shell-integration-features = no-cursor
 
     # [Clipboard] 원격 서버(SSH)에서 클립보드 복사(OSC 52)를 허용함

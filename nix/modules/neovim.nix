@@ -60,7 +60,7 @@
       
       -- 테마 설정용
       local theme_style = is_remote and "day" or "moon"
-      local is_transparent = true
+      local is_transparent = not is_remote -- 리모트(day)는 확실한 구분을 위해 불투명하게 설정
 
       -- [기본 옵션]
       vim.opt.number = true

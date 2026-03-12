@@ -54,8 +54,13 @@
 
       -- [환경 감지]
       local is_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("SSH_CLIENT") ~= nil or os.getenv("SSH_TTY") ~= nil
+      local is_docker = vim.fn.filereadable("/.dockerenv") == 1 or os.getenv("DOCKER_CONTAINER") ~= nil
+      local is_remote = is_ssh or is_docker  -- 진짜 원격 세션 여부
       local is_multiplexer = os.getenv("ZELLIJ") ~= nil or os.getenv("TMUX") ~= nil
-      local is_remote = is_ssh or is_multiplexer
+      
+      -- 테마 설정용
+      local theme_style = is_remote and "day" or "moon"
+      local is_transparent = true
 
       -- [기본 옵션]
       vim.opt.number = true
@@ -69,7 +74,7 @@
       
       -- [클립보드 설정]
       -- 원격 환경이나 멀티플렉서 내부에서는 Neovim 0.10+ 내장 OSC 52 클립보드 공급자 사용
-      if is_remote then
+      if is_remote or is_multiplexer then
         vim.g.clipboard = {
           name = 'osc52',
           copy = {
@@ -100,11 +105,9 @@
 
       -- [테마 설정]
       safe_require("tokyonight", function(tokyonight)
-        local theme_style = is_remote and "day" or "moon"
-        
         tokyonight.setup({
           style = theme_style, -- SSH/Remote면 day (밝음), 로컬이면 moon (어둠)
-          transparent = not is_remote, -- SSH일 때는 배경색을 꽉 채워서 더 확실하게 구분
+          transparent = is_transparent, -- 배경 투명도
           styles = {
             sidebars = is_remote and "dark" or "transparent",
             floats = is_remote and "dark" or "transparent",

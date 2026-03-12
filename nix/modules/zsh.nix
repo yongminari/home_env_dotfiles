@@ -100,11 +100,6 @@ function zellij() {
       plugins = [ "git" "virtualenv" "history-substring-search" ];
     };
 
-    initExtra = ''
-      # sops-nix (Secrets management) 를 위한 SSH 키 경로 설정
-      export SOPS_AGE_SSH_PRIVATE_KEY_FILE=~/.ssh/id_ed25519
-    '';
-
     shellAliases = {
       ls = "eza";
       ll = "eza -l --icons --git -a";

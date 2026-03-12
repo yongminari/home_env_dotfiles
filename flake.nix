@@ -10,20 +10,13 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # sops-nix (Secrets management)
-    sops-nix.url = "github:Mic92/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, home-manager, sops-nix, ... }:
+  outputs = { self, nixpkgs, home-manager, ... }:
     let
       mkConfig = system: home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};
-        modules = [ 
-          ./nix/home.nix
-          sops-nix.homeManagerModules.sops
-        ];
+        modules = [ ./nix/home.nix ];
       };
     in {
       homeConfigurations = {

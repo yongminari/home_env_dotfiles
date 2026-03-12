@@ -42,47 +42,15 @@
       cmp-path
       luasnip
       cmp_luasnip
-
-      # AI Assistant
-      codecompanion-nvim
     ];
 
     # 2. Lua 설정
     initLua = ''
-      -- [리더키 설정] 모든 단축키 등록보다 먼저 와야 합니다.
-      vim.g.mapleader = " "
-
       -- 안전한 설정을 위한 헬퍼 함수
       local function safe_require(module, config_fn)
         local ok, mod = pcall(require, module)
         if ok then config_fn(mod) end
       end
-
-      -- [CodeCompanion 설정]
-      require("codecompanion").setup({
-        strategies = {
-          chat = { adapter = "gemini" },
-          inline = { adapter = "gemini" },
-          agent = { adapter = "gemini" },
-        },
-        adapters = {
-          gemini = function()
-            return require("codecompanion.adapters").extend("gemini", {
-              env = {
-                api_key = function()
-                  local key_path = os.getenv("GEMINI_API_KEY_FILE")
-                  return key_path and vim.fn.readfile(key_path)[1] or ""
-                end,
-              },
-            })
-          end,
-        },
-      })
-
-      -- 표준 단축키 (which-key 자동 인식)
-      vim.keymap.set({ "n", "v" }, "<leader>a", "<cmd>CodeCompanionChat Toggle<cr>", { desc = "AI Chat" })
-      vim.keymap.set({ "n", "v" }, "<C-a>", "<cmd>CodeCompanionActions<cr>", { desc = "AI Actions" })
-      vim.keymap.set("v", "ga", "<cmd>CodeCompanionChat Add<cr>", { desc = "Add to AI Chat" })
 
       -- [환경 감지]
       local is_ssh = os.getenv("SSH_CONNECTION") ~= nil or os.getenv("SSH_CLIENT") ~= nil or os.getenv("SSH_TTY") ~= nil
@@ -97,6 +65,7 @@
       vim.opt.expandtab = true
       vim.opt.ignorecase = true     -- Case insensitive searching
       vim.opt.smartcase = true      -- Smart case (override ignorecase if uppercase used)
+      vim.g.mapleader = " "         
       
       -- [클립보드 설정]
       -- 원격 환경이나 멀티플렉서 내부에서는 Neovim 0.10+ 내장 OSC 52 클립보드 공급자 사용

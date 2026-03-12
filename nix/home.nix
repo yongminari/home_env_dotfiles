@@ -15,7 +15,6 @@
     ./modules/git.nix
     ./modules/ghostty.nix
     ./modules/rclone.nix
-    ./modules/sops.nix
   ];
 
   targets.genericLinux.enable = pkgs.stdenv.isLinux;

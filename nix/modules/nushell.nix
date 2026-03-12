@@ -41,7 +41,7 @@
       $env.config = {
         show_banner: false
         edit_mode: vi
-        render_right_prompt_on_last_line: true 
+        render_right_prompt_on_last_line: false 
         
         completions: {
           case_sensitive: false # case-insensitive completion

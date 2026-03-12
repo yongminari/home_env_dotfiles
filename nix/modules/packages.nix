@@ -20,6 +20,8 @@
     xsel 
     wl-clipboard 
     rclone
+    sops
+    age
     
     # [Neovim 보조 도구 (LSP/Parsers)]
     # 에디터 경험을 위해 가벼운 서버들만 유지

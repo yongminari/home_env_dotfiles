@@ -350,9 +350,9 @@ Hyprland TWM 설정. 자동 감지 모니터 설정과 업무 자동화(Super+W)
         "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
         # ... (기타 단축키 설정)
       ];
-      windowrulev2 = [
-        "workspace 2,title:Slack"
-        "workspace 1,class:ghostty"
+      windowrule = [
+        "match:title (.*Slack.*), workspace 2"
+        "match:class (ghostty), workspace 1"
       ];
     };
   };

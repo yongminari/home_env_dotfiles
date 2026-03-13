@@ -73,11 +73,10 @@
         "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
       ];
 
-      # 4. Window & Workspace Rules
-      # Using simpler title:Slack (contains) instead of full regex if possible.
-      windowrulev2 = [
-        "workspace 2,title:Slack"
-        "workspace 1,class:ghostty"
+      # 4. Window & Workspace Rules (Unified windowrule syntax v0.53.0+)
+      windowrule = [
+        "match:title (.*Slack.*), workspace 2"
+        "match:class (ghostty), workspace 1"
       ];
 
       # Appearance & Layout

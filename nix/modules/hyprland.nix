@@ -107,6 +107,10 @@
         # 업무 자동화 (파바박): Super + W 
         # 직접 설치하신 크롬을 호출 (path에 있을 것으로 가정)
         "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
+
+        # Scroll through existing workspaces with mainMod + scroll (Touchpad two-finger scroll)
+        "$mainMod, mouse_up, workspace, e-1"
+        "$mainMod, mouse_down, workspace, e+1"
       ];
 
       # Mouse bindings

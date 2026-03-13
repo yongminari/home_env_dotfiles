@@ -34,44 +34,14 @@ let
         bind "${lockKey}" { SwitchToMode "Normal"; }
       }
     }
-
-    themes {
-      modern-gruvbox {
-        fg 235 219 178
-        bg 40 40 40
-        black 29 32 33
-        red 251 73 52
-        green 184 187 38
-        yellow 250 189 47
-        blue 131 165 152
-        magenta 211 134 155
-        cyan 142 192 124
-        white 168 153 132
-        orange 254 128 25
-      }
-      
-      remote-green {
-        fg 235 219 178
-        bg 40 40 40
-        black 29 32 33
-        red 251 73 52
-        green 184 187 38
-        yellow 250 189 47
-        blue 131 165 152
-        magenta 211 134 155
-        cyan 142 192 124
-        white 168 153 132
-        orange 254 128 25
-      }
-    }
   '';
 in
 {
   home.packages = [ pkgs.zellij ];
   
-  # 로컬 설정 (Ctrl g)
-  xdg.configFile."zellij/config.kdl".text = mkZellijConfig "Ctrl g" "modern-gruvbox";
+  # 로컬 설정 (Ctrl g) - 내장 gruvbox-dark 테마 사용
+  xdg.configFile."zellij/config.kdl".text = mkZellijConfig "Ctrl g" "gruvbox-dark";
   
-  # 원격/Docker 설정 (Ctrl a)
-  xdg.configFile."zellij/remote.kdl".text = mkZellijConfig "Ctrl a" "remote-green";
+  # 원격/Docker 설정 (Ctrl a) - 내장 catppuccin-latte 테마 사용
+  xdg.configFile."zellij/remote.kdl".text = mkZellijConfig "Ctrl a" "catppuccin-latte";
 }

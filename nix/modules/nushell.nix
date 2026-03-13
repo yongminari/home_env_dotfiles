@@ -20,14 +20,19 @@
         }
       }
 
-      # SSH 접속 감지 및 Starship 설정 변경
+      # SSH/Docker 접속 감지 및 Starship 설정 변경
       let is_ssh = (
         (not ($env | get -o SSH_CLIENT | is-empty)) or 
         (not ($env | get -o SSH_TTY | is-empty)) or 
         (not ($env | get -o SSH_CONNECTION | is-empty))
       )
+      
+      let is_docker = (
+        ("/.dockerenv" | path exists) or
+        (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "docker") } else { false })
+      )
 
-      if $is_ssh {
+      if ($is_ssh or $is_docker) {
         $env.STARSHIP_CONFIG = ($env.HOME | path join ".config" "starship-ssh.toml")
       }
     '';
@@ -91,6 +96,22 @@
       # [Welcome Message]
       # Nushell interaction: welcome-msg script
       ^welcome-msg
+
+      # [SSH/Remote Zellij Theme Support]
+      let is_ssh = (
+        (not ($env | get -o SSH_CLIENT | is-empty)) or 
+        (not ($env | get -o SSH_TTY | is-empty)) or 
+        (not ($env | get -o SSH_CONNECTION | is-empty))
+      )
+      
+      let is_docker = (
+        ("/.dockerenv" | path exists) or
+        (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "docker") } else { false })
+      )
+      
+      if ($is_ssh or $is_docker) {
+        alias zellij = zellij --config ($env.HOME | path join ".config" "zellij" "remote.kdl")
+      }
     '';
 
     shellAliases = {

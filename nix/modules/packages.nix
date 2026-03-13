@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   home.sessionPath = [
@@ -20,6 +20,15 @@
     xsel 
     wl-clipboard 
     rclone
+    
+    # [OpenGL/GUI Support for non-NixOS]
+    inputs.nixgl.packages.${pkgs.system}.nixGLIntel
+    xdg-desktop-portal-hyprland
+
+    # [한글 입력기 - IBus]
+    ibus
+    ibus-engines.hangul
+    libnotify # For debugging and notifications
     
     # [Neovim 보조 도구 (LSP/Parsers)]
     # 에디터 경험을 위해 가벼운 서버들만 유지

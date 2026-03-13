@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   # [사용자 정보]
@@ -15,6 +15,8 @@
     ./modules/git.nix
     ./modules/ghostty.nix
     ./modules/rclone.nix
+    ./modules/hyprland.nix
+    ./modules/wofi.nix
   ];
 
   targets.genericLinux.enable = pkgs.stdenv.isLinux;

@@ -10,14 +10,23 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+# NixGL (OpenGL support on non-NixOS)
+nixgl = {
+  url = "github:nix-community/nixGL";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+};
+
+outputs = { self, nixpkgs, home-manager, nixgl, ... }@inputs:
+let
+  mkConfig = system: home-manager.lib.homeManagerConfiguration {
+    pkgs = nixpkgs.legacyPackages.${system};
+    extraSpecialArgs = { inherit inputs; }; # 이 부분이 핵심입니다.
+    modules = [ 
+      ./nix/home.nix
+    ];
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
-    let
-      mkConfig = system: home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
-        modules = [ ./nix/home.nix ];
-      };
     in {
       homeConfigurations = {
         # 1. Native Linux & WSL (Unified x86_64)

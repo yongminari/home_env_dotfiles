@@ -22,6 +22,8 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 - **☁️ Cloud Storage:** **rclone** automated mounting.
   - Google Drive & OneDrive auto-mount via systemd.
   - Mount paths: `~/mnt/gdrive`, `~/mnt/onedrive`.
+- **🪟 Window Manager:** **Hyprland** (Wayland-native TWM) with dual 4K monitor support and workspace automation.
+- **🚀 App Launcher:** **Wofi** (GTK-based) for high-performance searching and utilities.
 - **🤖 AI:** Auto-installation of `@google/gemini-cli`.
 - **📦 Modular:** Clean file structure separated by function (`modules/*.nix`).
 
@@ -29,7 +31,7 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 
 ```text
 ~/home_env_dotfiles
-├── flake.nix             # Entry point (Unified profile)
+├── flake.nix             # Entry point (Unified profile with Anyrun flake)
 └── nix
     ├── home.nix          # Main loader
     └── modules
@@ -38,7 +40,9 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
         ├── neovim.nix    # Editor config
         ├── zellij.nix    # Modern Multiplexer config
         ├── packages.nix  # System packages & Installation scripts
-        └── git.nix       # Git user config
+        ├── git.nix       # Git user config
+        ├── hyprland.nix  # Hyprland TWM configuration & Keybindings
+        └── wofi.nix      # Wofi launcher & styles configuration
 ```
 
 ## 🚀 Installation
@@ -81,7 +85,37 @@ cd ~/home_env_dotfiles
 nix run home-manager/master -- switch --flake .#yongminari -b backup
 ```
 
-### 5. Node.js Setup (via fnm)
+### 5. Hyprland Session Setup (Non-NixOS Systems)
+
+If you are using Ubuntu or other non-NixOS distros, you must manually register the Hyprland session to your login manager (e.g., GDM).
+
+1. Find the path of your Nix-installed Hyprland: `which Hyprland`
+2. Create a session file: `sudo nano /usr/share/wayland-sessions/hyprland.desktop`
+3. Paste the following configuration (replace `Exec` with your actual path):
+
+```ini
+[Desktop Entry]
+Name=Hyprland (Nix)
+Comment=An intelligent dynamic tiling Wayland compositor
+Exec=/home/yongminari/.nix-profile/bin/nixGLIntel /home/yongminari/.nix-profile/bin/Hyprland
+Type=Application
+DesktopNames=Hyprland
+```
+
+> **Note:** Use `nixGLIntel` (or your specific GPU variant) in the `Exec` line if you experience a black screen or crashes on Ubuntu.
+
+4. **Logout** and select **"Hyprland (Nix)"** from the gear icon menu at the login screen.
+
+### 5. Korean Input (IBus) Setup
+
+This configuration uses **IBus** for Korean input. A one-time setup is required after logging into Hyprland.
+
+1. Open a terminal and run `ibus-setup`.
+2. Go to the **Input Method** tab, click **Add**, search for **Korean - Hangul**, and add it.
+3. Select **Korean - Hangul** and click **Preferences** to set your toggle key (e.g., `Shift+Space`).
+4. Restart any open applications to apply the input method settings.
+
+### 6. Node.js Setup (via fnm)
 
 This configuration includes `fnm` for Node.js management. Install Node.js after the initial setup using the following commands.
 
@@ -133,6 +167,23 @@ Follow these steps to auto-mount Google Drive and OneDrive.
 | `Ctrl + n` | Toggle File Explorer | `Neotree` |
 | `Ctrl + g` | Zellij Prefix (Lock/Unlock) | - |
 | `Alt + h/j/k/l` | Navigate between Zellij panes | - |
+
+### 🪟 Hyprland & Wofi (TWM)
+
+Keybindings available within a Hyprland session (Main Mod: `Super` / Windows key).
+
+| Shortcut | Action |
+| :--- | :--- |
+| **`Super + Enter`** | Launch **Ghostty** terminal |
+| **`Super + R`** | Launch **Wofi** (App launcher / Runner) |
+| **`Super + W`** | **Work Automation (Pababak)** - Open Slack, GitHub, and Gmail in Chrome |
+| **`Super + Q`** | Close active window (Kill) |
+| **`Super + M`** | Exit Hyprland (Logout) |
+| **`Super + V`** | Toggle Floating mode |
+| **`Super + h/j/k/l`** | Move focus Left/Down/Up/Right (Vim-style) |
+| **`Super + 1 ~ 5`** | Switch to workspace 1-5 |
+| **`Super + Shift + 1 ~ 5`** | Move window to workspace 1-5 |
+| **`Super + P`** / **`J`** | Toggle Pseudo mode / Split orientation |
 
 ## 🔄 Maintenance
 

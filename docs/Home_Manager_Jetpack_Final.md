@@ -343,12 +343,48 @@ Hyprland TWM 설정. 자동 감지 모니터 설정과 업무 자동화(Super+W)
       input = {
         kb_layout = "us";
         kb_options = "ctrl:nocaps";
+        touchpad = {
+          natural_scroll = true;
+        };
       };
       bind = [
         "$mainMod, Return, exec, ghostty"
         "$mainMod, R, exec, pkill wofi || nixGLIntel wofi --show drun"
         "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
-        # ... (기타 단축키 설정)
+        "$mainMod, F, fullscreen, 0"
+        "$mainMod, comma, focusmonitor, -1"
+        "$mainMod, period, focusmonitor, +1"
+        "$mainMod SHIFT, h, movewindow, l"
+        "$mainMod SHIFT, l, movewindow, r"
+        "$mainMod ALT, h, resizeactive, -40 0"
+        "$mainMod ALT, l, resizeactive, 40 0"
+        "$mainMod, S, togglespecialworkspace, magic"
+        # 1-10번 워크스페이스 이동
+        "$mainMod, 1, workspace, 1"
+        "$mainMod, 2, workspace, 2"
+        "$mainMod, 3, workspace, 3"
+        "$mainMod, 4, workspace, 4"
+        "$mainMod, 5, workspace, 5"
+        "$mainMod, 6, workspace, 6"
+        "$mainMod, 7, workspace, 7"
+        "$mainMod, 8, workspace, 8"
+        "$mainMod, 9, workspace, 9"
+        "$mainMod, 0, workspace, 10"
+        # 창을 해당 워크스페이스로 이동 (Shift)
+        "$mainMod SHIFT, 1, movetoworkspace, 1"
+        "$mainMod SHIFT, 2, movetoworkspace, 2"
+        "$mainMod SHIFT, 3, movetoworkspace, 3"
+        "$mainMod SHIFT, 4, movetoworkspace, 4"
+        "$mainMod SHIFT, 5, movetoworkspace, 5"
+        "$mainMod SHIFT, 6, movetoworkspace, 6"
+        "$mainMod SHIFT, 7, movetoworkspace, 7"
+        "$mainMod SHIFT, 8, movetoworkspace, 8"
+        "$mainMod SHIFT, 9, movetoworkspace, 9"
+        "$mainMod SHIFT, 0, movetoworkspace, 10"
+      ];
+      bindm = [
+        "$mainMod, mouse:272, movewindow"
+        "$mainMod, mouse:273, resizewindow"
       ];
       windowrule = [
         "match:title (.*Slack.*), workspace 2"

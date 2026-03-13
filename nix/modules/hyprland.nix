@@ -35,6 +35,9 @@
         kb_options = "ctrl:nocaps"; # Map Caps Lock to Ctrl
         follow_mouse = 1;
         sensitivity = 0; 
+        touchpad = {
+          natural_scroll = true;
+        };
       };
 
       # 3. Keybindings (The System Layer - Super)
@@ -54,23 +57,62 @@
         "$mainMod, k, movefocus, u"
         "$mainMod, j, movefocus, d"
 
-        # Workspace navigation
+        # Monitor Focus cycling (Dual monitor support)
+        "$mainMod, comma, focusmonitor, -1"
+        "$mainMod, period, focusmonitor, +1"
+
+        # Window movement (Move active window)
+        "$mainMod SHIFT, h, movewindow, l"
+        "$mainMod SHIFT, l, movewindow, r"
+        "$mainMod SHIFT, k, movewindow, u"
+        "$mainMod SHIFT, j, movewindow, d"
+
+        # Window Resizing (Super + Alt + h/j/k/l)
+        "$mainMod ALT, h, resizeactive, -40 0"
+        "$mainMod ALT, l, resizeactive, 40 0"
+        "$mainMod ALT, k, resizeactive, 0 -40"
+        "$mainMod ALT, j, resizeactive, 0 40"
+
+        # Fullscreen & Layout
+        "$mainMod, f, fullscreen, 0"
+        
+        # Scratchpad (Special Workspace)
+        "$mainMod, s, togglespecialworkspace, magic"
+        "$mainMod SHIFT, s, movetoworkspace, special:magic"
+
+        # Workspace navigation (1-10)
         "$mainMod, 1, workspace, 1"
         "$mainMod, 2, workspace, 2"
         "$mainMod, 3, workspace, 3"
         "$mainMod, 4, workspace, 4"
         "$mainMod, 5, workspace, 5"
+        "$mainMod, 6, workspace, 6"
+        "$mainMod, 7, workspace, 7"
+        "$mainMod, 8, workspace, 8"
+        "$mainMod, 9, workspace, 9"
+        "$mainMod, 0, workspace, 10"
 
-        # Moving windows to workspaces
+        # Moving windows to workspaces (1-10)
         "$mainMod SHIFT, 1, movetoworkspace, 1"
         "$mainMod SHIFT, 2, movetoworkspace, 2"
         "$mainMod SHIFT, 3, movetoworkspace, 3"
         "$mainMod SHIFT, 4, movetoworkspace, 4"
         "$mainMod SHIFT, 5, movetoworkspace, 5"
+        "$mainMod SHIFT, 6, movetoworkspace, 6"
+        "$mainMod SHIFT, 7, movetoworkspace, 7"
+        "$mainMod SHIFT, 8, movetoworkspace, 8"
+        "$mainMod SHIFT, 9, movetoworkspace, 9"
+        "$mainMod SHIFT, 0, movetoworkspace, 10"
 
         # 업무 자동화 (파바박): Super + W 
         # 직접 설치하신 크롬을 호출 (path에 있을 것으로 가정)
         "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
+      ];
+
+      # Mouse bindings
+      bindm = [
+        "$mainMod, mouse:272, movewindow"
+        "$mainMod, mouse:273, resizewindow"
       ];
 
       # 4. Window & Workspace Rules (Unified windowrule syntax v0.53.0+)

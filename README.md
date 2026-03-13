@@ -177,13 +177,18 @@ Keybindings available within a Hyprland session (Main Mod: `Super` / Windows key
 | **`Super + Enter`** | Launch **Ghostty** terminal |
 | **`Super + R`** | Launch **Wofi** (App launcher / Runner) |
 | **`Super + W`** | **Work Automation (Pababak)** - Open Slack, GitHub, and Gmail in Chrome |
+| **`Super + F`** | Toggle Fullscreen |
 | **`Super + Q`** | Close active window (Kill) |
 | **`Super + M`** | Exit Hyprland (Logout) |
 | **`Super + V`** | Toggle Floating mode |
 | **`Super + h/j/k/l`** | Move focus Left/Down/Up/Right (Vim-style) |
-| **`Super + 1 ~ 5`** | Switch to workspace 1-5 |
-| **`Super + Shift + 1 ~ 5`** | Move window to workspace 1-5 |
-| **`Super + P`** / **`J`** | Toggle Pseudo mode / Split orientation |
+| **`Super + , / .`** | Cycle monitor focus |
+| **`Super + Shift + h/j/k/l`** | Move window position |
+| **`Super + Alt + h/j/k/l`** | Resize active window |
+| **`Super + S`** / **`Shift+S`** | Toggle Scratchpad / Move window to scratchpad |
+| **`Super + 1 ~ 0`** | Switch to workspace 1-10 (0 is workspace 10) |
+| **`Super + Shift + 1 ~ 0`** | Move window to workspace 1-10 |
+| **`Super + Mouse Left/Right`** | Drag to Move / Resize windows |
 
 ## 🔄 Maintenance
 

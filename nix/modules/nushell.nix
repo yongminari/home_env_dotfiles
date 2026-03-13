@@ -121,6 +121,7 @@
       hmsx = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-x86-linux";
       hmsa = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-linux";
       hmsm = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-mac";
+      hypr_shortcuts = "printf \"\n  (ansi blue_bold)🪟 Hyprland & Wofi Shortcuts(ansi reset)\n\n  (ansi green_bold)Super + Enter(ansi reset)       Launch Ghostty\n  (ansi green_bold)Super + R(ansi reset)           Launch Wofi (Runner)\n  (ansi green_bold)Super + W(ansi reset)           Work Automation (Chrome)\n  (ansi green_bold)Super + F(ansi reset)           Toggle Fullscreen\n  (ansi green_bold)Super + hjkl(ansi reset)        Move Focus (Window/Monitor)\n  (ansi green_bold)Super + , / .(ansi reset)       Cycle Monitor Focus\n  (ansi green_bold)Super + Shift + hjkl(ansi reset) Move Window Position\n  (ansi green_bold)Super + Alt + hjkl(ansi reset)   Resize Window\n  (ansi green_bold)Super + S / Shift+S(ansi reset)  Scratchpad Toggle / Move window\n  (ansi green_bold)Super + Space(ansi reset)       IBus Language Toggle\n  (ansi green_bold)Super + Q(ansi reset)           Kill Active Window\n  (ansi green_bold)Super + M(ansi reset)           Exit Hyprland\n  (ansi green_bold)Super + V(ansi reset)           Toggle Floating\n  (ansi green_bold)Super + 1~0(ansi reset)         Switch Workspace (1-10)\n  (ansi green_bold)Super + Shift + 1~0(ansi reset) Move to Workspace\n  (ansi green_bold)Super + Mouse L/R(ansi reset)   Drag to Move / Resize Window\n\n\" | lolcat";
     };
   };
 }

@@ -19,6 +19,9 @@
       # [Welcome Message]
       if [[ $- == *i* ]]; then welcome-msg; fi
 
+      # [External Tools (fnm)]
+      if command -v fnm &>/dev/null; then eval "$(fnm env --use-on-cd --shell bash)"; fi
+
       # [Zellij Auto-start]
       if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && ! is_vscode; then
         if is_ssh || is_docker; then

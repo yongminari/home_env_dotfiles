@@ -6,8 +6,7 @@
   ];
 
   home.packages = with pkgs; [
-    # [시스템 유틸 및 CLI 도구]
-    # 순수하게 도구로서 작동하며 시스템 라이브러리와 충돌이 적은 것들 위주
+    # [시스템 유틸리티]
     fastfetch 
     htop 
     ripgrep 
@@ -16,13 +15,14 @@
     lazygit 
     lolcat
     lsb-release
+    rclone
+    
+    # [클립보드 관리]
     xclip 
     xsel 
     wl-clipboard 
-    rclone
     
-    # [Neovim 보조 도구 (LSP/Parsers)]
-    # 에디터 경험을 위해 가벼운 서버들만 유지
+    # [개발 보조 도구 (LSP/Parsers)]
     tree-sitter   # Tree-sitter CLI (Fix checkhealth error)
     nil           # Nix Language Server
     ast-grep      # ast-grep CLI
@@ -30,13 +30,12 @@
     gopls         # Go LSP
     clang-tools   # clangd 등 (헤더 검색 등 에디터용)
 
-    # 폰트
+    # [폰트 (Maple Mono, Nerd Fonts)]
     maple-mono.NF
     nerd-fonts.ubuntu-mono 
     monaspace
     nerd-fonts.jetbrains-mono
     fnm
-    nushell
     carapace
   ];
 }

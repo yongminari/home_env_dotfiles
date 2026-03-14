@@ -32,9 +32,7 @@
   # Bat (cat 대체)
   programs.bat = {
     enable = true;
-    config = {
-      theme = "TwoDark";
-    };
+    config = { theme = "TwoDark"; };
   };
 
   # FZF (Fuzzy Finder)

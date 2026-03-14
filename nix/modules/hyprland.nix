@@ -1,17 +1,17 @@
 { config, pkgs, ... }:
 
 {
-  # Hyprland tiling window manager setup
+  # Hyprland Tiling Window Manager Configuration
   wayland.windowManager.hyprland = {
     enable = true;
-    # System settings
     settings = {
-      # 1. Monitor Setup (범용 설정: 어떤 모니터든 최적 해상도로 자동 감지)
-      monitor = [
-        ",preferred,auto,1"
-      ];
+      # 1. Monitor Setup (Auto-detection)
+      monitor = [ ",preferred,auto,1" ];
 
-      # 2. Auto-start & Environment Variables
+      # 2. Workspace to Monitor Mapping (Optional, for future multi-monitor use)
+      # workspace = [ "1, monitor:DP-1", "6, monitor:DP-2" ];
+
+      # 3. Environment Variables & Auto-start
       exec-once = [
         "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "ibus-daemon -drx"
@@ -26,41 +26,36 @@
         "QT_IM_MODULE, ibus"
         "QT_IM_MODULES, ibus"
         "SDL_IM_MODULE, ibus"
-        "GLFW_IM_MODULE, ibus"
         "IBUS_COMPONENT_PATH, ${config.home.homeDirectory}/.nix-profile/share/ibus/component"
         "XDG_DATA_DIRS, $HOME/.nix-profile/share:/usr/local/share:/usr/share:$XDG_DATA_DIRS"
       ];
 
-      # 3. Main Modifiers & Input
+      # 4. Input Configuration
       "$mainMod" = "SUPER";
-
       input = {
         kb_layout = "us";
-        kb_options = "ctrl:nocaps"; # Map Caps Lock to Ctrl
+        kb_options = "ctrl:nocaps"; # Replace Caps Lock with Ctrl
         follow_mouse = 1;
-        sensitivity = 0; 
-        touchpad = {
-          natural_scroll = true;
-        };
+        touchpad.natural_scroll = true;
+        sensitivity = 0;
       };
 
-      # 3. Keybindings
+      # 5. Keybindings (The Hierarchy Strategy)
       bind = [
-        # Basic operations (Reset LD_LIBRARY_PATH to fix OpenGL issues while keeping other variables)
-        "$mainMod, Return, exec, env LD_LIBRARY_PATH=\"\" ghostty"
+        # --- System Layer (Super) ---
+        "$mainMod, Return, exec, ghostty"
         "$mainMod, Q, killactive,"
         "$mainMod, M, exit,"
         "$mainMod, V, togglefloating,"
-        # Use nix-gui-run for automatic GPU detection
+        "$mainMod, F, fullscreen, 0"
         "$mainMod, R, exec, pkill wofi || nix-gui-run wofi --show drun"
-        "$mainMod, P, pseudo," 
-        "$mainMod, J, togglesplit,"
+        "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
 
+        # --- Window & Focus Management ---
         "$mainMod, h, movefocus, l"
         "$mainMod, l, movefocus, r"
         "$mainMod, k, movefocus, u"
         "$mainMod, j, movefocus, d"
-
         "$mainMod, comma, focusmonitor, l"
         "$mainMod, period, focusmonitor, r"
 
@@ -74,11 +69,13 @@
         "$mainMod ALT, k, resizeactive, 0 -40"
         "$mainMod ALT, j, resizeactive, 0 40"
 
-        "$mainMod, f, fullscreen, 0"
-        "$mainMod, s, togglespecialworkspace, magic"
-        "$mainMod SHIFT, s, movetoworkspace, special:magic"
+        # --- Workspaces & Scratchpad ---
+        "$mainMod, S, togglespecialworkspace, magic"
+        "$mainMod SHIFT, S, movetoworkspace, special:magic"
+        "$mainMod, mouse_up, workspace, e-1"
+        "$mainMod, mouse_down, workspace, e+1"
 
-        # Workspaces 1-10
+        # Workspaces 1-10 (Navigation & Moving)
         "$mainMod, 1, workspace, 1"
         "$mainMod, 2, workspace, 2"
         "$mainMod, 3, workspace, 3"
@@ -100,23 +97,21 @@
         "$mainMod SHIFT, 8, movetoworkspace, 8"
         "$mainMod SHIFT, 9, movetoworkspace, 9"
         "$mainMod SHIFT, 0, movetoworkspace, 10"
-
-        "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
-        "$mainMod, mouse_up, workspace, e-1"
-        "$mainMod, mouse_down, workspace, e+1"
       ];
 
+      # 6. Mouse Bindings
       bindm = [
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
 
-      # 4. Window Rules (Unified windowrule syntax v0.53.0+)
+      # 7. Window Rules (v0.53.0+ Unified)
       windowrule = [
         "match:title (.*Slack.*), workspace 2"
         "match:class (ghostty), workspace 1"
       ];
 
+      # 8. Aesthetics & Layout
       general = {
         gaps_in = 5;
         gaps_out = 10;
@@ -128,11 +123,7 @@
 
       decoration = {
         rounding = 10;
-        blur = {
-          enabled = true;
-          size = 3;
-          passes = 1;
-        };
+        blur = { enabled = true; size = 3; passes = 1; };
       };
 
       animations = {
@@ -142,7 +133,6 @@
           "windows, 1, 7, myBezier"
           "windowsOut, 1, 7, default, popin 80%"
           "border, 1, 10, default"
-          "borderangle, 1, 8, default"
           "fade, 1, 7, default"
           "workspaces, 1, 6, default"
         ];
@@ -150,8 +140,7 @@
     };
   };
 
-  # Generate a session file in the user's local directory
-  # Using nix-gui-run for automatic GPU detection
+  # Declarative Hyprland Session for GDM
   home.file.".local/share/wayland-sessions/hyprland-nix.desktop".text = ''
     [Desktop Entry]
     Name=Hyprland (Nix)

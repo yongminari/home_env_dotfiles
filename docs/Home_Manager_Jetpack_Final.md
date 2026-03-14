@@ -9,29 +9,17 @@ Native Linux(Ubuntu 등)와 WSL 환경을 하나의 통합된 코드베이스로
 - **Core:** Nix Flakes + Home Manager (Modular Structure)
 - **Shell:** Zsh (Main) + **Nushell (Experimental)** + Starship (Jetpack) + Eza + Zoxide + Bat + FZF + **Direnv** + **fnm (Node Version Manager)**
 - **Editor:** Neovim (Tokyonight, LSP, Treesitter, Telescope, Neo-tree, oil.nvim, etc.)
-- **Terminal:** Zellij (Modern Rust-based Terminal Workspace, Prefix Ctrl+g, Modern UI)
+- **Terminal:** Ghostty (GPU 가속, Nix 통합 관리)
+- **Multiplexer:** Zellij (Modern Rust-based Terminal Workspace, Prefix Ctrl+g, Modern UI)
 - **Auto-Install:** Gemini CLI, Tree-sitter CLI (via Nix)
 - **Window Manager:** Hyprland (Wayland-native TWM, 자동 감지 모니터 설정, 3계층 단축키 전략)
 - **App Launcher:** Wofi (GTK 기반 안정적인 런처, CSS 테마 지원)
 - **Cloud Storage:** rclone mount (Google Drive, OneDrive)
-- **Dev Tools:** gcc, clang, make, cmake, go, gopls
+- **GPU Acceleration:** nix-gui-run (AMD/Intel/Nvidia 자동 감지 래퍼)
 
 ## 2. 필수 사전 준비 (Manual Steps)
 
-### 2.1 Ghostty 터미널 설치 (수동)
-Ghostty는 최신 터미널 에뮬레이터로, 아직 패키지 매니저에 안정적으로 포함되지 않은 경우가 많아 직접 설치를 권장한다.
-
-1.  **다운로드:** [Ghostty 공식 웹사이트](https://ghostty.org/download) 또는 GitHub Release 페이지에서 자신의 OS에 맞는 버전을 다운로드한다.
-2.  **설치 (Ubuntu/Debian 예시):**
-    ```bash
-    # 다운로드 받은 .deb 파일이 있는 경로로 이동
-    sudo dpkg -i ghostty_*.deb
-    sudo apt-get install -f # 의존성 문제 발생 시 해결
-    ```
-3.  **설정 파일:**
-    Home Manager가 `~/.config/ghostty/config` 파일을 자동으로 생성 관리하므로, 별도의 설정 파일을 수동으로 만들 필요는 없다. (설정 내용은 `nix/home.nix` 참조)
-
-### 2.2 Nix 설치
+### 2.1 Nix 설치
 
 설치 방식은 시스템 환경에 따라 두 가지 중 하나를 선택한다.
 
@@ -47,284 +35,57 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 sh <(curl -L https://nixos.org/nix/install) --daemon
 ```
 
-### 2.3 Experimental Features 활성화 (방법 B 사용 시 필수)
+### 2.2 Experimental Features 활성화 (방법 B 사용 시 필수)
 공식 설치 스크립트(방법 B)를 사용한 경우, Flakes 기능을 사용하기 위해 필수적으로 수행해야 한다. (방법 A는 생략 가능)
 ```bash
 mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
-### 2.4 Hyprland 세션 등록 및 자동 관리 (Native Linux 전용)
+### 2.3 Hyprland 세션 등록 및 자동 관리 (Native Linux 전용)
 Nix로 설치한 Hyprland를 시스템 로그인 화면(GDM)에 등록하고, 이후 설정을 Nix로 자동 업데이트하기 위해 심볼릭 링크 방식을 사용한다.
 
 1. **Home Manager 적용:**
    `hmsx` 명령어로 설정을 적용하면 `~/.local/share/wayland-sessions/hyprland-nix.desktop` 파일이 사용자 정보에 맞춰 자동 생성된다.
 
-2. **기존 수동 파일 제거 (있는 경우):**
-   ```bash
-   sudo rm /usr/share/wayland-sessions/hyprland-nix.desktop
-   ```
-
-3. **파일 복사 (sudo 권한 필요):**
-   Nix가 생성한 파일을 시스템 세션 폴더에 복사한다. (심볼릭 링크는 권한 문제로 로그인이 안 될 수 있으므로 복사를 권장한다.)
+2. **파일 복사 (sudo 권한 필요):**
+   Nix가 생성한 파일을 시스템 세션 폴더에 복사한다.
    ```bash
    sudo cp ~/.local/share/wayland-sessions/hyprland-nix.desktop /usr/share/wayland-sessions/
    ```
 
-4. **로그아웃 후 확인:** 로그인 화면 우측 하단 톱니바퀴 아이콘에서 **Hyprland (Nix)**를 선택하여 진입한다.
+3. **로그아웃 후 확인:** 로그인 화면 우측 하단 톱니바퀴 아이콘에서 **Hyprland (Nix)**를 선택하여 진입한다.
 
-> **Tip:** 만약 Nix 설정 변경 후 세션 정보를 갱신하고 싶다면 위 복사 명령어를 다시 한 번 실행해준다.
-
-### 2.5 한글 입력기 (IBus) 설정
+### 2.4 한글 입력기 (IBus) 설정
 Hyprland 환경에서 한글을 입력하기 위해 IBus를 사용한다. 최초 1회 수동 설정이 필요하다.
 
-1. **설정 도구 실행:**
-   Hyprland 세션 내 터미널에서 실행:
-   ```bash
-   ibus-setup
-   ```
-
-2. **입력 소스 추가:**
-   - 'Input Method' 탭에서 'Add' 버튼을 누른다.
-   - 'Korean'을 찾아 선택한 뒤 **'Hangul'**을 추가한다.
-
-3. **한영 전환 키 설정:**
-   - 'Input Method' 탭에서 추가한 'Korean - Hangul'을 선택하고 'Preferences'를 누른다.
-   - 'Hangul Toggle Key' 항목에서 'Add'를 눌러 원하는 키(예: `Shift+Space` 또는 `Hangul`)를 설정한다.
-
-4. **확인:** 이제 브라우저나 터미널에서 설정한 단축키로 한글 입력이 가능하다.
+1. **설정 도구 실행:** `ibus-setup` 실행 후 'Korean - Hangul' 추가.
+2. **단축키 설정:** 'Preferences'에서 한영 전환 키(예: Shift+Space) 등록.
 
 ## 3. 디렉토리 구조
 
-설정 파일은 기능별로 모듈화되어 `nix/modules` 내부에 위치한다.
-
 ```text
 ~/home_env_dotfiles
-├── flake.nix             # [Entry] 통합 설정 엔트리 (Anyrun Flake 포함)
+├── flake.nix             # [Entry] 통합 설정 엔트리
 ├── nix
 │   ├── home.nix          # [Main] 모듈 로더 및 기본 설정
 │   └── modules           # 기능별 세부 설정 모듈
 │       ├── git.nix       # Git 사용자 설정
 │       ├── neovim.nix    # Neovim 플러그인 및 설정
 │       ├── packages.nix  # 시스템 패키지 & 설치 스크립트
-│       ├── shell.nix     # Zsh, Starship, Alias, Zellij 실행 로직, Direnv
+│       ├── shell.nix     # Zsh, Nushell, Starship, Alias, Direnv
 │       ├── starship.toml # Starship 테마 설정 (Jetpack)
 │       ├── zellij.nix    # Zellij 옵션 및 키바인딩
 │       ├── hyprland.nix  # Hyprland TWM 및 자동화 단축키
-│       └── wofi.nix      # Wofi 런처 및 테마 설정
+│       ├── wofi.nix      # Wofi 런처 및 테마 설정
+│       └── gui-utils.nix # GPU 래퍼(nix-gui-run) 설정
 └── .gitignore
 ```
 
-## 4. 파일별 상세 코드
+## 4. 파일별 상세 코드 (핵심 모듈)
 
-### 4.1 ~/home_env_dotfiles/flake.nix
-Native Linux와 WSL 환경을 동일하게 관리하도록 통합된 설정이다.
-
-```nix
-{
-  description = "Home Manager configuration for yongminari";
-
-  inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-  };
-
-  outputs = { self, nixpkgs, home-manager, ... }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      homeConfigurations = {
-        # Native Linux & WSL (Unified)
-        "yongminari" = home-manager.lib.homeManagerConfiguration {
-          inherit pkgs;
-          modules = [ ./nix/home.nix ];
-        };
-      };
-    };
-}
-```
-
-### 4.2 ~/home_env_dotfiles/nix/home.nix
-모든 모듈을 임포트하고 공통 설정을 관리한다. Ghostty 설정도 여기서 관리된다.
-
-```nix
-{ config, pkgs, ... }:
-
-{
-  home.username = "yongminari";
-  home.homeDirectory = "/home/yongminari";
-  home.stateVersion = "25.11"; 
-
-  imports = [
-    ./modules/shell.nix
-    ./modules/packages.nix
-    ./modules/neovim.nix
-    ./modules/zellij.nix
-    ./modules/git.nix
-  ];
-
-  targets.genericLinux.enable = true;
-  fonts.fontconfig.enable = true;
-
-  # Ghostty 설정
-  xdg.configFile."ghostty/config".text = ''
-    font-family = "Maple Mono NF"
-    font-size = 12
-    window-width = 150
-    window-height = 60
-    window-decoration = auto
-    background-opacity = 0.85
-    theme = Dracula
-  '';
-
-  programs.home-manager.enable = true;
-}
-```
-
-### 4.3 ~/home_env_dotfiles/nix/modules/packages.nix
-필수 패키지와 개발 도구를 설치한다.
-
-```nix
-{ config, pkgs, lib, ... }:
-
-{
-  home.sessionPath = [
-    "${config.home.homeDirectory}/.local/bin"
-  ];
-
-  home.packages = with pkgs; [
-    # [시스템 유틸 및 CLI 도구]
-    neofetch htop ripgrep fd unzip lazygit lolcat lsb-release
-    xclip xsel wl-clipboard 
-    
-    # [Neovim 보조 도구 (LSP/Parsers)]
-    nil ast-grep tree-sitter lua51Packages.jsregexp gopls clang-tools
-
-    # 폰트
-    maple-mono.NF nerd-fonts.ubuntu-mono 
-
-    # Node.js 관리 및 CLI
-    fnm
-    gemini-cli
-  ];
-}
-```
-
-### 4.4 ~/home_env_dotfiles/nix/modules/neovim.nix
-Neovim 설정. TokyoNight 테마와 현대적인 플러그인들(oil.nvim, trouble.nvim, gitsigns 등)이 포함되어 있다.
-
-```nix
-{ config, pkgs, ... }:
-
-{
-  programs.neovim = {
-    enable = true;
-    defaultEditor = true;
-    viAlias = true; 
-    vimAlias = true;
-
-    plugins = with pkgs.vimPlugins; [
-      tokyonight-nvim
-      which-key-nvim 
-      nvim-web-devicons
-      lualine-nvim
-      neo-tree-nvim
-      telescope-nvim
-      nvim-treesitter.withAllGrammars 
-      oil-nvim
-      trouble-nvim
-      # ... (기타 다수의 플러그인)
-    ];
-
-    initLua = ''
-      -- TokyoNight Theme, LSP, Treesitter, Telescope 설정 포함
-      -- Alt+h/j/k/l: Neovim 창 이동 (Zellij Locked 모드와 호환)
-      -- Space+f: 파일 찾기, Space+g: Live Grep
-      -- Ctrl+n: Neo-tree 토글
-      -- -: Oil.nvim (부모 디렉토리 열기)
-      -- Ctrl+/: Toggle Floating Terminal (ToggleTerm)
-    '';
-  };
-}
-```
-
-### 4.5 ~/home_env_dotfiles/nix/modules/shell.nix
-Zsh(메인), **Nushell(보조)**, Starship, Eza, Bat, FZF 등 모든 쉘 환경 설정이 포함되어 있다.
-
-```nix
-{ config, pkgs, lib, ... }:
-
-{
-  # ... Starship, Eza, Zoxide, Bat, FZF, Direnv 설정 ...
-
-  # [Zsh] 메인 생산성 쉘
-  programs.zsh = {
-    enable = true;
-    shellAliases = {
-      hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
-      zj = "zellij";
-    };
-    initContent = ''
-      # fnm 초기화 (Node.js 버전 관리)
-      if command -v fnm &>/dev/null; then
-        eval "$(fnm env --use-on-cd --shell zsh)"
-      fi
-
-      # Zellij 자동 실행 로직 포함
-      if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && ! is_vscode; then
-        exec zellij
-      fi
-    '';
-  };
-
-  # [Nushell] 현대적인 Rust 기반 보조 쉘
-  programs.nushell = {
-    enable = true;
-    configFile.text = ''
-      $env.config = {
-        show_banner: false
-        edit_mode: vi
-        # FZF history search 등의 단축키 설정 포함
-      }
-    '';
-    shellAliases = {
-      ll = "eza -l --icons --git -a";
-      hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
-    };
-  };
-}
-```
-
-### 4.6 ~/home_env_dotfiles/nix/modules/zellij.nix
-Zellij 설정. 현대적인 UI와 세련된 색감(Modern Gruvbox)을 제공한다. Prefix로 **Ctrl+g**를 사용하여 Locked 모드(Vim 호환 모드)를 전환할 수 있다.
-
-```nix
-{ config, pkgs, ... }:
-
-{
-  programs.zellij = {
-    enable = true;
-    settings = {
-      theme = "modern-gruvbox";
-      default_layout = "default";
-      pane_frames = true;
-      # ... 키바인딩(Alt+h,j,k,l 이동 등) ...
-      keybinds = {
-        normal = { "bind \"Ctrl g\"" = { SwitchToMode = "Locked"; }; };
-        locked = { "bind \"Ctrl g\"" = { SwitchToMode = "Normal"; }; };
-        # shared_except "locked" 에 Alt 키 이동 바인딩 포함
-      };
-    };
-  };
-}
-```
-
-### 4.7 ~/home_env_dotfiles/nix/modules/hyprland.nix
-Hyprland TWM 설정. 자동 감지 모니터 설정과 업무 자동화(Super+W) 단축키가 포함되어 있다.
+### 4.1 ~/home_env_dotfiles/nix/modules/hyprland.nix
+Hyprland의 핵심 설정 파일이다.
 
 ```nix
 { config, pkgs, ... }:
@@ -335,26 +96,55 @@ Hyprland TWM 설정. 자동 감지 모니터 설정과 업무 자동화(Super+W)
     settings = {
       monitor = [ ",preferred,auto,1" ];
       "$mainMod" = "SUPER";
+
+      exec-once = [
+        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "ibus-daemon -drx"
+      ];
+
+      env = [
+        "XDG_CURRENT_DESKTOP, Hyprland"
+        "XDG_SESSION_TYPE, wayland"
+        "XDG_SESSION_DESKTOP, Hyprland"
+        "XMODIFIERS, @im=ibus"
+        "GTK_IM_MODULE, ibus"
+        "QT_IM_MODULE, ibus"
+        "IBUS_COMPONENT_PATH, ${config.home.homeDirectory}/.nix-profile/share/ibus/component"
+        "XDG_DATA_DIRS, $HOME/.nix-profile/share:/usr/local/share:/usr/share:$XDG_DATA_DIRS"
+      ];
+
       input = {
         kb_layout = "us";
         kb_options = "ctrl:nocaps";
-        touchpad = {
-          natural_scroll = true;
-        };
+        touchpad.natural_scroll = true;
       };
+
       bind = [
         "$mainMod, Return, exec, ghostty"
         "$mainMod, R, exec, pkill wofi || nix-gui-run wofi --show drun"
         "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
         "$mainMod, F, fullscreen, 0"
-        "$mainMod, comma, focusmonitor, -1"
-        "$mainMod, period, focusmonitor, +1"
+        "$mainMod, Q, killactive,"
+        "$mainMod, M, exit,"
+        "$mainMod, V, togglefloating,"
+        "$mainMod, S, togglespecialworkspace, magic"
+        "$mainMod SHIFT, S, movetoworkspace, special:magic"
+
+        # Focus & Monitor
+        "$mainMod, h, movefocus, l"
+        "$mainMod, l, movefocus, r"
+        "$mainMod, k, movefocus, u"
+        "$mainMod, j, movefocus, d"
+        "$mainMod, comma, focusmonitor, l"
+        "$mainMod, period, focusmonitor, r"
+
+        # Window Move & Resize
         "$mainMod SHIFT, h, movewindow, l"
         "$mainMod SHIFT, l, movewindow, r"
         "$mainMod ALT, h, resizeactive, -40 0"
         "$mainMod ALT, l, resizeactive, 40 0"
-        "$mainMod, S, togglespecialworkspace, magic"
-        # 1-10번 워크스페이스 이동
+
+        # Workspaces 1-10
         "$mainMod, 1, workspace, 1"
         "$mainMod, 2, workspace, 2"
         "$mainMod, 3, workspace, 3"
@@ -365,7 +155,6 @@ Hyprland TWM 설정. 자동 감지 모니터 설정과 업무 자동화(Super+W)
         "$mainMod, 8, workspace, 8"
         "$mainMod, 9, workspace, 9"
         "$mainMod, 0, workspace, 10"
-        # 창을 해당 워크스페이스로 이동 (Shift)
         "$mainMod SHIFT, 1, movetoworkspace, 1"
         "$mainMod SHIFT, 2, movetoworkspace, 2"
         "$mainMod SHIFT, 3, movetoworkspace, 3"
@@ -377,111 +166,66 @@ Hyprland TWM 설정. 자동 감지 모니터 설정과 업무 자동화(Super+W)
         "$mainMod SHIFT, 9, movetoworkspace, 9"
         "$mainMod SHIFT, 0, movetoworkspace, 10"
       ];
+
       bindm = [
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
+
       windowrule = [
         "match:title (.*Slack.*), workspace 2"
         "match:class (ghostty), workspace 1"
       ];
     };
   };
+
+  # Declarative Hyprland Session for GDM
+  home.file.\".local/share/wayland-sessions/hyprland-nix.desktop\".text = ''
+    [Desktop Entry]
+    Name=Hyprland (Nix)
+    Exec=${config.home.homeDirectory}/.nix-profile/bin/nix-gui-run ${config.home.homeDirectory}/.nix-profile/bin/start-hyprland
+    Type=Application
+    DesktopNames=Hyprland
+  '';
 }
 ```
 
-### 4.8 ~/home_env_dotfiles/nix/modules/wofi.nix
-Wofi 런처 설정. GTK 기반으로 안정적인 실행과 CSS를 통한 스타일링을 지원한다.
+### 4.2 ~/home_env_dotfiles/nix/modules/gui-utils.nix
+GPU 자동 감지 래퍼 스크립트 설정이다.
 
 ```nix
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
+let
+  nix-gui-run = pkgs.writeShellScriptBin "nix-gui-run" ''
+    if command -v nvidia-smi &>/dev/null; then
+      if command -v nixGLNvidia &>/dev/null; then
+        exec nixGLNvidia "$@"
+      else
+        exec nixGLIntel "$@"
+      fi
+    else
+      exec nixGLIntel "$@"
+    fi
+  '';
+in
 {
-  programs.wofi = {
-    enable = true;
-    settings = {
-      allow_images = true;
-      insensitive = true;
-      prompt = "Search Apps...";
-      width = "30%";
-      lines = 10;
-      location = "center";
-      hide_scroll = true;
-      mode = "drun";
-    };
-    style = ''
-      /* Wofi CSS Styles... */
-    '';
-  };
+  home.packages = [ nix-gui-run ];
 }
 ```
 
 ## 5. 설치 및 적용
 
 ```bash
-# 1. 레포지토리 클론 (또는 다운로드)
-git clone <YOUR_REPO_URL> ~/home_env_dotfiles
-cd ~/home_env_dotfiles
-
-# 2. 변경된 파일 Git 인식 (Nix Flake 필수)
+# 1. 변경된 파일 Git 인식
 git add .
 
-# 3. Home Manager 적용 (Native Linux & WSL 통합)
-home-manager switch --flake .#yongminari -b backup
-
-# 4. Node.js 설치 (fnm 이용)
-fnm install --lts
-fnm default lts-latest
+# 2. Home Manager 적용
+home-manager switch --flake .#yongminari-x86-linux -b backup
 ```
-
-### 5.1 클라우드 드라이브 설정 (rclone)
-
-Google Drive와 OneDrive를 자동 마운트하여 로컬 디렉토리처럼 사용하기 위한 절차입니다.
-
-1.  **FUSE3 설치:** `sudo apt install fuse3 -y`
-2.  **rclone config 실행:**
-    - `rclone config` 명령어를 입력합니다.
-    - `n` (New remote) 선택 후 이름을 **`gdrive`**로 설정하고 드라이브 타입을 선택하여 인증을 마칩니다.
-    - 같은 방식으로 **`onedrive`** 원격 저장소를 만듭니다.
-3.  **systemd 서비스 활성화:**
-    ```bash
-    systemctl --user daemon-reload
-    systemctl --user enable --now rclone-mount-gdrive
-    systemctl --user enable --now rclone-mount-onedrive
-    ```
-4.  **확인:** 드라이브가 `~/mnt/gdrive`, `~/mnt/onedrive`에 정상적으로 마운트되었는지 확인합니다.
 
 ## 6. 트러블슈팅
 
-- **GPU Warning:** "Non-NixOS system..." 경고는 무시해도 되며, 하드웨어 가속이 필요하면 경고 메시지에 나온 `non-nixos-gpu-setup` 명령어를 `sudo`로 실행한다.
-- **폰트 깨짐:** 터미널(Ghostty 등) 폰트를 `Maple Mono NF` 또는 `UbuntuMono Nerd Font`로 설정했는지 확인한다.
-- **Vim 단축키 충돌:** NeoVim 사용 시 `Ctrl+g`를 눌러 Zellij를 **Locked 모드**로 전환하면 NeoVim의 모든 단축키를 그대로 사용할 수 있다.
-- **패키지 업데이트:** `nix flake update` 후 `hms`를 실행한다.
-
-## 7. 제거 (Uninstallation)
-
-Nix 환경을 완전히 제거하고 시스템을 이전 상태로 복구해야 할 경우, 설치 방식에 따라 다음 중 하나를 선택한다.
-
-### 7.1 Determinate Systems 방식으로 설치한 경우 (방법 A)
-DetSys 전용 언인스톨러를 사용하여 가장 깔끔하게 삭제할 수 있다.
-```bash
-/nix/nix-installer uninstall
-```
-
-### 7.2 공식 스크립트로 설치했거나 강제 제거가 필요한 경우 (방법 B)
-프로젝트 루트에 포함된 `uninstall-nix.sh` 스크립트를 사용하여 수동으로 잔재를 청소한다.
-```bash
-chmod +x uninstall-nix.sh
-./uninstall-nix.sh
-```
-
-### 7.3 `uninstall-nix.sh` 수행 작업
-- **셸 복구:** Nix를 통해 설정된 Zsh/Nushell에서 시스템 기본 Bash(`/bin/bash`)로 자동 전환
-- **프로파일 정리:** Home Manager가 생성한 심볼릭 링크 및 프로파일 삭제
-- **서비스 중지:** `nix-daemon` 서비스 및 소켓 중지/비활성화
-- **사용자 삭제:** Nix 빌드용 사용자(`nixbld1~32`) 및 그룹 제거
-- **디렉토리 삭제:** `/nix`, `/etc/nix`, `~/.nix-profile` 등 관련 경로 완전 삭제
-- **Nushell 설정 정리:** `~/.config/nushell` 폴더 정리 안내
-
-### 7.4 사후 확인
-스크립트 실행 후에는 반드시 **로그아웃 후 다시 로그인**하거나 **재부팅**하여 모든 환경 변수 및 경로 설정을 초기화해야 한다.
+- **Ghostty 실행 에러:** 직접 설치한 Ghostty와 충돌이 날 수 있으므로 `env -i` 옵션을 사용하거나 Nix 버전 Ghostty를 사용한다.
+- **한글 입력:** `hypr_shortcuts`를 통해 단축키를 확인하고 `ibus-setup`을 완료한다.
+- **패키지 업데이트:** `nix flake update` 후 `hmsx`를 실행한다.

@@ -217,4 +217,4 @@ chmod +x uninstall-nix.sh
 
 ---
 
-**Note:** Ghostty configuration is managed, but the binary should be installed manually on Native Linux.
+**Note:** All components, including the Ghostty terminal and Hyprland WM, are fully managed by Nix for consistent performance and graphics compatibility.

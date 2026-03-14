@@ -20,6 +20,7 @@
     xsel 
     wl-clipboard 
     rclone
+    ghostty
     
     # [OpenGL/GUI Support for non-NixOS]
     inputs.nixgl.packages.${pkgs.system}.nixGLIntel

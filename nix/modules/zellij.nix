@@ -37,7 +37,13 @@ let
   '';
 in
 {
-  home.packages = [ pkgs.zellij ];
+  programs.zellij = {
+    enable = true;
+    # 쉘 통합(Bash, Zsh)은 이미 수동으로 세밀하게 제어하고 있으므로 
+    # 여기서 자동 활성화는 하지 않고 설정 파일만 관리합니다.
+    enableZshIntegration = false;
+    enableBashIntegration = false;
+  };
   
   # 로컬 설정 (Ctrl g) - 내장 gruvbox-dark 테마 사용
   xdg.configFile."zellij/config.kdl".text = mkZellijConfig "Ctrl g" "gruvbox-dark";

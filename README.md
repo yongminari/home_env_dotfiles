@@ -87,24 +87,16 @@ nix run home-manager/master -- switch --flake .#yongminari -b backup
 
 ### 5. Hyprland Session Setup (Non-NixOS Systems)
 
-If you are using Ubuntu or other non-NixOS distros, you must manually register the Hyprland session to your login manager (e.g., GDM).
+To register Hyprland to your login manager (e.g., GDM) and manage it declaratively:
 
-1. Find the path of your Nix-installed Hyprland: `which Hyprland`
-2. Create a session file: `sudo nano /usr/share/wayland-sessions/hyprland.desktop`
-3. Paste the following configuration (replace `Exec` with your actual path):
+1. **Apply Config:** Run `hmsx` to generate the session file at `~/.local/share/wayland-sessions/hyprland-nix.desktop`.
+2. **Copy to System:** Run the following command to copy it to the system session directory (recommended over symlink to avoid permission issues):
+   ```bash
+   sudo cp ~/.local/share/wayland-sessions/hyprland-nix.desktop /usr/share/wayland-sessions/
+   ```
+3. **Logout** and select **"Hyprland (Nix)"** from the gear icon menu at the login screen.
 
-```ini
-[Desktop Entry]
-Name=Hyprland (Nix)
-Comment=An intelligent dynamic tiling Wayland compositor
-Exec=/home/yongminari/.nix-profile/bin/nixGLIntel /home/yongminari/.nix-profile/bin/Hyprland
-Type=Application
-DesktopNames=Hyprland
-```
-
-> **Note:** Use `nixGLIntel` (or your specific GPU variant) in the `Exec` line if you experience a black screen or crashes on Ubuntu.
-
-4. **Logout** and select **"Hyprland (Nix)"** from the gear icon menu at the login screen.
+> **Note:** If you experience graphics issues with external apps (like **Ghostty**), this configuration automatically unsets `LD_LIBRARY_PATH` during launch to ensure system library compatibility.
 
 ### 5. Korean Input (IBus) Setup
 

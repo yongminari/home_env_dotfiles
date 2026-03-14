@@ -17,6 +17,7 @@
     ./modules/rclone.nix
     ./modules/hyprland.nix
     ./modules/wofi.nix
+    ./modules/gui-utils.nix
   ];
 
   targets.genericLinux.enable = pkgs.stdenv.isLinux;

@@ -54,31 +54,26 @@ mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
-### 2.4 Hyprland 세션 등록 (Ubuntu 등 Native Linux 전용)
-Nix로 설치한 Hyprland는 시스템 세션 목록에 자동으로 등록되지 않으므로, 로그인 화면(GDM)에서 선택할 수 있도록 수동 등록이 필요하다.
+### 2.4 Hyprland 세션 등록 및 자동 관리 (Native Linux 전용)
+Nix로 설치한 Hyprland를 시스템 로그인 화면(GDM)에 등록하고, 이후 설정을 Nix로 자동 업데이트하기 위해 심볼릭 링크 방식을 사용한다.
 
-1. **Hyprland 실행 경로 확인:**
+1. **Home Manager 적용:**
+   `hmsx` 명령어로 설정을 적용하면 `~/.local/share/wayland-sessions/hyprland-nix.desktop` 파일이 사용자 정보에 맞춰 자동 생성된다.
+
+2. **기존 수동 파일 제거 (있는 경우):**
    ```bash
-   which Hyprland
-   # 예: /home/yongminari/.nix-profile/bin/Hyprland
+   sudo rm /usr/share/wayland-sessions/hyprland-nix.desktop
    ```
 
-2. **데스크탑 엔트리 파일 생성 (sudo 권한 필요):**
+3. **파일 복사 (sudo 권한 필요):**
+   Nix가 생성한 파일을 시스템 세션 폴더에 복사한다. (심볼릭 링크는 권한 문제로 로그인이 안 될 수 있으므로 복사를 권장한다.)
    ```bash
-   sudo nano /usr/share/wayland-sessions/hyprland-nix.desktop
+   sudo cp ~/.local/share/wayland-sessions/hyprland-nix.desktop /usr/share/wayland-sessions/
    ```
 
-3. **아래 내용 붙여넣기 (Exec 경로 주의):**
-   ```ini
-   [Desktop Entry]
-   Name=Hyprland (Nix)
-   Comment=An intelligent dynamic tiling Wayland compositor (Nix-installed)
-   Exec=/home/yongminari/.nix-profile/bin/Hyprland
-   Type=Application
-   DesktopNames=Hyprland
-   ```
+4. **로그아웃 후 확인:** 로그인 화면 우측 하단 톱니바퀴 아이콘에서 **Hyprland (Nix)**를 선택하여 진입한다.
 
-4. **로그아웃 후 확인:** 로그인 화면 우측 하단 톱니바퀴 아이콘에서 **Hyprland (Nix)**를 선택한다.
+> **Tip:** 만약 Nix 설정 변경 후 세션 정보를 갱신하고 싶다면 위 복사 명령어를 다시 한 번 실행해준다.
 
 ### 2.5 한글 입력기 (IBus) 설정
 Hyprland 환경에서 한글을 입력하기 위해 IBus를 사용한다. 최초 1회 수동 설정이 필요하다.
@@ -349,7 +344,7 @@ Hyprland TWM 설정. 자동 감지 모니터 설정과 업무 자동화(Super+W)
       };
       bind = [
         "$mainMod, Return, exec, ghostty"
-        "$mainMod, R, exec, pkill wofi || nixGLIntel wofi --show drun"
+        "$mainMod, R, exec, pkill wofi || nix-gui-run wofi --show drun"
         "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
         "$mainMod, F, fullscreen, 0"
         "$mainMod, comma, focusmonitor, -1"

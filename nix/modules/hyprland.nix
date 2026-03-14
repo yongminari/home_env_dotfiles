@@ -7,20 +7,24 @@
     # System settings
     settings = {
       # 1. Monitor Setup (범용 설정: 어떤 모니터든 최적 해상도로 자동 감지)
-      # No spaces after commas is preferred in some versions.
       monitor = [
         ",preferred,auto,1"
       ];
 
       # 2. Auto-start & Environment Variables
       exec-once = [
-        "ibus-daemon -rxRd"
+        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "ibus-daemon -drx"
       ];
 
       env = [
+        "XDG_CURRENT_DESKTOP, Hyprland"
+        "XDG_SESSION_TYPE, wayland"
+        "XDG_SESSION_DESKTOP, Hyprland"
         "XMODIFIERS, @im=ibus"
         "GTK_IM_MODULE, ibus"
         "QT_IM_MODULE, ibus"
+        "QT_IM_MODULES, ibus"
         "SDL_IM_MODULE, ibus"
         "GLFW_IM_MODULE, ibus"
         "IBUS_COMPONENT_PATH, ${config.home.homeDirectory}/.nix-profile/share/ibus/component"
@@ -40,47 +44,41 @@
         };
       };
 
-      # 3. Keybindings (The System Layer - Super)
+      # 3. Keybindings
       bind = [
-        # Basic operations
-        "$mainMod, Return, exec, ghostty"
+        # Basic operations (Reset LD_LIBRARY_PATH to fix OpenGL issues while keeping other variables)
+        "$mainMod, Return, exec, env LD_LIBRARY_PATH=\"\" ghostty"
         "$mainMod, Q, killactive,"
         "$mainMod, M, exit,"
         "$mainMod, V, togglefloating,"
-        "$mainMod, R, exec, pkill wofi || /home/yongminari/.nix-profile/bin/nixGLIntel /home/yongminari/.nix-profile/bin/wofi --show drun"
+        # Use nix-gui-run for automatic GPU detection
+        "$mainMod, R, exec, pkill wofi || nix-gui-run wofi --show drun"
         "$mainMod, P, pseudo," 
         "$mainMod, J, togglesplit,"
 
-        # Focus management (Vim-style)
         "$mainMod, h, movefocus, l"
         "$mainMod, l, movefocus, r"
         "$mainMod, k, movefocus, u"
         "$mainMod, j, movefocus, d"
 
-        # Monitor Focus cycling (Dual monitor support)
-        "$mainMod, comma, focusmonitor, -1"
-        "$mainMod, period, focusmonitor, +1"
+        "$mainMod, comma, focusmonitor, l"
+        "$mainMod, period, focusmonitor, r"
 
-        # Window movement (Move active window)
         "$mainMod SHIFT, h, movewindow, l"
         "$mainMod SHIFT, l, movewindow, r"
         "$mainMod SHIFT, k, movewindow, u"
         "$mainMod SHIFT, j, movewindow, d"
 
-        # Window Resizing (Super + Alt + h/j/k/l)
         "$mainMod ALT, h, resizeactive, -40 0"
         "$mainMod ALT, l, resizeactive, 40 0"
         "$mainMod ALT, k, resizeactive, 0 -40"
         "$mainMod ALT, j, resizeactive, 0 40"
 
-        # Fullscreen & Layout
         "$mainMod, f, fullscreen, 0"
-        
-        # Scratchpad (Special Workspace)
         "$mainMod, s, togglespecialworkspace, magic"
         "$mainMod SHIFT, s, movetoworkspace, special:magic"
 
-        # Workspace navigation (1-10)
+        # Workspaces 1-10
         "$mainMod, 1, workspace, 1"
         "$mainMod, 2, workspace, 2"
         "$mainMod, 3, workspace, 3"
@@ -92,7 +90,6 @@
         "$mainMod, 9, workspace, 9"
         "$mainMod, 0, workspace, 10"
 
-        # Moving windows to workspaces (1-10)
         "$mainMod SHIFT, 1, movetoworkspace, 1"
         "$mainMod SHIFT, 2, movetoworkspace, 2"
         "$mainMod SHIFT, 3, movetoworkspace, 3"
@@ -104,28 +101,22 @@
         "$mainMod SHIFT, 9, movetoworkspace, 9"
         "$mainMod SHIFT, 0, movetoworkspace, 10"
 
-        # 업무 자동화 (파바박): Super + W 
-        # 직접 설치하신 크롬을 호출 (path에 있을 것으로 가정)
         "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
-
-        # Scroll through existing workspaces with mainMod + scroll (Touchpad two-finger scroll)
         "$mainMod, mouse_up, workspace, e-1"
         "$mainMod, mouse_down, workspace, e+1"
       ];
 
-      # Mouse bindings
       bindm = [
         "$mainMod, mouse:272, movewindow"
         "$mainMod, mouse:273, resizewindow"
       ];
 
-      # 4. Window & Workspace Rules (Unified windowrule syntax v0.53.0+)
+      # 4. Window Rules (Unified windowrule syntax v0.53.0+)
       windowrule = [
         "match:title (.*Slack.*), workspace 2"
         "match:class (ghostty), workspace 1"
       ];
 
-      # Appearance & Layout
       general = {
         gaps_in = 5;
         gaps_out = 10;
@@ -158,4 +149,15 @@
       };
     };
   };
+
+  # Generate a session file in the user's local directory
+  # Using nix-gui-run for automatic GPU detection
+  home.file.".local/share/wayland-sessions/hyprland-nix.desktop".text = ''
+    [Desktop Entry]
+    Name=Hyprland (Nix)
+    Comment=An intelligent dynamic tiling Wayland compositor (Nix-managed)
+    Exec=${config.home.homeDirectory}/.nix-profile/bin/nix-gui-run ${config.home.homeDirectory}/.nix-profile/bin/start-hyprland
+    Type=Application
+    DesktopNames=Hyprland
+  '';
 }

@@ -75,6 +75,7 @@ safe_require("obsidian", function(obsidian)
         ["x"] = { char = "", hl_group = "ObsidianDone" },
         ["v"] = { char = "", hl_group = "ObsidianCheck" },
       },
+      legacy_commands = false, -- 경고 제거
     })
   end
   vim.keymap.set("n", "<leader>on", "<cmd>Obsidian new<cr>")
@@ -94,16 +95,33 @@ if cmp_ok then
   })
 end
 
--- Treesitter & LSP Config
+-- Treesitter Config
 safe_require("nvim-treesitter.configs", function(configs) configs.setup { highlight = { enable = true }, indent = { enable = true } } end)
 
+-- [LSP Config (Neovim 0.11+ Modern Way)]
 local capabilities = {}
 local cmp_lsp_ok, cmp_nvim_lsp = pcall(require, "cmp_nvim_lsp")
 if cmp_lsp_ok then capabilities = cmp_nvim_lsp.default_capabilities() end
 
 local servers = { 'gopls', 'nil_ls' }
-local lspconfig_ok, lspconfig = pcall(require, "lspconfig")
-if lspconfig_ok then
-  for _, lsp in ipairs(servers) do lspconfig[lsp].setup { capabilities = capabilities } end
-  lspconfig.clangd.setup { capabilities = capabilities, cmd = { "clangd", "--offset-encoding=utf-16" } }
+
+-- Neovim 0.11에서 새로 도입된 vim.lsp.config API를 우선 사용합니다.
+if vim.lsp.config then
+  for _, lsp in ipairs(servers) do
+    vim.lsp.config(lsp, { capabilities = capabilities })
+    vim.lsp.enable(lsp)
+  end
+  -- clangd 전용 안전 설정
+  vim.lsp.config('clangd', {
+    capabilities = capabilities,
+    cmd = { "clangd", "--offset-encoding=utf-16" }
+  })
+  vim.lsp.enable('clangd')
+else
+  -- 구 버전(0.10 이하) 호환성을 위한 nvim-lspconfig Fallback
+  local lspconfig_ok, lspconfig = pcall(require, "lspconfig")
+  if lspconfig_ok then
+    for _, lsp in ipairs(servers) do lspconfig[lsp].setup { capabilities = capabilities } end
+    lspconfig.clangd.setup { capabilities = capabilities, cmd = { "clangd", "--offset-encoding=utf-16" } }
+  end
 end

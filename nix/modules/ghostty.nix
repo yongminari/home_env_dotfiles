@@ -3,7 +3,9 @@
 {
   programs.ghostty = {
     enable = true;
-    
+    enableZshIntegration = true;
+    enableBashIntegration = true;
+
     # [Ghostty 설정] - Nix 속성 세트 방식으로 정의
     settings = {
       # [Font]

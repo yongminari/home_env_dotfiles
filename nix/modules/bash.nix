@@ -3,26 +3,39 @@
 {
   programs.bash = {
     enable = true;
+    
+    # [Bash 초기화] - 표준 initExtra 사용
     initExtra = ''
-      # SSH 및 Docker 접속 여부 확인 함수
-      function is_ssh() {
-        [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] || \
-        [[ "$(ps -o comm= -p $PPID 2>/dev/null)" == "sshd" ]]
-      }
-      function is_docker() {
-        [[ -f /.dockerenv ]] || grep -q "docker" /proc/1/cgroup 2>/dev/null
-      }
+      # [Environment Detection]
+      function is_ssh() { [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]]; }
+      function is_docker() { [[ -e /.dockerenv ]] || grep -q "docker" /proc/1/cgroup 2>/dev/null; }
+      function is_vscode() { [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TERM_PROGRAM" == "vscode" ]]; }
 
-      # SSH 또는 Docker 접속 시 Starship 전용 설정 적용 및 Zellij 원격 설정 로드
+      # [Theme & Prompt Settings]
       if is_ssh || is_docker; then
         export STARSHIP_CONFIG="$HOME/.config/starship-ssh.toml"
-        alias zellij="zellij --config $HOME/.config/zellij/remote.kdl"
       fi
 
       # [Welcome Message]
-      if [[ $- == *i* ]]; then
-        welcome-msg
+      if [[ $- == *i* ]]; then welcome-msg; fi
+
+      # [Zellij Auto-start]
+      if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && ! is_vscode; then
+        if is_ssh || is_docker; then
+          exec zellij --config "$HOME/.config/zellij/remote.kdl"
+        else
+          exec zellij
+        fi
       fi
+
+      # [Zellij Wrapper]
+      function zellij() {
+        if is_ssh || is_docker; then
+          command zellij --config "$HOME/.config/zellij/remote.kdl" "$@"
+        else
+          command zellij "$@"
+        fi
+      }
     '';
   };
 }

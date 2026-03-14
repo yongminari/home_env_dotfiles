@@ -15,7 +15,6 @@ Native Linux(Ubuntu 등)와 WSL 환경을 하나의 통합된 코드베이스로
 - **Window Manager:** Hyprland (Wayland-native TWM, 자동 감지 모니터 설정, 3계층 단축키 전략)
 - **App Launcher:** Wofi (GTK 기반 안정적인 런처, CSS 테마 지원)
 - **Cloud Storage:** rclone mount (Google Drive, OneDrive)
-- **GPU Acceleration:** nix-gui-run (AMD/Intel/Nvidia 자동 감지 래퍼)
 
 ## 2. 필수 사전 준비 (Manual Steps)
 
@@ -78,139 +77,36 @@ Hyprland 환경에서 한글을 입력하기 위해 IBus를 사용한다. 최초
 │       ├── zellij.nix    # Zellij 옵션 및 키바인딩
 │       ├── hyprland.nix  # Hyprland TWM 및 자동화 단축키
 │       ├── wofi.nix      # Wofi 런처 및 테마 설정
-│       └── gui-utils.nix # GPU 래퍼(nix-gui-run) 설정
 └── .gitignore
 ```
 
 ## 4. 파일별 상세 코드 (핵심 모듈)
 
-### 4.1 ~/home_env_dotfiles/nix/modules/hyprland.nix
-Hyprland의 핵심 설정 파일이다.
+### 4.7 ~/home_env_dotfiles/nix/modules/hyprland.nix
+Hyprland TWM 설정 파일(`hyprland.conf`)을 생성한다. 엔진은 `apt`로 관리하므로 설정 관리에만 집중한다.
 
 ```nix
 { config, pkgs, ... }:
 
 {
-  wayland.windowManager.hyprland = {
-    enable = true;
-    settings = {
-      monitor = [ ",preferred,auto,1" ];
-      "$mainMod" = "SUPER";
+  xdg.configFile."hypr/hyprland.conf".text = ''
+    # Monitor & Input
+    monitor=,preferred,auto,1
+    input {
+        kb_layout = us
+        kb_options = ctrl:nocaps
+        touchpad { natural_scroll = true }
+    }
 
-      exec-once = [
-        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "ibus-daemon -drx"
-      ];
-
-      env = [
-        "XDG_CURRENT_DESKTOP, Hyprland"
-        "XDG_SESSION_TYPE, wayland"
-        "XDG_SESSION_DESKTOP, Hyprland"
-        "XMODIFIERS, @im=ibus"
-        "GTK_IM_MODULE, ibus"
-        "QT_IM_MODULE, ibus"
-        "IBUS_COMPONENT_PATH, ${config.home.homeDirectory}/.nix-profile/share/ibus/component"
-        "XDG_DATA_DIRS, $HOME/.nix-profile/share:/usr/local/share:/usr/share:$XDG_DATA_DIRS"
-      ];
-
-      input = {
-        kb_layout = "us";
-        kb_options = "ctrl:nocaps";
-        touchpad.natural_scroll = true;
-      };
-
-      bind = [
-        "$mainMod, Return, exec, ghostty"
-        "$mainMod, R, exec, pkill wofi || nix-gui-run wofi --show drun"
-        "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
-        "$mainMod, F, fullscreen, 0"
-        "$mainMod, Q, killactive,"
-        "$mainMod, M, exit,"
-        "$mainMod, V, togglefloating,"
-        "$mainMod, S, togglespecialworkspace, magic"
-        "$mainMod SHIFT, S, movetoworkspace, special:magic"
-
-        # Focus & Monitor
-        "$mainMod, h, movefocus, l"
-        "$mainMod, l, movefocus, r"
-        "$mainMod, k, movefocus, u"
-        "$mainMod, j, movefocus, d"
-        "$mainMod, comma, focusmonitor, l"
-        "$mainMod, period, focusmonitor, r"
-
-        # Window Move & Resize
-        "$mainMod SHIFT, h, movewindow, l"
-        "$mainMod SHIFT, l, movewindow, r"
-        "$mainMod ALT, h, resizeactive, -40 0"
-        "$mainMod ALT, l, resizeactive, 40 0"
-
-        # Workspaces 1-10
-        "$mainMod, 1, workspace, 1"
-        "$mainMod, 2, workspace, 2"
-        "$mainMod, 3, workspace, 3"
-        "$mainMod, 4, workspace, 4"
-        "$mainMod, 5, workspace, 5"
-        "$mainMod, 6, workspace, 6"
-        "$mainMod, 7, workspace, 7"
-        "$mainMod, 8, workspace, 8"
-        "$mainMod, 9, workspace, 9"
-        "$mainMod, 0, workspace, 10"
-        "$mainMod SHIFT, 1, movetoworkspace, 1"
-        "$mainMod SHIFT, 2, movetoworkspace, 2"
-        "$mainMod SHIFT, 3, movetoworkspace, 3"
-        "$mainMod SHIFT, 4, movetoworkspace, 4"
-        "$mainMod SHIFT, 5, movetoworkspace, 5"
-        "$mainMod SHIFT, 6, movetoworkspace, 6"
-        "$mainMod SHIFT, 7, movetoworkspace, 7"
-        "$mainMod SHIFT, 8, movetoworkspace, 8"
-        "$mainMod SHIFT, 9, movetoworkspace, 9"
-        "$mainMod SHIFT, 0, movetoworkspace, 10"
-      ];
-
-      bindm = [
-        "$mainMod, mouse:272, movewindow"
-        "$mainMod, mouse:273, resizewindow"
-      ];
-
-      windowrule = [
-        "match:title (.*Slack.*), workspace 2"
-        "match:class (ghostty), workspace 1"
-      ];
-    };
-  };
-
-  # Declarative Hyprland Session for GDM
-  home.file.\".local/share/wayland-sessions/hyprland-nix.desktop\".text = ''
-    [Desktop Entry]
-    Name=Hyprland (Nix)
-    Exec=${config.home.homeDirectory}/.nix-profile/bin/nix-gui-run ${config.home.homeDirectory}/.nix-profile/bin/start-hyprland
-    Type=Application
-    DesktopNames=Hyprland
+    # Keybindings
+    $mainMod = SUPER
+    bind = $mainMod, Return, exec, ghostty
+    bind = $mainMod, R, exec, pkill wofi || wofi --show drun
+    bind = $mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com
+    bind = $mainMod, Q, killactive,
+    bind = $mainMod, M, exit,
+    # ... (생략 없이 실제 파일은 모든 hjkl 이동 및 워크스페이스 단축키 포함)
   '';
-}
-```
-
-### 4.2 ~/home_env_dotfiles/nix/modules/gui-utils.nix
-GPU 자동 감지 래퍼 스크립트 설정이다.
-
-```nix
-{ config, pkgs, inputs, ... }:
-
-let
-  nix-gui-run = pkgs.writeShellScriptBin "nix-gui-run" ''
-    if command -v nvidia-smi &>/dev/null; then
-      if command -v nixGLNvidia &>/dev/null; then
-        exec nixGLNvidia "$@"
-      else
-        exec nixGLIntel "$@"
-      fi
-    else
-      exec nixGLIntel "$@"
-    fi
-  '';
-in
-{
-  home.packages = [ nix-gui-run ];
 }
 ```
 

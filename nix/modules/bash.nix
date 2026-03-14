@@ -3,12 +3,6 @@
 {
   programs.bash = {
     enable = true;
-    shellAliases = {
-      hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
-      hmsx = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-x86-linux";
-      hmsa = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-linux";
-      hmsm = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-mac";
-    };
     initExtra = ''
       # SSH 및 Docker 접속 여부 확인 함수
       function is_ssh() {

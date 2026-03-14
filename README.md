@@ -31,7 +31,7 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 
 ```text
 ~/home_env_dotfiles
-├── flake.nix             # Entry point (Unified profile with Anyrun flake)
+├── flake.nix             # Entry point
 └── nix
     ├── home.nix          # Main loader
     └── modules
@@ -162,25 +162,23 @@ Follow these steps to auto-mount Google Drive and OneDrive.
 
 ### 🪟 Hyprland & Wofi (TWM)
 
-Keybindings available within a Hyprland session (Main Mod: `Super` / Windows key).
+Keybindings available within a Hyprland session (Main Mod: `Super`).
 
 | Shortcut | Action |
 | :--- | :--- |
 | **`Super + Enter`** | Launch **Ghostty** terminal |
-| **`Super + R`** | Launch **Wofi** (App launcher / Runner) |
-| **`Super + W`** | **Work Automation (Pababak)** - Open Slack, GitHub, and Gmail in Chrome |
+| **`Super + R`** | Launch **Wofi** (App runner) |
+| **`Super + W`** | **Work Automation** - Open Slack, GitHub, and Gmail in Chrome |
 | **`Super + F`** | Toggle Fullscreen |
 | **`Super + Q`** | Close active window (Kill) |
 | **`Super + M`** | Exit Hyprland (Logout) |
 | **`Super + V`** | Toggle Floating mode |
-| **`Super + h/j/k/l`** | Move focus Left/Down/Up/Right (Vim-style) |
+| **`Super + h/j/k/l`** | Move focus (Window/Monitor) |
 | **`Super + , / .`** | Cycle monitor focus |
 | **`Super + Shift + h/j/k/l`** | Move window position |
 | **`Super + Alt + h/j/k/l`** | Resize active window |
-| **`Super + S`** / **`Shift+S`** | Toggle Scratchpad / Move window to scratchpad |
-| **`Super + 1 ~ 0`** | Switch to workspace 1-10 (0 is workspace 10) |
-| **`Super + Shift + 1 ~ 0`** | Move window to workspace 1-10 |
-| **`Super + Mouse Left/Right`** | Drag to Move / Resize windows |
+| **`Super + S`** | Toggle Scratchpad |
+| **`Super + 1 ~ 0`** | Switch to workspace 1-10 |
 
 ## 🔄 Maintenance
 

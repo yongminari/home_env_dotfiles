@@ -1,152 +1,99 @@
 { config, pkgs, ... }:
 
 {
-  # Hyprland Tiling Window Manager Configuration
-  wayland.windowManager.hyprland = {
-    enable = true;
-    settings = {
-      # 1. Monitor Setup (Auto-detection)
-      monitor = [ ",preferred,auto,1" ];
+  # 순수 설정 파일만 관리 (Nix로 엔진을 돌리지 않음)
+  # apt로 설치된 Hyprland가 이 설정을 읽습니다.
+  xdg.configFile."hypr/hyprland.conf".text = ''
+    # --- Monitor ---
+    monitor=,preferred,auto,1
 
-      # 2. Workspace to Monitor Mapping (Optional, for future multi-monitor use)
-      # workspace = [ "1, monitor:DP-1", "6, monitor:DP-2" ];
+    # --- Input ---
+    input {
+        kb_layout = us
+        kb_options = ctrl:nocaps
+        follow_mouse = 1
+        touchpad {
+            natural_scroll = true
+        }
+    }
 
-      # 3. Environment Variables & Auto-start
-      exec-once = [
-        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-        "ibus-daemon -drx"
-      ];
+    # --- Appearance ---
+    general {
+        gaps_in = 5
+        gaps_out = 10
+        border_size = 2
+        col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
+        col.inactive_border = rgba(595959aa)
+        layout = dwindle
+    }
 
-      env = [
-        "XDG_CURRENT_DESKTOP, Hyprland"
-        "XDG_SESSION_TYPE, wayland"
-        "XDG_SESSION_DESKTOP, Hyprland"
-        "XMODIFIERS, @im=ibus"
-        "GTK_IM_MODULE, ibus"
-        "QT_IM_MODULE, ibus"
-        "QT_IM_MODULES, ibus"
-        "SDL_IM_MODULE, ibus"
-        "IBUS_COMPONENT_PATH, ${config.home.homeDirectory}/.nix-profile/share/ibus/component"
-        "XDG_DATA_DIRS, $HOME/.nix-profile/share:/usr/local/share:/usr/share:$XDG_DATA_DIRS"
-      ];
+    decoration {
+        rounding = 10
+        blur {
+            enabled = true
+            size = 3
+            passes = 1
+        }
+    }
 
-      # 4. Input Configuration
-      "$mainMod" = "SUPER";
-      input = {
-        kb_layout = "us";
-        kb_options = "ctrl:nocaps"; # Replace Caps Lock with Ctrl
-        follow_mouse = 1;
-        touchpad.natural_scroll = true;
-        sensitivity = 0;
-      };
+    animations {
+        enabled = true
+        bezier = myBezier, 0.05, 0.9, 0.1, 1.05
+        animation = windows, 1, 7, myBezier
+        animation = windowsOut, 1, 7, default, popin 80%
+        animation = border, 1, 10, default
+        animation = fade, 1, 7, default
+        animation = workspaces, 1, 6, default
+    }
 
-      # 5. Keybindings (The Hierarchy Strategy)
-      bind = [
-        # --- System Layer (Super) ---
-        "$mainMod, Return, exec, ghostty"
-        "$mainMod, Q, killactive,"
-        "$mainMod, M, exit,"
-        "$mainMod, V, togglefloating,"
-        "$mainMod, F, fullscreen, 0"
-        "$mainMod, R, exec, pkill wofi || nix-gui-run wofi --show drun"
-        "$mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com"
+    # --- Keybindings (Pure System Commands) ---
+    $mainMod = SUPER
 
-        # --- Window & Focus Management ---
-        "$mainMod, h, movefocus, l"
-        "$mainMod, l, movefocus, r"
-        "$mainMod, k, movefocus, u"
-        "$mainMod, j, movefocus, d"
-        "$mainMod, comma, focusmonitor, l"
-        "$mainMod, period, focusmonitor, r"
+    bind = $mainMod, Return, exec, ghostty
+    bind = $mainMod, Q, killactive,
+    bind = $mainMod, M, exit,
+    bind = $mainMod, V, togglefloating,
+    bind = $mainMod, R, exec, pkill wofi || wofi --show drun
+    bind = $mainMod, W, exec, google-chrome-stable --new-window https://slack.com https://github.com https://gmail.com
+    bind = $mainMod, F, fullscreen, 0
+    bind = $mainMod, S, togglespecialworkspace, magic
+    bind = $mainMod SHIFT, S, movetoworkspace, special:magic
 
-        "$mainMod SHIFT, h, movewindow, l"
-        "$mainMod SHIFT, l, movewindow, r"
-        "$mainMod SHIFT, k, movewindow, u"
-        "$mainMod SHIFT, j, movewindow, d"
+    # Focus
+    bind = $mainMod, h, movefocus, l
+    bind = $mainMod, l, movefocus, r
+    bind = $mainMod, k, movefocus, u
+    bind = $mainMod, j, movefocus, d
 
-        "$mainMod ALT, h, resizeactive, -40 0"
-        "$mainMod ALT, l, resizeactive, 40 0"
-        "$mainMod ALT, k, resizeactive, 0 -40"
-        "$mainMod ALT, j, resizeactive, 0 40"
+    # Workspaces
+    bind = $mainMod, 1, workspace, 1
+    bind = $mainMod, 2, workspace, 2
+    bind = $mainMod, 3, workspace, 3
+    bind = $mainMod, 4, workspace, 4
+    bind = $mainMod, 5, workspace, 5
+    bind = $mainMod, 6, workspace, 6
+    bind = $mainMod, 7, workspace, 7
+    bind = $mainMod, 8, workspace, 8
+    bind = $mainMod, 9, workspace, 9
+    bind = $mainMod, 0, workspace, 10
 
-        # --- Workspaces & Scratchpad ---
-        "$mainMod, S, togglespecialworkspace, magic"
-        "$mainMod SHIFT, S, movetoworkspace, special:magic"
-        "$mainMod, mouse_up, workspace, e-1"
-        "$mainMod, mouse_down, workspace, e+1"
+    bind = $mainMod SHIFT, 1, movetoworkspace, 1
+    bind = $mainMod SHIFT, 2, movetoworkspace, 2
+    bind = $mainMod SHIFT, 3, movetoworkspace, 3
+    bind = $mainMod SHIFT, 4, movetoworkspace, 4
+    bind = $mainMod SHIFT, 5, movetoworkspace, 5
+    bind = $mainMod SHIFT, 6, movetoworkspace, 6
+    bind = $mainMod SHIFT, 7, movetoworkspace, 7
+    bind = $mainMod SHIFT, 8, movetoworkspace, 8
+    bind = $mainMod SHIFT, 9, movetoworkspace, 9
+    bind = $mainMod SHIFT, 0, movetoworkspace, 10
 
-        # Workspaces 1-10 (Navigation & Moving)
-        "$mainMod, 1, workspace, 1"
-        "$mainMod, 2, workspace, 2"
-        "$mainMod, 3, workspace, 3"
-        "$mainMod, 4, workspace, 4"
-        "$mainMod, 5, workspace, 5"
-        "$mainMod, 6, workspace, 6"
-        "$mainMod, 7, workspace, 7"
-        "$mainMod, 8, workspace, 8"
-        "$mainMod, 9, workspace, 9"
-        "$mainMod, 0, workspace, 10"
+    # Mouse
+    bindm = $mainMod, mouse:272, movewindow
+    bindm = $mainMod, mouse:273, resizewindow
 
-        "$mainMod SHIFT, 1, movetoworkspace, 1"
-        "$mainMod SHIFT, 2, movetoworkspace, 2"
-        "$mainMod SHIFT, 3, movetoworkspace, 3"
-        "$mainMod SHIFT, 4, movetoworkspace, 4"
-        "$mainMod SHIFT, 5, movetoworkspace, 5"
-        "$mainMod SHIFT, 6, movetoworkspace, 6"
-        "$mainMod SHIFT, 7, movetoworkspace, 7"
-        "$mainMod SHIFT, 8, movetoworkspace, 8"
-        "$mainMod SHIFT, 9, movetoworkspace, 9"
-        "$mainMod SHIFT, 0, movetoworkspace, 10"
-      ];
-
-      # 6. Mouse Bindings
-      bindm = [
-        "$mainMod, mouse:272, movewindow"
-        "$mainMod, mouse:273, resizewindow"
-      ];
-
-      # 7. Window Rules (v0.53.0+ Unified)
-      windowrule = [
-        "match:title (.*Slack.*), workspace 2"
-        "match:class (ghostty), workspace 1"
-      ];
-
-      # 8. Aesthetics & Layout
-      general = {
-        gaps_in = 5;
-        gaps_out = 10;
-        border_size = 2;
-        "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-        "col.inactive_border" = "rgba(595959aa)";
-        layout = "dwindle";
-      };
-
-      decoration = {
-        rounding = 10;
-        blur = { enabled = true; size = 3; passes = 1; };
-      };
-
-      animations = {
-        enabled = true;
-        bezier = "myBezier, 0.05, 0.9, 0.1, 1.05";
-        animation = [
-          "windows, 1, 7, myBezier"
-          "windowsOut, 1, 7, default, popin 80%"
-          "border, 1, 10, default"
-          "fade, 1, 7, default"
-          "workspaces, 1, 6, default"
-        ];
-      };
-    };
-  };
-
-  # Declarative Hyprland Session for GDM
-  home.file.".local/share/wayland-sessions/hyprland-nix.desktop".text = ''
-    [Desktop Entry]
-    Name=Hyprland (Nix)
-    Comment=An intelligent dynamic tiling Wayland compositor (Nix-managed)
-    Exec=${config.home.homeDirectory}/.nix-profile/bin/nix-gui-run ${config.home.homeDirectory}/.nix-profile/bin/start-hyprland
-    Type=Application
-    DesktopNames=Hyprland
+    # --- Window Rules ---
+    windowrule = match:title (.*Slack.*), workspace 2
+    windowrule = match:class (ghostty), workspace 1
   '';
 }

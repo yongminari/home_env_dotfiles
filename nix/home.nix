@@ -17,7 +17,6 @@
     ./modules/rclone.nix
     ./modules/hyprland.nix
     ./modules/wofi.nix
-    ./modules/gui-utils.nix
   ];
 
   targets.genericLinux.enable = pkgs.stdenv.isLinux;
@@ -29,4 +28,23 @@
   manual.json.enable = false;
 
   programs.home-manager.enable = true;
+
+  # [공통 쉘 에일리어스] - 모든 쉘(Bash, Zsh, Nushell)에서 공유됨
+  home.shellAliases = {
+    # Home Manager 관련
+    hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
+    hmsx = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-x86-linux";
+    hmsa = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-linux";
+    hmsm = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-mac";
+
+    # CLI 유틸리티 (Eza, Bat, Neovim)
+    ls = "eza";
+    ll = "eza -l --icons --git -a";
+    lt = "eza --tree --level=2 --long --icons --git";
+    cat = "bat";
+    vi = "nvim";
+    vim = "nvim";
+    zj = "zellij";
+    tocb = "wl-clipboard"; # xclip 대신 현대적인 wl-clipboard 우선
+  };
 }

@@ -69,11 +69,19 @@
     bindsym $mod+k focus up
     bindsym $mod+l focus right
 
+    # Focus Output (Multi-monitor)
+    bindsym $mod+comma focus output left
+    bindsym $mod+period focus output right
+
     # Move Window (Explicit h,j,k,l)
     bindsym $mod+Shift+h move left
     bindsym $mod+Shift+j move down
     bindsym $mod+Shift+k move up
     bindsym $mod+Shift+l move right
+
+    # Move Workspace to Output
+    bindsym $mod+Shift+comma move workspace to output left
+    bindsym $mod+Shift+period move workspace to output right
 
     # Workspaces
     bindsym $mod+1 workspace number 1

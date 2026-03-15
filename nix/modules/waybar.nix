@@ -18,12 +18,24 @@
         
         modules-left = [ "sway/workspaces" "sway/mode" ];
         modules-center = [ "clock" ];
-        modules-right = [ "cpu" "memory" "network" "tray" ];
+        modules-right = [ "cpu" "memory" "network" "battery" "tray" ];
 
         "sway/workspaces" = {
           disable-scroll = true;
           all-outputs = true;
           format = "{name}";
+        };
+
+        "battery" = {
+          states = {
+            warning = 30;
+            critical = 15;
+          };
+          format = " {icon} {capacity}% ";
+          format-charging = " 󰂄 {capacity}% ";
+          format-plugged = " 󰚥 {capacity}% ";
+          format-alt = " {icon} {time} ";
+          format-icons = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
         };
 
         "clock" = {
@@ -44,37 +56,32 @@
 
     style = ''
       * {
-        font-family: "Maple Mono NF", "Font Awesome 6 Free";
+        font-family: "Symbols Nerd Font", "Maple Mono NF", "Font Awesome 6 Free";
         font-size: 13px;
         border: none;
         border-radius: 0;
       }
       
       window#waybar {
-        background-color: rgba(30, 30, 46, 0.9); /* Catppuccin Base with opacity */
-        border: 2px solid rgba(203, 166, 247, 0.5); /* Catppuccin Mauve */
+        background-color: rgba(30, 30, 46, 0.9);
+        border: 2px solid rgba(203, 166, 247, 0.5);
         border-radius: 12px;
-        color: #cdd6f4; /* Catppuccin Text */
+        color: #cdd6f4;
       }
       
       #workspaces button {
         padding: 0 10px;
-        color: #6c7086; /* Catppuccin Overlay0 */
+        color: #6c7086;
         margin: 4px 2px;
         border-radius: 8px;
       }
       
       #workspaces button.focused {
-        background-color: #313244; /* Catppuccin Surface0 */
-        color: #cba6f7; /* Catppuccin Mauve */
+        background-color: #313244;
+        color: #cba6f7;
       }
       
-      #workspaces button:hover {
-        background-color: #45475a; /* Catppuccin Surface1 */
-        color: #f5c2e7; /* Catppuccin Pink */
-      }
-
-      #clock, #cpu, #memory, #network, #tray {
+      #clock, #cpu, #memory, #network, #battery, #tray {
         padding: 0 15px;
         margin: 4px 2px;
         background-color: #313244;
@@ -82,10 +89,21 @@
         color: #cdd6f4;
       }
 
-      #clock { color: #f9e2af; /* Catppuccin Yellow */ }
-      #cpu { color: #a6e3a1; /* Catppuccin Green */ }
-      #memory { color: #89b4fa; /* Catppuccin Blue */ }
-      #network { color: #f5c2e7; /* Catppuccin Pink */ }
+      #clock { color: #f9e2af; }
+      #cpu { color: #a6e3a1; }
+      #memory { color: #89b4fa; }
+      #network { color: #f5c2e7; }
+      #battery { color: #fab387; /* Catppuccin Peach */ }
+      #battery.charging { color: #a6e3a1; /* Catppuccin Green */ }
+      #battery.warning:not(.charging) { color: #fab387; }
+      #battery.critical:not(.charging) { color: #f38ba8; /* Catppuccin Red */ animation: blink 0.5s steps(5) infinite; }
+
+      @keyframes blink {
+        to {
+          background-color: #f38ba8;
+          color: #1e1e2e;
+        }
+      }
     '';
   };
 }

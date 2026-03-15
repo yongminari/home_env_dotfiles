@@ -47,10 +47,9 @@
     gaps outer 5
     font pango:Maple Mono NF 11
 
-    # --- Output & Wallpaper ---
-    # To use an image: output * bg /path/to/your/image.jpg fill
+    # --- Output ---
     output * {
-        background $mantle solid_color
+        background $base solid_color
     }
 
     # --- Keybindings ---
@@ -63,17 +62,17 @@
     bindsym $mod+f fullscreen toggle
     bindsym $mod+v floating toggle
 
-    # Focus (Explicit h,j,k,l)
+    # Focus
     bindsym $mod+h focus left
     bindsym $mod+j focus down
     bindsym $mod+k focus up
     bindsym $mod+l focus right
 
-    # Focus Output (Multi-monitor)
+    # Focus Output
     bindsym $mod+comma focus output left
     bindsym $mod+period focus output right
 
-    # Move Window (Explicit h,j,k,l)
+    # Move Window
     bindsym $mod+Shift+h move left
     bindsym $mod+Shift+j move down
     bindsym $mod+Shift+k move up
@@ -113,13 +112,12 @@
     bindsym $mod+w layout tabbed
     bindsym $mod+e layout toggle split
 
-    # Resizing (Direct)
+    # Resizing
     bindsym $mod+Alt+h resize shrink width 10px
     bindsym $mod+Alt+j resize grow height 10px
     bindsym $mod+Alt+k resize shrink height 10px
     bindsym $mod+Alt+l resize grow width 10px
 
-    # Resizing (Mode)
     mode "resize" {
         bindsym h resize shrink width 10px
         bindsym j resize grow height 10px
@@ -130,12 +128,31 @@
     }
     bindsym $mod+r mode "resize"
 
+    # IBus Setup Alias (For manual configuration)
+    set $ibus_cmd env -i HOME=$HOME USER=$USER PATH=/usr/bin:/bin XDG_DATA_DIRS=/usr/share:/usr/local/share /usr/bin/ibus
+    bindsym $mod+Shift+space exec $ibus_cmd engine hangul
+
     # --- Auto Start ---
     exec waybar
     exec swaybg -m solid_color -c "#181825"
-    exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway \
-         GTK_IM_MODULE=ibus QT_IM_MODULE=ibus XMODIFIERS=@im=ibus
-    exec ibus-daemon -drxR
+    
+    # [ULTIMATE FIX] Synchronize all environment variables before anything else
+    exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway XMODIFIERS GTK_IM_MODULE QT_IM_MODULE
+    exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XMODIFIERS GTK_IM_MODULE QT_IM_MODULE
+
+    # [UBUNTU PURE FIX] Completely isolate system IBus from Nix influence
+    exec pkill ibus-daemon || true
+    exec env -i \
+        HOME=$HOME \
+        USER=$USER \
+        DISPLAY=$DISPLAY \
+        WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
+        XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
+        DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS \
+        PATH=/usr/bin:/bin \
+        XDG_DATA_DIRS=/usr/share:/usr/local/share \
+        sh -c "/usr/bin/ibus-daemon --wayland -drxR && sleep 2 && /usr/bin/ibus engine hangul"
+
     exec swayidle -w \
          timeout 300 'swaylock -c 11111b' \
          timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
@@ -143,7 +160,7 @@
 
     # --- Input Configuration ---
     input "type:keyboard" {
-        xkb_layout us
+        # xkb_layout us
         xkb_options ctrl:nocaps
     }
     input "type:touchpad" {

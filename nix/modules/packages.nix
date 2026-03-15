@@ -16,6 +16,7 @@
     lolcat
     lsb-release
     rclone
+    swaybg
     
     # [클립보드 관리]
     xclip 

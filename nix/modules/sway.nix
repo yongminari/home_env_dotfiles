@@ -5,17 +5,45 @@
   xdg.configFile."sway/config".text = ''
     # --- Variables ---
     set $mod Mod4
-    set $left h
-    set $down j
-    set $up k
-    set $right l
-    # Fix library conflicts for Ghostty (Nix)
     set $term env -u LD_LIBRARY_PATH ghostty
     set $menu rofi -show drun
 
+    # --- Catppuccin Mocha Colors ---
+    set $rosewater #f5e0dc
+    set $flamingo  #f2cdcd
+    set $pink      #f5c2e7
+    set $mauve     #cba6f7
+    set $red       #f38ba8
+    set $maroon    #eba0ac
+    set $peach     #fab387
+    set $yellow    #f9e2af
+    set $green     #a6e3a1
+    set $teal      #94e2d5
+    set $sky       #89dceb
+    set $sapphire  #74c7ec
+    set $blue      #89b4fa
+    set $lavender  #b4befe
+    set $text      #cdd6f4
+    set $subtext1  #bac2de
+    set $subtext0  #a6adc8
+    set $overlay2  #9399b2
+    set $overlay1  #7f849c
+    set $overlay0  #6c7086
+    set $surface2  #585b70
+    set $surface1  #45475a
+    set $surface0  #313244
+    set $base      #1e1e2e
+    set $mantle    #181825
+    set $crust     #11111b
+
     # --- Appearance ---
-    default_border pixel 2
-    gaps inner 8
+    client.focused           $mauve  $base   $text   $rosewater $mauve
+    client.focused_inactive  $overlay0 $base $text   $rosewater $overlay0
+    client.unfocused         $overlay0 $base $text   $rosewater $overlay0
+    client.urgent            $red    $base   $text   $rosewater $red
+
+    default_border pixel 3
+    gaps inner 10
     gaps outer 5
     font pango:Maple Mono NF 11
 
@@ -25,25 +53,27 @@
     }
 
     # --- Keybindings ---
+    # Basic
     bindsym $mod+Return exec $term
     bindsym $mod+q kill
     bindsym $mod+d exec $menu
-    bindsym $mod+Escape exec swaylock -c 000000
+    bindsym $mod+Escape exec swaylock -c 11111b
     bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit Sway?' -b 'Yes' 'swaymsg exit'
+    bindsym $mod+Shift+c reload
     bindsym $mod+f fullscreen toggle
     bindsym $mod+v floating toggle
 
-    # Focus
-    bindsym $mod+$left focus left
-    bindsym $mod+$down focus down
-    bindsym $mod+$up focus up
-    bindsym $mod+$right focus right
+    # Focus (Explicit h,j,k,l)
+    bindsym $mod+h focus left
+    bindsym $mod+j focus down
+    bindsym $mod+k focus up
+    bindsym $mod+l focus right
 
-    # Move Window
-    bindsym $mod+Shift+$left move left
-    bindsym $mod+Shift+$down move down
-    bindsym $mod+Shift+$up move up
-    bindsym $mod+Shift+$right move right
+    # Move Window (Explicit h,j,k,l)
+    bindsym $mod+Shift+h move left
+    bindsym $mod+Shift+j move down
+    bindsym $mod+Shift+k move up
+    bindsym $mod+Shift+l move right
 
     # Workspaces
     bindsym $mod+1 workspace number 1
@@ -68,24 +98,39 @@
     bindsym $mod+Shift+9 move container to workspace number 9
     bindsym $mod+Shift+0 move container to workspace number 10
 
-    # Layout & Control
-    bindsym $mod+Shift+b splith
+    # Layout & Splitting
+    bindsym $mod+b splith
     bindsym $mod+Shift+v splitv
     bindsym $mod+s layout stacking
     bindsym $mod+w layout tabbed
     bindsym $mod+e layout toggle split
 
+    # Resizing (Direct with Super + Alt + h,j,k,l)
+    bindsym $mod+Alt+h resize shrink width 10px
+    bindsym $mod+Alt+j resize grow height 10px
+    bindsym $mod+Alt+k resize shrink height 10px
+    bindsym $mod+Alt+l resize grow width 10px
+
+    # Resizing (Mode)
+    mode "resize" {
+        bindsym h resize shrink width 10px
+        bindsym j resize grow height 10px
+        bindsym k resize shrink height 10px
+        bindsym l resize grow width 10px
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+    }
+    bindsym $mod+r mode "resize"
+
     # --- Auto Start ---
     exec waybar
-    
-    # 1. Update Activation Environment (Wayland & IBus variables)
     exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway \
-         GTK_IM_MODULE=ibus QT_IM_MODULE=ibus XMODIFIERS=@im=ibus \
-         SDL_IM_MODULE=ibus GLFW_IM_MODULE=ibus
-
-    # 2. Restart IBus Daemon with Wayland support
-    exec pkill ibus-daemon
+         GTK_IM_MODULE=ibus QT_IM_MODULE=ibus XMODIFIERS=@im=ibus
     exec ibus-daemon -drxR
+    exec swayidle -w \
+         timeout 300 'swaylock -c 11111b' \
+         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+         before-sleep 'swaylock -c 11111b'
 
     # --- Input Configuration ---
     input "type:keyboard" {

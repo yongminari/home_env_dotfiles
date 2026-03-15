@@ -47,13 +47,13 @@
     gaps outer 5
     font pango:Maple Mono NF 11
 
-    # --- Output ---
+    # --- Output & Wallpaper ---
+    # To use an image: output * bg /path/to/your/image.jpg fill
     output * {
-        background #1e1e2e solid_color
+        background $mantle solid_color
     }
 
     # --- Keybindings ---
-    # Basic
     bindsym $mod+Return exec $term
     bindsym $mod+q kill
     bindsym $mod+d exec $menu
@@ -105,7 +105,7 @@
     bindsym $mod+w layout tabbed
     bindsym $mod+e layout toggle split
 
-    # Resizing (Direct with Super + Alt + h,j,k,l)
+    # Resizing (Direct)
     bindsym $mod+Alt+h resize shrink width 10px
     bindsym $mod+Alt+j resize grow height 10px
     bindsym $mod+Alt+k resize shrink height 10px
@@ -124,6 +124,7 @@
 
     # --- Auto Start ---
     exec waybar
+    exec swaybg -m solid_color -c "#181825"
     exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway \
          GTK_IM_MODULE=ibus QT_IM_MODULE=ibus XMODIFIERS=@im=ibus
     exec ibus-daemon -drxR

@@ -7,7 +7,7 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
-    # 1. 환경 감지 및 공통 환경 변수 (Bash와 Nushell에서도 공유할 수 있게 추후 통합 예정)
+    # 1. 환경 감지 및 공통 환경 변수
     envExtra = ''
       # Ghostty TERM fix
       if [[ "$TERM" == "xterm-ghostty" ]] && ! command -v infocmp &>/dev/null; then

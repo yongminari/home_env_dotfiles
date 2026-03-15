@@ -7,25 +7,15 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 
 - **⚡ Shell:** Zsh (Main), **Nushell (Experimental)**, and Bash optimized with **Starship (Jetpack Theme)**.
 - **🛠️ Modern Core Utils:** Replaces legacy tools with modern Rust alternatives.
-  - `ls` -> `eza` (Icons & Git status)
-  - `cd` -> `zoxide` (Smarter navigation)
-  - `cat` -> `bat` (Syntax highlighting)
-  - `find` -> `fd` / `grep` -> `ripgrep`
-  - `direnv` -> **`direnv` (Nix-direnv integrated)**
-- **💻 Terminal Multiplexer:** **Zellij** (Modern Rust-based) managed via standard Nix modules.
-  - Auto-start on launch (except VS Code).
-  - Prefix: `Ctrl + g` (Local) / `Ctrl + a` (Remote/Docker) toggle.
-  - Modern UI with multi-theme support (Gruvbox/Catppuccin).
+  - `ls` -> `eza`, `cd` -> `zoxide`, `cat` -> `bat`, `find` -> `fd`, `grep` -> `ripgrep`.
+  - `direnv` -> **`direnv` (Nix-direnv integrated)**.
+- **💻 Terminal Multiplexer:** **Zellij** managed via standard Nix modules.
 - **📝 Editor:** **Neovim** (Modern Modular Setup).
   - Fully modular Lua configuration split by function (`options`, `keymaps`, `plugins`, `utils`).
-  - Integrated LSP (Go, Nix, C++), Treesitter, Telescope, and Obsidian.nvim.
-- **☁️ Cloud Storage:** **rclone** automated mounting via systemd services.
-  - Google Drive & OneDrive auto-mount via systemd.
-  - Mount paths: `~/mnt/gdrive`, `~/mnt/onedrive`.
-- **🪟 Window Manager:** **Hyprland** (Wayland-native TWM) with dual 4K monitor support and workspace automation.
-- **🚀 App Launcher:** **Wofi** with modern translucent dark theme.
-- **🤖 AI:** Auto-installation of `@google/gemini-cli`.
-- **📦 Modular & Standardized:** Clean file structure using the latest Home Manager patterns and centralized shell aliases.
+- **🪟 Window Manager:** **Sway** (Wayland-native TWM) - Reliable and standardized for Ubuntu 24.04.
+- **🚀 App Launcher:** **Rofi** (Wayland-native) with modern Dracula dark theme.
+- **📊 Status Bar:** **Waybar** with hardware monitors (CPU, Memory, Network).
+- **📦 Modular & Standardized:** Clean file structure using the latest Home Manager patterns.
 
 ## 📂 Directory Structure
 
@@ -38,64 +28,53 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
         ├── shell.nix     # Shell configuration bridge
         ├── neovim.nix    # Neovim module loader
         ├── neovim/       # Modular Lua configurations
-        │   └── lua/      # options.lua, keymaps.lua, plugins.lua, utils.lua
-        ├── zellij.nix    # Multiplexer config with remote/local templates
-        ├── ghostty.nix   # GPU-accelerated terminal config
+        ├── zellij.nix    # Multiplexer config
+        ├── sway.nix      # Sway TWM configuration & Keybindings
+        ├── rofi.nix      # Rofi launcher & styles configuration
+        ├── waybar.nix    # Status bar layout & styles
         ├── packages.nix  # Categorized system packages
-        ├── git.nix       # Standardized Git user config
-        ├── hyprland.nix  # Hyprland TWM configuration & Keybindings
-        └── wofi.nix      # Wofi launcher & styles configuration
+        └── git.nix       # Standardized Git user config
 ```
 
-## 🚀 Installation
+## 🚀 Installation (Ubuntu 24.04)
 
-### 1. Install Nix
-
-Choose one of the following two installation methods depending on your system environment.
-
-#### Method A: Determinate Systems Installer (Recommended)
+### 1. Install Engines (via apt)
+For stability and driver compatibility on Ubuntu 24.04, the core engines must be installed via the system package manager.
 ```bash
+sudo apt update
+sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk swaylock swayidle
+```
+
+### 2. Install Nix & Clone Repo
+```bash
+# Install Nix
 curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
-```
 
-#### Method B: Official Install Script (Legacy)
-```bash
-sh <(curl -L https://nixos.org/nix/install) --daemon
-```
-
-### 2. Enable Flakes (Required for Method B)
-```bash
-mkdir -p ~/.config/nix
-echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
-```
-
-### 3. Clone & Setup
-
-```bash
+# Clone this repo
 git clone <YOUR_REPO_URL> ~/home_env_dotfiles
 cd ~/home_env_dotfiles
 ```
 
-### 4. Apply Configuration
-
+### 3. Apply Configuration
 ```bash
-# General switch (x86_64 Linux)
+# Apply Nix Home Manager setup
 hmsx
 ```
 
-## ⌨️ Cheat Sheet
+## ⌨️ Cheat Sheet (Sway TWM)
 
-| Command | Action | Alias |
-| :--- | :--- | :--- |
-| `hms` | Apply Nix configuration | `home-manager switch ...` |
-| `hmsx` | Apply for x86_64 Linux | - |
-| `ll` / `lt` | List files (Grid / Tree view) | `eza ...` |
-| `zj` | Start Zellij session | - |
-| `vi` / `vim` | Open Neovim | `nvim` |
-| `Space + f` | Find files (Telescope) | - |
-| `Ctrl + n` | Toggle File Explorer | `Neotree` |
-| `Super + R` | Launch Wofi Runner | - |
+| Shortcut | Action |
+| :--- | :--- |
+| **`Super + Enter`** | Launch **Ghostty** terminal |
+| **`Super + D`** | Launch **Rofi** (App runner) |
+| **`Super + Q`** | Close active window (Kill) |
+| **`Super + F`** | Toggle Fullscreen |
+| **`Super + V`** | Toggle Floating mode |
+| **`Super + h/j/k/l`** | Move focus (Left, Down, Up, Right) |
+| **`Super + Shift + h/j/k/l`** | Move window position |
+| **`Super + 1 ~ 0`** | Switch to workspace 1-10 |
+| **`Super + Shift + E`** | Exit Sway (Logout) |
 
 ---
 
-**Note:** All components are managed declaratively via Nix Home Manager for maximum consistency across different environments.
+**Note:** The binary engines (Sway, Rofi, Waybar) are managed by `apt` for system-level stability, while all configurations are managed declaratively via Nix Home Manager.

@@ -15,8 +15,8 @@
 
     # --- Appearance ---
     default_border pixel 2
-    gaps inner 5
-    gaps outer 10
+    gaps inner 8
+    gaps outer 5
     font pango:Maple Mono NF 11
 
     # --- Output ---
@@ -25,7 +25,6 @@
     }
 
     # --- Keybindings ---
-    # Basic
     bindsym $mod+Return exec $term
     bindsym $mod+q kill
     bindsym $mod+d exec $menu
@@ -34,7 +33,7 @@
     bindsym $mod+f fullscreen toggle
     bindsym $mod+v floating toggle
 
-    # Focus (Navigation)
+    # Focus
     bindsym $mod+$left focus left
     bindsym $mod+$down focus down
     bindsym $mod+$up focus up
@@ -78,15 +77,15 @@
 
     # --- Auto Start ---
     exec waybar
-    exec ibus-daemon -drx
-    exec swayidle -w \
-         timeout 300 'swaylock -c 000000' \
-         timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
-         before-sleep 'swaylock -c 000000'
     
-    # DBus/Systemd Environment Sync
+    # 1. Update Activation Environment (Wayland & IBus variables)
     exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway \
-         GTK_IM_MODULE=ibus QT_IM_MODULE=ibus XMODIFIERS=@im=ibus
+         GTK_IM_MODULE=ibus QT_IM_MODULE=ibus XMODIFIERS=@im=ibus \
+         SDL_IM_MODULE=ibus GLFW_IM_MODULE=ibus
+
+    # 2. Restart IBus Daemon with Wayland support
+    exec pkill ibus-daemon
+    exec ibus-daemon -drxR
 
     # --- Input Configuration ---
     input "type:keyboard" {

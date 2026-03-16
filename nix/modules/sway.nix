@@ -135,12 +135,16 @@
     exec waybar
     exec swaybg -m solid_color -c "#181825"
     
-    # [ULTIMATE FIX] Synchronize all environment variables before anything else
-    exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway XDG_SESSION_TYPE=wayland XMODIFIERS GTK_IM_MODULE QT_IM_MODULE GLFW_IM_MODULE SDL_IM_MODULE
-    exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XMODIFIERS GTK_IM_MODULE QT_IM_MODULE GLFW_IM_MODULE SDL_IM_MODULE
+    # [ULTIMATE FIX] Synchronize ALL environment variables
+    exec dbus-update-activation-environment --systemd --all
+    exec systemctl --user import-environment --all
 
-    # Start Fcitx5 (using -r to ensure it's the primary instance)
+    # Start Fcitx5 (Force replace to ensure it is the primary instance)
     exec /usr/bin/fcitx5 -dr
+
+    # Restart portals AFTER fcitx5 starts to ensure they pick it up
+    # This is critical for immediate activation without opening a GUI window
+    exec systemctl --user restart xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk || true
 
     exec swayidle -w \
          timeout 300 'swaylock -c 11111b' \

@@ -28,10 +28,34 @@ sudo apt update
 sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk swaylock swayidle
 ```
 
-### 2.3 한글 입력기 (IBus) 설정
-Sway 환경에서 한글을 입력하기 위해 IBus를 사용한다. 
-1. `ibus-setup` 실행 후 'Korean - Hangul' 추가.
-2. 'Preferences'에서 한영 전환 키(예: Shift+Space) 등록.
+### 2.3 한글 입력기 (Fcitx5) 설정
+안정적인 한글 입력을 위해 IBus 대신 Fcitx5를 사용한다. Ubuntu 24.04와 Nix 환경의 충돌을 방지하기 위해 시스템 패키지(`apt`)로 설치한다.
+
+1. **기본 IBus 제거 (충돌 방지)**
+   ```bash
+   sudo apt purge ibus ibus-hangul
+   sudo apt autoremove
+   ```
+
+2. **Fcitx5 설치**
+   ```bash
+   sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
+   ```
+
+3. **시스템 기본 입력기 설정**
+   ```bash
+   im-config -n fcitx5
+   ```
+
+4. **데스크탑 자동 실행 등록 (GNOME/Wayland)**
+   ```bash
+   mkdir -p ~/.config/autostart
+   cp /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
+   ```
+
+5. **한글 엔진 설정**
+   - `fcitx5-config-qt` 실행 후 'Hangul' 추가.
+   - 'Hangul' 설정에서 'Commit with space' 옵션 해제 (공백 버그 방지).
 
 ## 3. 디렉토리 구조
 

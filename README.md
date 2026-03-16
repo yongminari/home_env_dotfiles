@@ -39,10 +39,19 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 ## 🚀 Installation (Ubuntu 24.04)
 
 ### 1. Install Engines (via apt)
-For stability and driver compatibility on Ubuntu 24.04, the core engines must be installed via the system package manager.
+For stability and driver compatibility on Ubuntu 24.04, the core engines and input method must be installed via the system package manager.
 ```bash
+# Core TWM Utils
 sudo apt update
 sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk swaylock swayidle
+
+# Korean Input Method (Fcitx5)
+sudo apt purge ibus ibus-hangul # Remove default IBus
+sudo apt autoremove
+sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
+im-config -n fcitx5 # Set fcitx5 as default
+mkdir -p ~/.config/autostart
+cp /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
 ```
 
 ### 2. Install Nix & Clone Repo

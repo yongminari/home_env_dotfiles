@@ -128,30 +128,19 @@
     }
     bindsym $mod+r mode "resize"
 
-    # IBus Setup Alias (For manual configuration)
-    set $ibus_cmd env -i HOME=$HOME USER=$USER PATH=/usr/bin:/bin XDG_DATA_DIRS=/usr/share:/usr/local/share /usr/bin/ibus
-    bindsym $mod+Shift+space exec $ibus_cmd engine hangul
+    # Fcitx5 Setup Alias (For manual configuration)
+    set $fcitx_cmd /usr/bin/fcitx5-config-qt
 
     # --- Auto Start ---
     exec waybar
     exec swaybg -m solid_color -c "#181825"
     
     # [ULTIMATE FIX] Synchronize all environment variables before anything else
-    exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway XMODIFIERS GTK_IM_MODULE QT_IM_MODULE
-    exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XMODIFIERS GTK_IM_MODULE QT_IM_MODULE
+    exec dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP=sway XDG_SESSION_TYPE=wayland XMODIFIERS GTK_IM_MODULE QT_IM_MODULE GLFW_IM_MODULE SDL_IM_MODULE
+    exec systemctl --user import-environment DISPLAY WAYLAND_DISPLAY SWAYSOCK XDG_CURRENT_DESKTOP XDG_SESSION_TYPE XMODIFIERS GTK_IM_MODULE QT_IM_MODULE GLFW_IM_MODULE SDL_IM_MODULE
 
-    # [UBUNTU PURE FIX] Completely isolate system IBus from Nix influence
-    exec pkill ibus-daemon || true
-    exec env -i \
-        HOME=$HOME \
-        USER=$USER \
-        DISPLAY=$DISPLAY \
-        WAYLAND_DISPLAY=$WAYLAND_DISPLAY \
-        XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR \
-        DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS \
-        PATH=/usr/bin:/bin \
-        XDG_DATA_DIRS=/usr/share:/usr/local/share \
-        sh -c "/usr/bin/ibus-daemon --wayland -drxR && sleep 2 && /usr/bin/ibus engine hangul"
+    # Start Fcitx5 (using -r to ensure it's the primary instance)
+    exec /usr/bin/fcitx5 -dr
 
     exec swayidle -w \
          timeout 300 'swaylock -c 11111b' \

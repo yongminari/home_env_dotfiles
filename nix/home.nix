@@ -32,9 +32,11 @@
 
   # [전역 세션 환경 변수]
   home.sessionVariables = {
-    XMODIFIERS = "@im=ibus";
-    GTK_IM_MODULE = "ibus";
-    QT_IM_MODULE = "ibus";
+    XMODIFIERS = "@im=fcitx";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    GLFW_IM_MODULE = "ibus"; # Ghostty 등 GLFW 앱을 위한 필수 설정
+    SDL_IM_MODULE = "fcitx";
   };
 
   # [공통 쉘 에일리어스] - 모든 쉘(Bash, Zsh, Nushell)에서 공유됨

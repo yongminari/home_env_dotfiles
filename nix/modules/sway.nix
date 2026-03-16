@@ -139,12 +139,14 @@
     exec dbus-update-activation-environment --systemd --all
     exec systemctl --user import-environment --all
 
-    # Start Fcitx5 (Force replace to ensure it is the primary instance)
+    # [SURGICAL START] Stop portals -> Start fcitx5 -> Start portals
+    # This ensures portals recognize the input method environment from the start.
+    exec systemctl --user stop xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk || true
     exec /usr/bin/fcitx5 -dr
+    exec systemctl --user start xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk || true
 
-    # Restart portals AFTER fcitx5 starts to ensure they pick it up
-    # This is critical for immediate activation without opening a GUI window
-    exec systemctl --user restart xdg-desktop-portal xdg-desktop-portal-wlr xdg-desktop-portal-gtk || true
+    # [ESC to English] Force English mode when ESC is pressed
+    bindsym --release Escape exec /usr/bin/fcitx5-remote -c
 
     exec swayidle -w \
          timeout 300 'swaylock -c 11111b' \

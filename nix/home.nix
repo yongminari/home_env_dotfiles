@@ -18,6 +18,7 @@
     ./modules/sway.nix
     ./modules/rofi.nix
     ./modules/waybar.nix
+    ./modules/fcitx.nix
   ];
 
   targets.genericLinux.enable = pkgs.stdenv.isLinux;

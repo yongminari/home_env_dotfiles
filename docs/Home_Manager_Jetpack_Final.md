@@ -39,7 +39,7 @@ sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk 
 
 2. **Fcitx5 설치**
    ```bash
-   sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
+   sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt fcitx5-module-lua
    ```
 
 3. **시스템 기본 입력기 설정**

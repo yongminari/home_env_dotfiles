@@ -32,11 +32,7 @@
 
   # [전역 세션 환경 변수]
   home.sessionVariables = {
-    XMODIFIERS = "@im=fcitx";
-    GTK_IM_MODULE = "fcitx";
-    QT_IM_MODULE = "fcitx";
-    GLFW_IM_MODULE = "fcitx"; # Ghostty 등 GLFW 앱을 위한 설정 (fcitx5 사용 시 fcitx로 통일)
-    SDL_IM_MODULE = "fcitx";
+    # 특정 IME 강제 설정은 제거 (GNOME/Sway 세션별로 자동 처리되도록 함)
   };
 
   # [공통 쉘 에일리어스] - 모든 쉘(Bash, Zsh, Nushell)에서 공유됨

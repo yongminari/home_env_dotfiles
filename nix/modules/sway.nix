@@ -139,6 +139,13 @@
     exec dbus-update-activation-environment --systemd --all
     exec systemctl --user import-environment --all
 
+    # [IME Settings for Sway] - Fcitx5 Only for this session
+    exec gsettings set org.gnome.desktop.interface gtk-im-module "fcitx"
+    exec swww-daemon # Wallpaper support if needed
+    
+    # Force Fcitx5 environment for all apps started from Sway
+    exec swaymsg "set $fcitx_env XMODIFIERS=@im=fcitx GTK_IM_MODULE=fcitx QT_IM_MODULE=fcitx GLFW_IM_MODULE=fcitx SDL_IM_MODULE=fcitx"
+
     # Start Fcitx5 (Force replace to ensure it is the primary instance)
     exec /usr/bin/fcitx5 -dr
 

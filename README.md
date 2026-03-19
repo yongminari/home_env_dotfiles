@@ -70,6 +70,28 @@ cd ~/home_env_dotfiles
 hmsx
 ```
 
+## 🛠️ Post-Installation (Essential)
+
+### 1. Set Default Shell to Zsh
+Since Nix doesn't modify system files like `/etc/passwd`, you must manually set Zsh as your default shell.
+```bash
+# 1. Register Nix Zsh to valid shells list
+echo $(which zsh) | sudo tee -a /etc/shells
+
+# 2. Change your default shell
+chsh -s $(which zsh)
+```
+*Note: You may need to log out and log back in for the changes to take effect.*
+
+### 2. Desktop Launcher Support (Ghostty)
+If Ghostty doesn't appear in your GNOME/Sway app launcher after installation:
+- The configuration already includes a symlink to `~/.local/share/applications/`.
+- If it still doesn't show up, run `hmsx` again and restart your session.
+
+### 3. Troubleshooting: Korean Input (Sway)
+- **First Window Issue:** In Sway, the very first Ghostty window might not accept Korean input.
+- **Solution:** Simply open a **second Ghostty window** (`Super + Enter`), and Korean input (Fcitx5) will work perfectly in all subsequent windows. (This is a known timing issue between GLFW and DBus).
+
 ## ⌨️ Cheat Sheet (Sway TWM)
 
 | Shortcut | Action |

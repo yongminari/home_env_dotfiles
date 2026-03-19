@@ -5,7 +5,8 @@
   xdg.configFile."sway/config".text = ''
     # --- Variables ---
     set $mod Mod4
-    set $term env -u LD_LIBRARY_PATH ${pkgs.ghostty}/bin/ghostty
+    # Ghostty 실행 시 IME 환경 변수를 강제로 주입하여 IBus 충돌 방지
+    set $term env XMODIFIERS=@im=fcitx GTK_IM_MODULE=fcitx QT_IM_MODULE=fcitx GLFW_IM_MODULE=fcitx SDL_IM_MODULE=fcitx LD_LIBRARY_PATH= ${pkgs.ghostty}/bin/ghostty
     set $menu rofi -show drun
 
     # --- Catppuccin Mocha Colors ---
@@ -141,11 +142,7 @@
 
     # [IME Settings for Sway] - Fcitx5 Only for this session
     exec gsettings set org.gnome.desktop.interface gtk-im-module "fcitx"
-    exec swww-daemon # Wallpaper support if needed
     
-    # Force Fcitx5 environment for all apps started from Sway
-    exec swaymsg "set $fcitx_env XMODIFIERS=@im=fcitx GTK_IM_MODULE=fcitx QT_IM_MODULE=fcitx GLFW_IM_MODULE=fcitx SDL_IM_MODULE=fcitx"
-
     # Start Fcitx5 (Force replace to ensure it is the primary instance)
     exec /usr/bin/fcitx5 -dr
 

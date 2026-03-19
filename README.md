@@ -46,10 +46,8 @@ sudo apt update
 sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk swaylock swayidle
 
 # Korean Input Method (Fcitx5)
-sudo apt purge ibus ibus-hangul # Remove default IBus
-sudo apt autoremove
+# Fcitx5 is recommended for the Sway environment.
 sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
-im-config -n fcitx5 # Set fcitx5 as default
 mkdir -p ~/.config/autostart
 cp /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
 ```

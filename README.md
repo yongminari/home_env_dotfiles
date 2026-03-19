@@ -44,14 +44,9 @@ For stability and driver compatibility on Ubuntu 24.04, the core engines and inp
 # Core TWM Utils
 sudo apt update
 sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk swaylock swayidle
-# Korean Input Method (Fcitx5)
-sudo apt purge ibus ibus-hangul # Remove default IBus
-sudo apt autoremove
-sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt fcitx5-module-lua
-im-config -n fcitx5 # Set fcitx5 as default
-```
-mkdir -p ~/.config/autostart
-cp /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
+# Korean Input Method (IBus)
+sudo apt install ibus ibus-hangul im-config
+im-config -n ibus # Set ibus as default
 ```
 
 ### 2. Install Nix & Clone Repo

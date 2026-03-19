@@ -5,7 +5,7 @@
   xdg.configFile."sway/config".text = ''
     # --- Variables ---
     set $mod Mod4
-    set $term env -u LD_LIBRARY_PATH ghostty
+    set $term env -u LD_LIBRARY_PATH ${pkgs.ghostty}/bin/ghostty
     set $menu rofi -show drun
 
     # --- Catppuccin Mocha Colors ---

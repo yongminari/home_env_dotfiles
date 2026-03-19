@@ -35,4 +35,9 @@
       clipboard-write = "allow";
     };
   };
+
+  # [GNOME 런처 인식 문제 해결]
+  # Nix가 설치한 Ghostty의 .desktop 파일을 GNOME이 인식할 수 있는 표준 경로로 심볼릭 링크합니다.
+  home.file.".local/share/applications/com.mitchellh.ghostty.desktop".source = 
+    "${pkgs.ghostty}/share/applications/com.mitchellh.ghostty.desktop";
 }

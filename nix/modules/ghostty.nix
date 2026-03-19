@@ -8,6 +8,7 @@
 
     # [Ghostty 설정] - Nix 속성 세트 방식으로 정의
     settings = {
+      command = "${pkgs.zsh}/bin/zsh";
       # [Font]
       font-family = "Maple Mono NF";
       font-size = 12;

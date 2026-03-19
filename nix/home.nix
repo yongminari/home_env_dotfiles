@@ -35,7 +35,7 @@
     XMODIFIERS = "@im=fcitx";
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
-    GLFW_IM_MODULE = "ibus"; # Ghostty 등 GLFW 앱을 위한 필수 설정
+    GLFW_IM_MODULE = "fcitx"; # Ghostty 등 GLFW 앱을 위한 설정 (fcitx5 사용 시 fcitx로 통일)
     SDL_IM_MODULE = "fcitx";
   };
 

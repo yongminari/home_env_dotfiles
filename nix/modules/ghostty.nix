@@ -3,9 +3,9 @@
 {
   programs.ghostty = {
     enable = true;
-    # [Zsh 문제 해결] - 통합 설정을 끄고 command를 명시적으로 사용합니다.
-    enableZshIntegration = false;
-    enableBashIntegration = false;
+    # [쉘 통합 활성화] - 새 탭 작업 디렉토리 유지 등의 기능을 위해 다시 켭니다.
+    enableZshIntegration = true;
+    enableBashIntegration = true;
 
     # [Ghostty 설정] - Nix 속성 세트 방식으로 정의
     settings = {

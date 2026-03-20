@@ -32,6 +32,7 @@
     clang-tools   # clangd 등 (헤더 검색 등 에디터용)
 
     # [폰트 (Maple Mono, Nerd Fonts)]
+    maple-mono.NF-CN-unhinted
     maple-mono.NF
     nerd-fonts.ubuntu-mono 
     monaspace

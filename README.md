@@ -9,6 +9,8 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 - **🛠️ Modern Core Utils:** Replaces legacy tools with modern Rust alternatives.
   - `ls` -> `eza`, `cd` -> `zoxide`, `cat` -> `bat`, `find` -> `fd`, `grep` -> `ripgrep`.
   - `direnv` -> **`direnv` (Nix-direnv integrated)**.
+  - **TUI File Manager:** **`yazi`** (Fast, Wayland-native image previews).
+  - **Shell History:** **`atuin`** (Magical database-driven history search).
 - **💻 Terminal Multiplexer:** **Zellij** managed via standard Nix modules.
 - **📝 Editor:** **Neovim** (Modern Modular Setup).
   - Fully modular Lua configuration split by function (`options`, `keymaps`, `plugins`, `utils`).
@@ -102,6 +104,12 @@ If Ghostty doesn't appear in your GNOME/Sway app launcher after installation:
 ### 3. Troubleshooting: Korean Input (Sway)
 - **First Window Issue:** In Sway, the very first Ghostty window might not accept Korean input.
 - **Solution:** Simply open a **second Ghostty window** (`Super + Enter`), and Korean input (Fcitx5) will work perfectly in all subsequent windows. (This is a known timing issue between GLFW and DBus).
+
+### 4. Sync Shell History (Atuin)
+Atuin uses its own database. To import your old shell history (e.g., from `~/.zsh_history`) after the first installation, run:
+```bash
+atuin import auto
+```
 
 ## ⌨️ Cheat Sheet (Sway TWM)
 

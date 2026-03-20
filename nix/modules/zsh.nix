@@ -38,7 +38,6 @@
       plugins = [ "git" "virtualenv" "history-substring-search" ];
     };
 
-    # (특수 에일리어스는 유지, 공통 에일리어스는 home.nix에서 로드됨)
     shellAliases = {
     };
   };

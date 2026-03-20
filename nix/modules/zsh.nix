@@ -19,15 +19,7 @@
 
     # 2. 쉘 초기화 (최신 표준 initContent 사용)
     initContent = ''
-      # [Environment Detection]
-      function is_ssh() { [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]]; }
-      function is_docker() { [[ -e /.dockerenv ]] || grep -q "docker" /proc/1/cgroup 2>/dev/null; }
-      function is_vscode() { [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TERM_PROGRAM" == "vscode" ]]; }
-
-      # [Theme & Prompt Settings]
-      if is_ssh || is_docker; then
-        export STARSHIP_CONFIG="$HOME/.config/starship-ssh.toml"
-      fi
+      ${builtins.readFile ./shell-common.sh}
 
       # [Welcome Message]
       if [[ $- == *i* ]]; then welcome-msg; fi
@@ -39,24 +31,6 @@
       # [Keybindings]
       bindkey '^[[A' history-substring-search-up
       bindkey '^[[B' history-substring-search-down
-
-      # [Zellij Auto-start]
-      if [[ $- == *i* ]] && [[ -z "$ZELLIJ" ]] && ! is_vscode; then
-        if is_ssh || is_docker; then
-          exec zellij --config "$HOME/.config/zellij/remote.kdl"
-        else
-          exec zellij
-        fi
-      fi
-
-      # [Zellij Wrapper]
-      function zellij() {
-        if is_ssh || is_docker; then
-          command zellij --config "$HOME/.config/zellij/remote.kdl" "$@"
-        else
-          command zellij "$@"
-        fi
-      }
     '';
 
     oh-my-zsh = {

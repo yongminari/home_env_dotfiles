@@ -51,7 +51,7 @@
     vi = "nvim";
     vim = "nvim";
     zj = "zellij";
-    tocb = "wl-clipboard";
+    tocb = "wl-copy";
     ibus-setup = "env -i HOME=$HOME USER=$USER DISPLAY=$DISPLAY WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS PATH=/usr/bin:/bin XDG_DATA_DIRS=/usr/share:/usr/local/share /usr/bin/ibus-setup";
 
     # [Sway Shortcuts Cheat Sheet - Ultimate Edition]

@@ -12,7 +12,6 @@
     ripgrep 
     fd 
     unzip 
-    lazygit 
     lolcat
     lsb-release
     rclone

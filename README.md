@@ -64,11 +64,24 @@ cd ~/home_env_dotfiles
 
 ### 3. Apply Configuration
 ```bash
-# Apply Nix Home Manager setup
-hmsx
+# Apply Nix Home Manager setup based on your architecture
+hmsx  # x86_64 Linux (Native / WSL)
+hmsa  # AArch64 Linux (Native / Raspberry Pi)
+hmsm  # AArch64 macOS (Apple Silicon)
 ```
 
-## 🛠️ Post-Installation (Essential)
+## 🛠️ Management Aliases
+
+These aliases are automatically configured in your shell to make managing your Home Manager environment easier. They use `$(whoami)` to dynamically detect your username, so they work on any account that matches a configuration in `flake.nix`.
+
+| Alias | Full Command | Description |
+| :--- | :--- | :--- |
+| **`hms`** | `home-manager switch --flake ...#$(whoami)` | Default switch (x86_64 Linux) |
+| **`hmsx`** | `home-manager switch --flake ...#$(whoami)-x86-linux` | **x86_64 Linux** (WSL/Native) |
+| **`hmsa`** | `home-manager switch --flake ...#$(whoami)-aarch-linux` | **AArch64 Linux** |
+| **`hmsm`** | `home-manager switch --flake ...#$(whoami)-aarch-mac` | **Apple Silicon Mac** |
+
+## ⚙️ Post-Installation (Essential)
 
 ### 1. Set Default Shell to Zsh
 Since Nix doesn't modify system files like `/etc/passwd`, you must manually set Zsh as your default shell.

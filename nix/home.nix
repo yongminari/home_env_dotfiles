@@ -38,10 +38,10 @@
   # [공통 쉘 에일리어스] - 모든 쉘(Bash, Zsh, Nushell)에서 공유됨
   home.shellAliases = {
     # Home Manager 관련
-    hms = "home-manager switch --flake ~/home_env_dotfiles/#yongminari";
-    hmsx = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-x86-linux";
-    hmsa = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-linux";
-    hmsm = "home-manager switch --flake ~/home_env_dotfiles/#yongminari-aarch-mac";
+    hms = "home-manager switch --flake ~/home_env_dotfiles/#$(whoami)";
+    hmsx = "home-manager switch --flake ~/home_env_dotfiles/#$(whoami)-x86-linux";
+    hmsa = "home-manager switch --flake ~/home_env_dotfiles/#$(whoami)-aarch-linux";
+    hmsm = "home-manager switch --flake ~/home_env_dotfiles/#$(whoami)-aarch-mac";
 
     # CLI 유틸리티 (Eza, Bat, Neovim)
     ls = "eza";

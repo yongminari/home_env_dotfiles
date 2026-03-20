@@ -81,6 +81,7 @@
     enableZshIntegration = true;
     enableBashIntegration = true;
     enableNushellIntegration = true;
+    shellWrapperName = "y"; # Silence warning and use the new standard default
   };
 
   # Atuin (Magical Shell History)

@@ -48,6 +48,13 @@
             mode: [emacs, vi_insert, vi_normal]
             event: [ { send: executehostcommand, cmd: "commandline edit --insert (history | get command | reverse | uniq | str join (char nl) | fzf --layout=reverse --height=40% --query (commandline) | decode utf-8 | str trim)" } ]
           }
+          {
+            name: fzf_files
+            modifier: control
+            keycode: char_t
+            mode: [emacs, vi_insert, vi_normal]
+            event: [ { send: executehostcommand, cmd: "commandline edit --insert (fd --type f --strip-cwd-prefix --hidden --exclude .git | fzf --layout=reverse --height=40% --preview 'bat --color=always --style=numbers --line-range :500 {}' | decode utf-8 | str trim)" } ]
+          }
         ]
       }
 

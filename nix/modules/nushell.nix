@@ -64,7 +64,18 @@
     '';
 
     # (공통 에일리어스는 home.nix에서 처리됨)
+    # Note: Nushell의 장점(Structured Data, Tables)을 극대화하기 위해 
+    # Bash/Zsh의 시각용 에일리어스(eza, bat)는 여기서 제외하고 native 명령어를 사용합니다.
     shellAliases = {
+      # Navigation & View
+      la = "ls -a";
+      ll = "ls -a";
+      lt = "eza --tree --level=2 --icons --git"; # 트리는 시각적 효과를 위해 eza 유지
+      o  = "open"; # 파일을 테이블 데이터로 열기 (JSON, YAML, CSV 등)
+      
+      # Short Shortcuts
+      g  = "git";
+      v  = "nvim";
     };
   };
 }

@@ -51,11 +51,7 @@
     hmsa = "home-manager switch --flake ~/home_env_dotfiles/#$(whoami)-aarch-linux";
     hmsm = "home-manager switch --flake ~/home_env_dotfiles/#$(whoami)-aarch-mac";
 
-    # CLI 유틸리티 (Eza, Bat, Neovim)
-    ls = "eza";
-    ll = "eza -l --icons --git -a";
-    lt = "eza --tree --level=2 --long --icons --git";
-    cat = "bat";
+    # CLI 유틸리티 (Neovim)
     vi = "nvim";
     vim = "nvim";
     zj = "zellij";

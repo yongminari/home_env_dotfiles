@@ -106,7 +106,8 @@
     bind = $mainMod, Escape, exec, swaylock -c 11111b
     
     # [ESC to English] Force English mode when ESC is pressed (Fcitx5)
-    bindr = , Escape, exec, fcitx5-remote -c
+    # Use 'bindn' (non-consuming) with absolute path to ensure it runs without blocking the key
+    bindn = , Escape, exec, /usr/bin/fcitx5-remote -c
 
     # Focus
     bind = $mainMod, h, movefocus, l

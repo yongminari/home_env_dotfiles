@@ -36,10 +36,27 @@
         "type": "github"
       }
     },
+    "rofi-themes": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1753542257,
+        "narHash": "sha256-iUX0Quae06tGd7gDgXZo1B3KYgPHU+ADPBrowHlv02A=",
+        "owner": "adi1090x",
+        "repo": "rofi",
+        "rev": "093c1a79f58daab358199c4246de50357e5bf462",
+        "type": "github"
+      },
+      "original": {
+        "owner": "adi1090x",
+        "repo": "rofi",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "rofi-themes": "rofi-themes"
       }
     }
   },

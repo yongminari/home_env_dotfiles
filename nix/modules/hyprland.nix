@@ -13,7 +13,7 @@ $mainMod = SUPER
 # --- Keybindings (Direct & Reliable) ---
 # Terminal & Launcher
 bind = $mainMod, Return, exec, ${pkgs.ghostty}/bin/ghostty
-bind = $mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun
+bind = $mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun -theme ~/.config/rofi/launchers/type-6/style-1.rasi
 bind = $mainMod, Q, killactive
 bind = $mainMod, F, fullscreen
 bind = $mainMod, V, togglefloating

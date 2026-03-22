@@ -48,7 +48,7 @@ sudo add-apt-repository ppa:cppiber/hyprland
 sudo apt update
 
 # Install Hyprland and Portals
-sudo apt install hyprland xdg-desktop-portal-hyprland
+sudo apt install hyprland xdg-desktop-portal-hyprland hyprlock
 ```
 
 ### 2. Install Nix & Clone Repo
@@ -84,6 +84,7 @@ These aliases are automatically configured in your shell to make managing your H
 | **`hmsx`** | `home-manager switch --flake ...#$(whoami)-x86-linux` | **x86_64 Linux** (WSL/Native) |
 | **`hmsa`** | `home-manager switch --flake ...#$(whoami)-aarch-linux` | **AArch64 Linux** |
 | **`hmsm`** | `home-manager switch --flake ...#$(whoami)-aarch-mac` | **Apple Silicon Mac** |
+| **`hypr_shortcuts`** | `hypr-cheat` | Show Hyprland keybindings guide |
 
 ## ⚙️ Post-Installation (Essential)
 

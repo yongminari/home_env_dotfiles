@@ -17,6 +17,7 @@
     ./modules/rclone.nix
     # ./modules/sway.nix
     ./modules/hyprland.nix
+    ./modules/hyprlock.nix
     ./modules/rofi.nix
     ./modules/waybar.nix
   ];
@@ -24,27 +25,40 @@
   targets.genericLinux.enable = pkgs.stdenv.isLinux;
   fonts.fontconfig.enable = true;
 
-  # Silence 'options.json' context warning by disabling manual generation
   manual.manpages.enable = false;
   manual.html.enable = false;
   manual.json.enable = false;
 
   programs.home-manager.enable = true;
 
-  # [전역 세션 환경 변수]
-  home.sessionVariables = {
-    # 특정 IME 강제 설정은 제거 (GNOME/Sway 세션별로 자동 처리되도록 함)
-  };
-
-  # [Sway Shortcuts Cheat Sheet - Ultimate Edition]
-  # Nushell 등의 쉘에서 ANSI 이스케이프 시퀀스(\033) 파싱 에러를 방지하기 위해 별도 스크립트로 분리
+  # [Hyprland Shortcuts Cheat Sheet] - 전용 도움말 명령어 생성
   home.packages = [
-    (pkgs.writeShellScriptBin "sway-cheat" ''
-      printf "\n  \033[1;34m🚀 [Launch & Basic]\033[0m\n  \033[1;32mSuper + Enter\033[0m       Launch Ghostty\n  \033[1;32mSuper + D\033[0m           Launch Rofi (Apps)\n  \033[1;32mSuper + Q\033[0m           Kill Active Window\n\n  \033[1;34m🪟 [Window Control]\033[0m\n  \033[1;32mSuper + H/J/K/L\033[0m     Move Focus\n  \033[1;32mSuper + Shift + HJKL\033[0m Move Window Position\n  \033[1;32mSuper + , / .\033[0m       Cycle Monitor Focus\n  \033[1;32mSuper + F\033[0m           Toggle Fullscreen\n  \033[1;32mSuper + V\033[0m           Toggle Floating\n\n  \033[1;34m📐 [Layout & Resize]\033[0m\n  \033[1;32mSuper + B\033[0m           Next split: Horizontal (Right)\n  \033[1;32mSuper + Shift + V\033[0m   Next split: Vertical (Down)\n  \033[1;32mSuper + E\033[0m           Toggle Layout Split (H/V)\n  \033[1;32mSuper + Alt + HJKL\033[0m  Quick Resize Window\n  \033[1;32mSuper + R\033[0m           Enter Resize Mode (Esc to Exit)\n\n  \033[1;34m🔢 [Workspaces]\033[0m\n  \033[1;32mSuper + 1~0\033[0m         Switch Workspace\n  \033[1;32mSuper + Shift + 1~0\033[0m Move Window to Workspace\n\n  \033[1;34m⚙️ [System]\033[0m\n  \033[1;32mSuper + Escape\033[0m      Lock Screen (Swaylock)\n  \033[1;32mSuper + Shift + E\033[0m   Exit Sway (Logout)\n  \033[1;32mSuper + Shift + C\033[0m   Reload Configuration\n  \033[1;32mSuper + Space\033[0m       IBus Language Toggle\n\n" | ${pkgs.lolcat}/bin/lolcat
+    (pkgs.writeShellScriptBin "hypr-cheat" ''
+      printf "\n  \033[1;35m🪄 [Hyprland Core & Launch]\033[0m\n"
+      printf "  \033[1;32mSuper + Enter\033[0m       Launch Ghostty\n"
+      printf "  \033[1;32mSuper + D\033[0m           Launch Rofi (Apps)\n"
+      printf "  \033[1;32mSuper + Q\033[0m           Kill Active Window\n"
+      printf "  \033[1;32mSuper + F\033[0m           Toggle Fullscreen\n"
+      printf "  \033[1;32mSuper + V\033[0m           Toggle Floating\n\n"
+
+      printf "  \033[1;35m🪟 [Window Control]\033[0m\n"
+      printf "  \033[1;32mSuper + h/j/k/l\033[0m     Move Focus (Vim Style)\n"
+      printf "  \033[1;32mSuper + Shift + hjkl\033[0m Move Window Position\n"
+      printf "  \033[1;32mSuper + 1~0\033[0m         Switch Workspace\n"
+      printf "  \033[1;32mSuper + Shift + 1~0\033[0m Move Window to Workspace\n\n"
+
+      printf "  \033[1;35m📸 [Utilities & System]\033[0m\n"
+      printf "  \033[1;32mPrint (PrtSc)\033[0m       Screenshot (Full)\n"
+      printf "  \033[1;32mSuper + Shift + S\033[0m   Screenshot (Area + Editor)\n"
+      printf "  \033[1;32mSuper + Escape\033[0m      Lock Screen (Hyprlock)\n"
+      printf "  \033[1;32mSuper + Shift + E\033[0m   Exit Hyprland (Logout)\n"
+      printf "  \033[1;32mSuper + R\033[0m           Enter Resize Mode\n\n"
+      
+      printf "  \033[1;34m💡 Tip:\033[0m Press \033[1;33mEsc\033[0m to switch IME to English mode.\n\n"
     '')
   ];
 
-  # [공통 쉘 에일리어스] - 모든 쉘(Bash, Zsh, Nushell)에서 공유됨
+  # [공통 쉘 에일리어스]
   home.shellAliases = {
     # Home Manager 관련
     hms = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}";
@@ -52,14 +66,12 @@
     hmsa = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}-aarch-linux";
     hmsm = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}-aarch-mac";
 
-    # CLI 유틸리티 (Neovim)
     vi = "nvim";
     vim = "nvim";
     zj = "zellij";
     tocb = "wl-copy";
-    ibus-setup = "env -i HOME=$HOME USER=$USER DISPLAY=$DISPLAY WAYLAND_DISPLAY=$WAYLAND_DISPLAY XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS PATH=/usr/bin:/bin XDG_DATA_DIRS=/usr/share:/usr/local/share /usr/bin/ibus-setup";
 
-    # [Sway Shortcuts Cheat Sheet - Ultimate Edition]
-    sway_shortcuts = "sway-cheat";
+    # [Help Alias] - 새로 바뀐 도움말 명령어 연결
+    hypr_shortcuts = "hypr-cheat";
   };
 }

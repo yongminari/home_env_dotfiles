@@ -16,9 +16,15 @@
       url = "github:adi1090x/rofi";
       flake = false;
     };
+
+    # Catppuccin Hyprlock Themes (공식 브랜드 테마)
+    hyprlock-themes = {
+      url = "github:catppuccin/hyprlock";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, rofi-themes, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, rofi-themes, hyprlock-themes, ... }@inputs:
     let
       mkConfig = system: home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};

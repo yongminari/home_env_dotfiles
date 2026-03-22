@@ -1,13 +1,12 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
-  # Hyprland Final Configuration (Testing timing issue with this comment)
+  # Hyprland Final Configuration (Optimized for Ubuntu + Nix Paths)
   xdg.configFile."hypr/hyprland.conf".text = ''
 # --- Monitor ---
 monitor=,preferred,auto,1
 
 # --- Variables ---
-# Use SUPER (Windows Key) as the main modifier
 $mainMod = SUPER
 
 # --- Keybindings (Direct & Reliable) ---
@@ -17,7 +16,8 @@ bind = $mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun
 bind = $mainMod, Q, killactive
 bind = $mainMod, F, fullscreen
 bind = $mainMod, V, togglefloating
-bind = $mainMod, Escape, exec, swaylock -c 11111b
+# Escape: Lock Screen using System Path (Hyprlock)
+bind = $mainMod, Escape, exec, /usr/bin/hyprlock
 
 # IME (Fcitx5) - ESC to English
 bindn = , Escape, exec, /usr/bin/fcitx5-remote -c
@@ -27,6 +27,12 @@ bind = $mainMod, h, movefocus, l
 bind = $mainMod, l, movefocus, r
 bind = $mainMod, k, movefocus, u
 bind = $mainMod, j, movefocus, d
+
+# Move Window (Vim Style)
+bind = $mainMod SHIFT, h, movewindow, l
+bind = $mainMod SHIFT, l, movewindow, r
+bind = $mainMod SHIFT, k, movewindow, u
+bind = $mainMod SHIFT, j, movewindow, d
 
 # Workspaces
 bind = $mainMod, 1, workspace, 1
@@ -56,7 +62,7 @@ exec-once = dbus-update-activation-environment --systemd --all
 exec-once = systemctl --user import-environment --all
 exec-once = sleep 1 && ${pkgs.waybar}/bin/waybar
 exec-once = fcitx5 -dr
-exec-once = swaybg -m solid_color -c "#181825"
+exec-once = ${pkgs.swaybg}/bin/swaybg -m solid_color -c "#181825"
 
 # --- Environment Variables ---
 env = XCURSOR_SIZE,24
@@ -80,7 +86,7 @@ input {
     }
 }
 
-# --- Visuals (Fancy Hyprland Style) ---
+# --- Visuals ---
 general {
     gaps_in = 5
     gaps_out = 10
@@ -109,9 +115,11 @@ animations {
     animation = workspaces, 1, 6, default
 }
 
-# --- Screenshot ---
-bind = , Print, exec, grim ~/Pictures/$(date +'%Y-%m-%d-%H%M%S_grim.png')
-bind = $mainMod SHIFT, s, exec, grim -g "$(slurp)" - | swappy -f -
+# --- Screenshot (Absolute Paths for Certainty) ---
+# Print Screen: Capture whole screen
+bind = , Print, exec, ${pkgs.grim}/bin/grim ~/Pictures/$(date +'%Y-%m-%d-%H%M%S_grim.png')
+# Super + Shift + S: Capture area and open in Swappy
+bind = $mainMod SHIFT, s, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.swappy}/bin/swappy -f -
 
 # --- Exit ---
 bind = $mainMod SHIFT, E, exec, hyprctl dispatch exit

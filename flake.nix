@@ -22,9 +22,15 @@
       url = "github:catppuccin/hyprlock";
       flake = false;
     };
+
+    # Catppuccin Waybar Themes (전 세계적으로 가장 유명한 바 테마)
+    waybar-themes = {
+      url = "github:catppuccin/waybar";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, rofi-themes, hyprlock-themes, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, rofi-themes, hyprlock-themes, waybar-themes, ... }@inputs:
     let
       mkConfig = system: home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};

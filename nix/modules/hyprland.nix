@@ -36,11 +36,19 @@ bind = $mainMod, l, movefocus, r
 bind = $mainMod, k, movefocus, u
 bind = $mainMod, j, movefocus, d
 
+# Monitor Focus
+bind = $mainMod, comma, focusmonitor, l
+bind = $mainMod, period, focusmonitor, r
+
 # Move Window (Vim Style)
 bind = $mainMod SHIFT, h, movewindow, l
 bind = $mainMod SHIFT, l, movewindow, r
 bind = $mainMod SHIFT, k, movewindow, u
 bind = $mainMod SHIFT, j, movewindow, d
+
+# Move Window to Monitor
+bind = $mainMod SHIFT, comma, movewindow, l
+bind = $mainMod SHIFT, period, movewindow, r
 
 # Workspaces
 bind = $mainMod, 1, workspace, 1

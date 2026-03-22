@@ -47,8 +47,10 @@ For stability and driver compatibility on Ubuntu 24.04, the core engines and inp
 sudo apt update
 sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk swaylock swayidle
 
-# Korean Input Method (Fcitx5)
-# Fcitx5 is recommended for the Sway environment.
+# Korean Input Method (Fcitx5 for Sway)
+# Fcitx5 is recommended specifically for the Sway environment.
+# Note: In GNOME, IBus is used by default. If Fcitx5 starts in GNOME after installation,
+# you may need to disable it in "Startup Applications".
 sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
 ```
 

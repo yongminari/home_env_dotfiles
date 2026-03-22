@@ -63,6 +63,7 @@ exec-once = systemctl --user import-environment --all
 exec-once = sleep 1 && ${pkgs.waybar}/bin/waybar
 exec-once = fcitx5 -dr
 exec-once = ${pkgs.swaybg}/bin/swaybg -m solid_color -c "#181825"
+exec-once = /usr/bin/hypridle
 
 # --- Environment Variables ---
 env = XCURSOR_SIZE,24

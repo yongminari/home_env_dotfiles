@@ -15,9 +15,10 @@
     ./modules/git.nix
     ./modules/ghostty.nix
     ./modules/rclone.nix
-    # ./modules/sway.nix
     ./modules/hyprland.nix
     ./modules/hyprlock.nix
+    ./modules/hypridle.nix
+    ./modules/theme.nix
     ./modules/rofi.nix
     ./modules/waybar.nix
   ];

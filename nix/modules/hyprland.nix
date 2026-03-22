@@ -13,6 +13,7 @@ $mainMod = SUPER
 # Terminal & Launcher
 bind = $mainMod, Return, exec, ${pkgs.ghostty}/bin/ghostty
 bind = $mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun
+bind = $mainMod, n, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
 bind = $mainMod, Q, killactive
 bind = $mainMod, F, fullscreen
 bind = $mainMod, V, togglefloating
@@ -64,6 +65,7 @@ exec-once = sleep 1 && ${pkgs.waybar}/bin/waybar
 exec-once = fcitx5 -dr
 exec-once = ${pkgs.swaybg}/bin/swaybg -m solid_color -c "#181825"
 exec-once = /usr/bin/hypridle
+exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
 
 # --- Environment Variables ---
 env = XCURSOR_SIZE,24
@@ -124,5 +126,13 @@ bind = $mainMod SHIFT, s, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/sl
 
 # --- Exit ---
 bind = $mainMod SHIFT, E, exec, hyprctl dispatch exit
+
+# --- Hardware Media Keys (Volume, Brightness) ---
+# binde: repeatable keybind (smoothly adjustment)
+binde = , XF86AudioRaiseVolume, exec, ${pkgs.pamixer}/bin/pamixer -i 5
+binde = , XF86AudioLowerVolume, exec, ${pkgs.pamixer}/bin/pamixer -d 5
+bind = , XF86AudioMute, exec, ${pkgs.pamixer}/bin/pamixer -t
+binde = , XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl set 5%+
+binde = , XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl set 5%-
   '';
 }

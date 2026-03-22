@@ -19,6 +19,7 @@
     ./modules/hyprlock.nix
     ./modules/hypridle.nix
     ./modules/theme.nix
+    ./modules/notifications.nix
     ./modules/rofi.nix
     ./modules/waybar.nix
   ];

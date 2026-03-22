@@ -15,8 +15,11 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 - **💻 Terminal Multiplexer:** **Zellij** managed via standard Nix modules.
 - **📝 Editor:** **Neovim** (Modern Modular Setup).
   - Fully modular Lua configuration split by function (`options`, `keymaps`, `plugins`, `utils`).
-- **🚀 App Launcher:** **Rofi** (Wayland-native) with modern Dracula dark theme.
-- **📊 Status Bar:** **Waybar** with hardware monitors (CPU, Memory, Network).
+- **🚀 App Launcher:** **Rofi** (Wayland-native) with modern **adi1090x Type-6** theme.
+- **📊 Status Bar:** **Waybar** with official **Catppuccin Mocha** theme.
+- **🔔 Notification:** **SwayNC** (Notification Center) with integrated control center (`Super + N`).
+- **🔒 Security:** **Hyprlock** & **Hypridle** for automated screen locking and power management.
+- **🎨 Global Theme:** Unified **Catppuccin Mocha** aesthetic across GTK, Icons, and WM.
 - **📦 Modular & Standardized:** Clean file structure using the latest Home Manager patterns.
 
 ## 📂 Directory Structure
@@ -27,28 +30,38 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 └── nix
     ├── home.nix          # Main loader & Centralized Shell Aliases
     └── modules
-        ├── hyprland.nix  # Hyprland core configuration & Keybindings
-        ├── waybar.nix    # Status bar layout & styles
-        ├── packages.nix  # Categorized system packages
         ├── shell.nix     # Shell configuration bridge
+        ├── bash.nix      # Bash configuration
+        ├── zsh.nix       # Zsh configuration
+        ├── nushell.nix   # Nushell (Experimental) configuration
+        ├── shell-utils.nix # Shell-related Rust utilities
         ├── neovim.nix    # Neovim module loader
         ├── neovim/       # Modular Lua configurations
-        ├── rofi.nix      # Rofi launcher & styles configuration
+        ├── zellij.nix    # Terminal multiplexer config
+        ├── ghostty.nix   # Ghostty terminal emulator config
+        ├── hyprland.nix  # Hyprland core configuration & Keybindings
+        ├── hyprlock.nix  # Catppuccin themed lock screen
+        ├── hypridle.nix  # Idle & Auto-lock configuration
+        ├── waybar.nix    # Status bar layout & styles
+        ├── notifications.nix # SwayNC configuration
+        ├── theme.nix     # GTK/Icon/Cursor theme configuration
+        ├── packages.nix  # Categorized system packages
         ├── git.nix       # Standardized Git user config
-        └── ...
+        ├── rclone.nix    # Rclone cloud sync config
+        └── welcome.nix   # Custom welcome messages
 ```
 
 ## 🚀 Installation (Ubuntu 24.04)
 
-### 1. Install Hyprland Engine (via PPA)
-For driver compatibility and the latest features, Hyprland must be installed via the community PPA.
+### 1. Install Engines (via apt/PPA)
+For driver compatibility and the latest features, the core engines and security tools must be installed via the system package manager or community PPA.
 ```bash
 # Add the Hyprland PPA
 sudo add-apt-repository ppa:cppiber/hyprland
 sudo apt update
 
-# Install Hyprland and Portals
-sudo apt install hyprland xdg-desktop-portal-hyprland hyprlock
+# Install Hyprland, Portals, and Security tools
+sudo apt install hyprland xdg-desktop-portal-hyprland hyprlock hypridle
 ```
 
 ### 2. Install Nix & Clone Repo
@@ -76,8 +89,6 @@ sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
 
 ## 🛠️ Management Aliases
 
-These aliases are automatically configured in your shell to make managing your Home Manager environment easier.
-
 | Alias | Full Command | Description |
 | :--- | :--- | :--- |
 | **`hms`** | `home-manager switch --flake ...#$(whoami)` | Default switch (x86_64 Linux) |
@@ -101,8 +112,8 @@ If Ghostty doesn't appear in your app launcher:
 
 ### 3. Troubleshooting: Hyprland Startup Issues
 If Waybar or Rofi doesn't start automatically on a fresh boot:
-- The current configuration uses **absolute Nix store paths** to ensure binaries are found even before the Nix profile is loaded.
-- Check `nix/modules/hyprland.nix` for `exec-once` path definitions.
+- The current configuration uses **absolute Nix store paths** to ensure binaries are found.
+- Always run `hyprctl reload` after `hmsx` if shortcuts seem unresponsive.
 
 ### 4. Sync Shell History (Atuin)
 ```bash
@@ -118,12 +129,14 @@ atuin import auto
 | **`Super + Q`** | Close active window (Kill) |
 | **`Super + F`** | Toggle Fullscreen |
 | **`Super + V`** | Toggle Floating mode |
+| **`Super + N`** | Toggle **Notification Center** |
 | **`Super + h/j/k/l`** | Move focus (Left, Down, Up, Right) |
 | **`Super + Shift + h/j/k/l`** | Move window position |
 | **`Super + 1 ~ 0`** | Switch to workspace 1-10 |
 | **`Super + Shift + E`** | Exit Hyprland (Logout) |
+| **`Super + Escape`** | Lock Screen (**Hyprlock**) |
 | **`Super + R`** | Enter Resize Mode |
 
 ---
 
-**Note:** The binary engine (Hyprland) is managed by `PPA` for driver stability, while all configurations are managed declaratively via Nix Home Manager.
+**Note:** Binary engines are managed by `apt/PPA` for driver stability, while all detailed configurations and developer tools are managed declaratively via Nix Home Manager.

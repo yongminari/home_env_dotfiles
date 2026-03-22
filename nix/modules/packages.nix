@@ -30,6 +30,15 @@
     papirus-icon-theme # 가장 대중적이고 예쁜 아이콘 팩
     bibata-cursors     # 세련된 커서 테마 (theme.nix에서 사용됨)
     
+    # [알림 센터]
+    swaynotificationcenter # 현대적인 알림 엔진 및 컨트롤 센터
+    libnotify              # notify-send 명령어를 위한 도구
+    
+    # [하드웨어 제어]
+    pamixer        # 음량 조절 도구
+    brightnessctl  # 화면 밝기 조절 도구
+    pavucontrol    # 오디오 설정 GUI
+    
     # [클립보드 관리]
     xclip 
     xsel 

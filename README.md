@@ -50,8 +50,6 @@ sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk 
 # Korean Input Method (Fcitx5)
 # Fcitx5 is recommended for the Sway environment.
 sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
-mkdir -p ~/.config/autostart
-cp /usr/share/applications/org.fcitx.Fcitx5.desktop ~/.config/autostart/
 ```
 
 ### 2. Install Nix & Clone Repo
@@ -64,15 +62,24 @@ git clone <YOUR_REPO_URL> ~/home_env_dotfiles
 cd ~/home_env_dotfiles
 ```
 
-### 3. Apply Configuration
+### 3. Apply Configuration (First Time)
+Since `home-manager` isn't installed yet, use `nix run` to apply the configuration for the first time. This will automatically pull the necessary tools and apply your setup.
+
 ```bash
-# Apply Nix Home Manager setup based on your architecture
-hmsx  # x86_64 Linux (Native / WSL)
-hmsa  # AArch64 Linux (Native / Raspberry Pi)
-hmsm  # AArch64 macOS (Apple Silicon)
+# First-time application (for x86_64 Linux/WSL)
+# This command will enable flakes and apply the configuration.
+nix run home-manager/master -- switch --flake .#yongminari-x86-linux
+
+# For other architectures:
+# nix run home-manager/master -- switch --flake .#yongminari-aarch-linux
+# nix run home-manager/master -- switch --flake .#yongminari-aarch-mac
 ```
 
-## 🛠️ Management Aliases
+*Note: If you get an error about `experimental-features`, you might need to enable flakes:*
+`mkdir -p ~/.config/nix && echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf`
+
+### 4. Use Management Aliases (After Installation)
+Once the first application is successful, your shell will have the following aliases pre-configured. You can now use them for easier updates.
 
 These aliases are automatically configured in your shell to make managing your Home Manager environment easier. They use `$(whoami)` to dynamically detect your username, so they work on any account that matches a configuration in `flake.nix`.
 

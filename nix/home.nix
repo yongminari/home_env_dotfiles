@@ -54,7 +54,7 @@
       printf "  \033[1;32mSuper + Shift + S\033[0m   Screenshot (Area + Editor)\n"
       printf "  \033[1;32mSuper + Escape\033[0m      Lock Screen (Hyprlock)\n"
       printf "  \033[1;32mSuper + Shift + E\033[0m   Exit Hyprland (Logout)\n"
-      printf "  \033[1;32mSuper + R\033[0m           Enter Resize Mode\n\n"
+      printf "  \033[1;32mSuper + Alt + hjkl\033[0m  Quick Resize Window\n\n"
       
       printf "  \033[1;34m💡 Tip:\033[0m Press \033[1;33mEsc\033[0m to switch IME to English mode.\n\n"
     '')

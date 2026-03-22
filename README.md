@@ -135,7 +135,7 @@ atuin import auto
 | **`Super + 1 ~ 0`** | Switch to workspace 1-10 |
 | **`Super + Shift + E`** | Exit Hyprland (Logout) |
 | **`Super + Escape`** | Lock Screen (**Hyprlock**) |
-| **`Super + R`** | Enter Resize Mode |
+| **`Super + Alt + h/j/k/l`** | Resize active window |
 
 ---
 

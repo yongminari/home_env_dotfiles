@@ -20,6 +20,13 @@ bind = $mainMod, V, togglefloating
 # Escape: Lock Screen using System Path (Hyprlock)
 bind = $mainMod, Escape, exec, /usr/bin/hyprlock
 
+# --- Resizing ---
+# Quick Resize (SUPER + ALT + HJKL)
+binde = $mainMod ALT, l, resizeactive, 30 0
+binde = $mainMod ALT, h, resizeactive, -30 0
+binde = $mainMod ALT, k, resizeactive, 0 -30
+binde = $mainMod ALT, j, resizeactive, 0 30
+
 # IME (Fcitx5) - ESC to English
 bindn = , Escape, exec, /usr/bin/fcitx5-remote -c
 

@@ -1,7 +1,6 @@
 { config, pkgs, inputs, ... }:
 
 let
-  # Flake inputs에서 테마 소스를 가져옵니다. (이제 수동 해시가 필요 없습니다!)
   rofi-themes = inputs.rofi-themes;
 in
 {
@@ -9,28 +8,29 @@ in
     enable = true;
     package = pkgs.rofi; 
     
-    # [Rofi 기본 설정]
     terminal = "ghostty";
-    font = "Maple Mono NF CN 12";
     
+    # [Theme Override] - 공식 테마를 불러오고 폰트만 우리가 원하는 것으로 덮어씁니다.
+    theme = let
+      inherit (config.lib.formats.rasi) mkLiteral;
+    in {
+      # 1. 먼저 공식 테마 파일을 임포트합니다.
+      "@import" = "~/.config/rofi/launchers/type-6/style-1.rasi";
+
+      # 2. 전역 설정(*)에서 폰트를 우리 취향대로 바꿉니다. (이게 최종 승리합니다.)
+      "*" = {
+        font = "Maple Mono NF CN Bold 12";
+      };
+    };
+
     extraConfig = {
       modi = "drun,run,window";
       show-icons = true;
-      display-drun = "";
       drun-display-format = "{name}";
     };
   };
 
-  # 공식 테마 파일들을 ~/.config/rofi 에 심볼릭 링크로 연결합니다.
+  # 공식 테마 소스 연결
   home.file.".config/rofi/launchers/type-6".source = "${rofi-themes}/files/launchers/type-6";
   home.file.".config/rofi/colors".source = "${rofi-themes}/files/colors";
-
-  # Hyprland에서 호출할 때 공식 테마를 사용하도록 전용 실행 스크립트 생성
-  home.packages = [
-    (pkgs.writeShellScriptBin "rofi-launcher" ''
-      ${pkgs.rofi}/bin/rofi \
-        -show drun \
-        -theme ~/.config/rofi/launchers/type-6/style-1.rasi
-    '')
-  ];
 }

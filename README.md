@@ -1,10 +1,11 @@
-# 🚀 Dotfiles (Nix Home Manager)
+# 🚀 Dotfiles (Nix Home Manager + Hyprland)
 
 **yongminari**'s declarative development environment configuration managed by **Nix Home Manager**.
 This setup supports both **Native Linux** and **WSL** with a single, unified configuration, ensuring a consistent and high-performance workflow.
 
 ## ✨ Features
 
+- **🪟 Window Manager:** **Hyprland** (Wayland-native) - Hardware-accelerated with rich animations and blur effects.
 - **⚡ Shell:** Zsh (Main), **Nushell (Experimental)**, and Bash optimized with **Starship (Jetpack Theme)**.
 - **🛠️ Modern Core Utils:** Replaces legacy tools with modern Rust alternatives.
   - `ls` -> `eza`, `cd` -> `zoxide`, `cat` -> `bat`, `find` -> `fd`, `grep` -> `ripgrep`.
@@ -14,7 +15,6 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 - **💻 Terminal Multiplexer:** **Zellij** managed via standard Nix modules.
 - **📝 Editor:** **Neovim** (Modern Modular Setup).
   - Fully modular Lua configuration split by function (`options`, `keymaps`, `plugins`, `utils`).
-- **🪟 Window Manager:** **Sway** (Wayland-native TWM) - Reliable and standardized for Ubuntu 24.04.
 - **🚀 App Launcher:** **Rofi** (Wayland-native) with modern Dracula dark theme.
 - **📊 Status Bar:** **Waybar** with hardware monitors (CPU, Memory, Network).
 - **📦 Modular & Standardized:** Clean file structure using the latest Home Manager patterns.
@@ -27,31 +27,28 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 └── nix
     ├── home.nix          # Main loader & Centralized Shell Aliases
     └── modules
+        ├── hyprland.nix  # Hyprland core configuration & Keybindings
+        ├── waybar.nix    # Status bar layout & styles
+        ├── packages.nix  # Categorized system packages
         ├── shell.nix     # Shell configuration bridge
         ├── neovim.nix    # Neovim module loader
         ├── neovim/       # Modular Lua configurations
-        ├── zellij.nix    # Multiplexer config
-        ├── sway.nix      # Sway TWM configuration & Keybindings
         ├── rofi.nix      # Rofi launcher & styles configuration
-        ├── waybar.nix    # Status bar layout & styles
-        ├── packages.nix  # Categorized system packages
-        └── git.nix       # Standardized Git user config
+        ├── git.nix       # Standardized Git user config
+        └── ...
 ```
 
 ## 🚀 Installation (Ubuntu 24.04)
 
-### 1. Install Engines (via apt)
-For stability and driver compatibility on Ubuntu 24.04, the core engines and input method must be installed via the system package manager.
+### 1. Install Hyprland Engine (via PPA)
+For driver compatibility and the latest features, Hyprland must be installed via the community PPA.
 ```bash
-# Core TWM Utils
+# Add the Hyprland PPA
+sudo add-apt-repository ppa:cppiber/hyprland
 sudo apt update
-sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk swaylock swayidle
 
-# Korean Input Method (Fcitx5 for Sway)
-# Fcitx5 is recommended specifically for the Sway environment.
-# Note: In GNOME, IBus is used by default. If Fcitx5 starts in GNOME after installation,
-# you may need to disable it in "Startup Applications".
-sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
+# Install Hyprland and Portals
+sudo apt install hyprland xdg-desktop-portal-hyprland
 ```
 
 ### 2. Install Nix & Clone Repo
@@ -65,25 +62,21 @@ cd ~/home_env_dotfiles
 ```
 
 ### 3. Apply Configuration (First Time)
-Since `home-manager` isn't installed yet, use `nix run` to apply the configuration for the first time. This will automatically pull the necessary tools and apply your setup.
-
+Since `home-manager` isn't installed yet, use `nix run` to apply the configuration for the first time.
 ```bash
 # First-time application (for x86_64 Linux/WSL)
-# This command will enable flakes and apply the configuration.
 nix run home-manager/master -- switch --flake .#yongminari-x86-linux
-
-# For other architectures:
-# nix run home-manager/master -- switch --flake .#yongminari-aarch-linux
-# nix run home-manager/master -- switch --flake .#yongminari-aarch-mac
 ```
 
-*Note: If you get an error about `experimental-features`, you might need to enable flakes:*
-`mkdir -p ~/.config/nix && echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf`
+### 4. Korean Input Method (Fcitx5)
+Fcitx5 is recommended for the Hyprland environment.
+```bash
+sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
+```
 
-### 4. Use Management Aliases (After Installation)
-Once the first application is successful, your shell will have the following aliases pre-configured. You can now use them for easier updates.
+## 🛠️ Management Aliases
 
-These aliases are automatically configured in your shell to make managing your Home Manager environment easier. They use `$(whoami)` to dynamically detect your username, so they work on any account that matches a configuration in `flake.nix`.
+These aliases are automatically configured in your shell to make managing your Home Manager environment easier.
 
 | Alias | Full Command | Description |
 | :--- | :--- | :--- |
@@ -95,32 +88,27 @@ These aliases are automatically configured in your shell to make managing your H
 ## ⚙️ Post-Installation (Essential)
 
 ### 1. Set Default Shell to Zsh
-Since Nix doesn't modify system files like `/etc/passwd`, you must manually set Zsh as your default shell.
 ```bash
-# 1. Register Nix Zsh to valid shells list
 echo $(which zsh) | sudo tee -a /etc/shells
-
-# 2. Change your default shell
 chsh -s $(which zsh)
 ```
-*Note: You may need to log out and log back in for the changes to take effect.*
 
 ### 2. Desktop Launcher Support (Ghostty)
-If Ghostty doesn't appear in your GNOME/Sway app launcher after installation:
+If Ghostty doesn't appear in your app launcher:
 - The configuration already includes a symlink to `~/.local/share/applications/`.
 - If it still doesn't show up, run `hmsx` again and restart your session.
 
-### 3. Troubleshooting: Korean Input (Sway)
-- **First Window Issue:** In Sway, the very first Ghostty window might not accept Korean input.
-- **Solution:** Simply open a **second Ghostty window** (`Super + Enter`), and Korean input (Fcitx5) will work perfectly in all subsequent windows. (This is a known timing issue between GLFW and DBus).
+### 3. Troubleshooting: Hyprland Startup Issues
+If Waybar or Rofi doesn't start automatically on a fresh boot:
+- The current configuration uses **absolute Nix store paths** to ensure binaries are found even before the Nix profile is loaded.
+- Check `nix/modules/hyprland.nix` for `exec-once` path definitions.
 
 ### 4. Sync Shell History (Atuin)
-Atuin uses its own database. To import your old shell history (e.g., from `~/.zsh_history`) after the first installation, run:
 ```bash
 atuin import auto
 ```
 
-## ⌨️ Cheat Sheet (Sway TWM)
+## ⌨️ Cheat Sheet (Hyprland)
 
 | Shortcut | Action |
 | :--- | :--- |
@@ -132,8 +120,9 @@ atuin import auto
 | **`Super + h/j/k/l`** | Move focus (Left, Down, Up, Right) |
 | **`Super + Shift + h/j/k/l`** | Move window position |
 | **`Super + 1 ~ 0`** | Switch to workspace 1-10 |
-| **`Super + Shift + E`** | Exit Sway (Logout) |
+| **`Super + Shift + E`** | Exit Hyprland (Logout) |
+| **`Super + R`** | Enter Resize Mode |
 
 ---
 
-**Note:** The binary engines (Sway, Rofi, Waybar) are managed by `apt` for system-level stability, while all configurations are managed declaratively via Nix Home Manager.
+**Note:** The binary engine (Hyprland) is managed by `PPA` for driver stability, while all configurations are managed declaratively via Nix Home Manager.

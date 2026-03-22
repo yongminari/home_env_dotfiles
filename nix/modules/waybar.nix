@@ -16,9 +16,15 @@
         margin-right = 10;
         spacing = 4;
         
-        modules-left = [ "sway/workspaces" "sway/mode" ];
+        modules-left = [ "hyprland/workspaces" "sway/workspaces" "sway/mode" ];
         modules-center = [ "clock" ];
         modules-right = [ "cpu" "memory" "network" "battery" "tray" ];
+
+        "hyprland/workspaces" = {
+          format = "{name}";
+          on-click = "activate";
+          all-outputs = true;
+        };
 
         "sway/workspaces" = {
           disable-scroll = true;

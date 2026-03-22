@@ -15,7 +15,8 @@
     ./modules/git.nix
     ./modules/ghostty.nix
     ./modules/rclone.nix
-    ./modules/sway.nix
+    # ./modules/sway.nix
+    ./modules/hyprland.nix
     ./modules/rofi.nix
     ./modules/waybar.nix
   ];

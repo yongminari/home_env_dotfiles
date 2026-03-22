@@ -1,5 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
+let
+  # Flake input에서 공식 테마 소스를 가져옵니다.
+  waybar-themes = inputs.waybar-themes;
+in
 {
   programs.waybar = {
     enable = true;
@@ -16,94 +20,86 @@
         margin-right = 10;
         spacing = 4;
         
-        modules-left = [ "sway/workspaces" "sway/mode" ];
+        # 모듈 구성 (Hyprland 중심)
+        modules-left = [ "hyprland/workspaces" "hyprland/window" ];
         modules-center = [ "clock" ];
-        modules-right = [ "cpu" "memory" "network" "battery" "tray" ];
+        modules-right = [ "cpu" "memory" "network" "pulseaudio" "battery" "tray" ];
 
-        "sway/workspaces" = {
-          disable-scroll = true;
-          all-outputs = true;
-          format = "{name}";
-        };
-
-        "battery" = {
-          states = {
-            warning = 30;
-            critical = 15;
+        "hyprland/workspaces" = {
+          format = "{icon}";
+          on-click = "activate";
+          format-icons = {
+            "default" = "";
+            "active" = "";
+            "urgent" = "";
           };
-          format = " {icon} {capacity}% ";
-          format-charging = " 󰂄 {capacity}% ";
-          format-plugged = " 󰚥 {capacity}% ";
-          format-alt = " {icon} {time} ";
-          format-icons = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
         };
 
         "clock" = {
-          format = "  {:%H:%M} ";
-          format-alt = "  {:%Y-%m-%d} ";
-          tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
+          format = " {:%H:%M}";
+          format-alt = " {:%Y-%m-%d}";
         };
 
-        "cpu" = { format = "  {usage}% "; tooltip = false; };
-        "memory" = { format = "  {}% "; };
+        "cpu" = { format = " {usage}%"; };
+        "memory" = { format = " {}%"; };
+        "battery" = {
+          format = "{icon} {capacity}%";
+          format-icons = ["󰂎" "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹"];
+        };
         "network" = {
-          format-wifi = "  {essid} ";
-          format-ethernet = " 󰈀 {ifname} ";
-          format-disconnected = " ⚠ Disconnected ";
+          format-wifi = " {essid}";
+          format-ethernet = "󰈀 {ifname}";
+          format-disconnected = "⚠";
+        };
+        "pulseaudio" = {
+          format = "{icon} {volume}%";
+          format-icons = { default = ["" "" ""]; };
+          on-click = "pavucontrol";
         };
       };
     };
 
+    # [Famous Theme Integration]
+    # Catppuccin 공식 테마의 Mocha 스타일을 그대로 적용합니다.
     style = ''
+      /* Catppuccin Mocha 공식 색상표 임포트 */
+      @import "${waybar-themes}/themes/mocha.css";
+
       * {
-        font-family: "Symbols Nerd Font", "Maple Mono NF", "Font Awesome 6 Free";
+        font-family: "Maple Mono NF CN", "Symbols Nerd Font";
         font-size: 13px;
-        border: none;
-        border-radius: 0;
+        font-weight: bold;
       }
-      
+
       window#waybar {
-        background-color: rgba(30, 30, 46, 0.9);
-        border: 2px solid rgba(203, 166, 247, 0.5);
+        background-color: rgba(30, 30, 46, 0.8);
+        border: 2px solid @mauve;
         border-radius: 12px;
-        color: #cdd6f4;
+        color: @text;
       }
-      
+
       #workspaces button {
+        color: @mauve;
+        padding: 0 5px;
+      }
+
+      #workspaces button.active {
+        color: @base;
+        background-color: @mauve;
+        border-radius: 8px;
+      }
+
+      #clock, #cpu, #memory, #network, #pulseaudio, #battery, #tray {
         padding: 0 10px;
-        color: #6c7086;
         margin: 4px 2px;
+        background-color: @surface0;
         border-radius: 8px;
       }
-      
-      #workspaces button.focused {
-        background-color: #313244;
-        color: #cba6f7;
-      }
-      
-      #clock, #cpu, #memory, #network, #battery, #tray {
-        padding: 0 15px;
-        margin: 4px 2px;
-        background-color: #313244;
-        border-radius: 8px;
-        color: #cdd6f4;
-      }
 
-      #clock { color: #f9e2af; }
-      #cpu { color: #a6e3a1; }
-      #memory { color: #89b4fa; }
-      #network { color: #f5c2e7; }
-      #battery { color: #fab387; /* Catppuccin Peach */ }
-      #battery.charging { color: #a6e3a1; /* Catppuccin Green */ }
-      #battery.warning:not(.charging) { color: #fab387; }
-      #battery.critical:not(.charging) { color: #f38ba8; /* Catppuccin Red */ animation: blink 0.5s steps(5) infinite; }
-
-      @keyframes blink {
-        to {
-          background-color: #f38ba8;
-          color: #1e1e2e;
-        }
-      }
+      #clock { color: @yellow; }
+      #cpu { color: @green; }
+      #memory { color: @sky; }
+      #battery { color: @peach; }
     '';
   };
 }

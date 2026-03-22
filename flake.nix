@@ -10,9 +10,27 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # adi1090x Rofi Themes (Flake input으로 관리)
+    rofi-themes = {
+      url = "github:adi1090x/rofi";
+      flake = false;
+    };
+
+    # Catppuccin Hyprlock Themes (공식 브랜드 테마)
+    hyprlock-themes = {
+      url = "github:catppuccin/hyprlock";
+      flake = false;
+    };
+
+    # Catppuccin Waybar Themes (전 세계적으로 가장 유명한 바 테마)
+    waybar-themes = {
+      url = "github:catppuccin/waybar";
+      flake = false;
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, rofi-themes, hyprlock-themes, waybar-themes, ... }@inputs:
     let
       mkConfig = system: home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};

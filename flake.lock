@@ -7,16 +7,32 @@
         ]
       },
       "locked": {
-        "lastModified": 1774007980,
-        "narHash": "sha256-FOnZjElEI8pqqCvB6K/1JRHTE8o4rer8driivTpq2uo=",
+        "lastModified": 1774135471,
+        "narHash": "sha256-TVeIGOxnfSPM6JvkRkXHpJECnj1OG2dXkWMSA4elzzQ=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "9670de2921812bc4e0452f6e3efd8c859696c183",
+        "rev": "856b01ebd1de3f53c3929ce8082d9d67d799d816",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "hyprlock-themes": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1748874053,
+        "narHash": "sha256-kgVlPaWeaH/p0qGc1+Lj2H6YlDAk5CemNo1FFF8ymZ8=",
+        "owner": "catppuccin",
+        "repo": "hyprlock",
+        "rev": "f650895064ae80db7c0e095829fce83fd85d0b26",
+        "type": "github"
+      },
+      "original": {
+        "owner": "catppuccin",
+        "repo": "hyprlock",
         "type": "github"
       }
     },
@@ -36,10 +52,45 @@
         "type": "github"
       }
     },
+    "rofi-themes": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1753542257,
+        "narHash": "sha256-iUX0Quae06tGd7gDgXZo1B3KYgPHU+ADPBrowHlv02A=",
+        "owner": "adi1090x",
+        "repo": "rofi",
+        "rev": "093c1a79f58daab358199c4246de50357e5bf462",
+        "type": "github"
+      },
+      "original": {
+        "owner": "adi1090x",
+        "repo": "rofi",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs"
+        "hyprlock-themes": "hyprlock-themes",
+        "nixpkgs": "nixpkgs",
+        "rofi-themes": "rofi-themes",
+        "waybar-themes": "waybar-themes"
+      }
+    },
+    "waybar-themes": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1720870206,
+        "narHash": "sha256-za0y6hcN2rvN6Xjf31xLRe4PP0YyHu2i454ZPjr+lWA=",
+        "owner": "catppuccin",
+        "repo": "waybar",
+        "rev": "ee8ed32b4f63e9c417249c109818dcc05a2e25da",
+        "type": "github"
+      },
+      "original": {
+        "owner": "catppuccin",
+        "repo": "waybar",
+        "type": "github"
       }
     }
   },

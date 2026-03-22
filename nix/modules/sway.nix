@@ -143,7 +143,7 @@
     exec systemctl --user import-environment --all
 
     # [IME Settings for Sway] - Fcitx5 Only for this session
-    exec gsettings set org.gnome.desktop.interface gtk-im-module "fcitx"
+    # (Removed gsettings to prevent affecting GNOME/IBus)
     
     # Start Fcitx5 (Force replace to ensure it is the primary instance)
     exec /usr/bin/fcitx5 -dr

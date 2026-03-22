@@ -45,7 +45,9 @@
 
       printf "  \033[1;35m🪟 [Window Control]\033[0m\n"
       printf "  \033[1;32mSuper + h/j/k/l\033[0m     Move Focus (Vim Style)\n"
+      printf "  \033[1;32mSuper + , / .\033[0m       Focus Monitor (Left/Right)\n"
       printf "  \033[1;32mSuper + Shift + hjkl\033[0m Move Window Position\n"
+      printf "  \033[1;32mSuper + Shift + , / .\033[0m Move Window to Monitor\n"
       printf "  \033[1;32mSuper + 1~0\033[0m         Switch Workspace\n"
       printf "  \033[1;32mSuper + Shift + 1~0\033[0m Move Window to Workspace\n\n"
 

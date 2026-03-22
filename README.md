@@ -131,7 +131,9 @@ atuin import auto
 | **`Super + V`** | Toggle Floating mode |
 | **`Super + N`** | Toggle **Notification Center** |
 | **`Super + h/j/k/l`** | Move focus (Left, Down, Up, Right) |
+| **`Super + , / .`** | Focus Monitor (Left/Right) |
 | **`Super + Shift + h/j/k/l`** | Move window position |
+| **`Super + Shift + , / .`** | Move window to Monitor |
 | **`Super + 1 ~ 0`** | Switch to workspace 1-10 |
 | **`Super + Shift + E`** | Exit Hyprland (Logout) |
 | **`Super + Escape`** | Lock Screen (**Hyprlock**) |

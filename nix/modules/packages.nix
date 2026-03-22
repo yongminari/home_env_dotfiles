@@ -16,6 +16,13 @@
     lsb-release
     rclone
     swaybg
+    rofi          # rofi-wayland가 통합된 최신 rofi
+    hyprpaper     # Hyprland 전용 월페이퍼 도구
+    
+    # [화면 캡처 도구]
+    grim          # 화면 캡처 엔진
+    slurp         # 영역 선택 도구
+    swappy        # 캡처 이미지 즉석 편집기
     
     # [클립보드 관리]
     xclip 

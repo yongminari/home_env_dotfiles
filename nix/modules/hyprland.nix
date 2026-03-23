@@ -83,6 +83,7 @@ exec-once = dbus-update-activation-environment --systemd --all
 exec-once = systemctl --user import-environment --all
 exec-once = sleep 1 && ${pkgs.waybar}/bin/waybar
 exec-once = fcitx5 -dr
+exec-once = nm-applet --indicator
 exec-once = ${pkgs.swaybg}/bin/swaybg -m solid_color -c "#181825"
 exec-once = /usr/bin/hypridle
 exec-once = ${pkgs.swaynotificationcenter}/bin/swaync

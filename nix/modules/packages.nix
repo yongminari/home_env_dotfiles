@@ -18,6 +18,7 @@
     swaybg
     rofi          # rofi-wayland가 통합된 최신 rofi
     hyprpaper     # Hyprland 전용 월페이퍼 도구
+    networkmanagerapplet # Wi-Fi/Network 트레이 아이콘 (nm-applet)
     
     # [화면 캡처 도구]
     grim          # 화면 캡처 엔진

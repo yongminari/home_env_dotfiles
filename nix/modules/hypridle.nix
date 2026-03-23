@@ -9,17 +9,24 @@
         after_sleep_cmd = hyprctl dispatch dpms on           # 깨어날 때 화면 켜기
     }
 
-    # [5분 뒤 화면 끄기]
+    # [9분: 화면 어둡게 하기 (경고)]
     listener {
-        timeout = 300                                
-        on-timeout = hyprctl dispatch dpms off
-        on-resume = hyprctl dispatch dpms on
+        timeout = 540                                
+        on-timeout = /usr/bin/brightnessctl set 10%
+        on-resume = /usr/bin/brightnessctl set 100%
     }
 
-    # [10분 뒤 자동 잠금]
+    # [10분: 화면 잠금 (Lock Screen)]
     listener {
         timeout = 600                                
         on-timeout = loginctl lock-session
+    }
+
+    # [15분: 화면 끄기 (DPMS Off)]
+    listener {
+        timeout = 900                                
+        on-timeout = hyprctl dispatch dpms off
+        on-resume = hyprctl dispatch dpms on
     }
   '';
 }

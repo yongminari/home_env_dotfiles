@@ -63,6 +63,12 @@ bind = $mainMod, 8, workspace, 8
 bind = $mainMod, 9, workspace, 9
 bind = $mainMod, 0, workspace, 10
 
+# Cycle through workspaces on current monitor
+bind = $mainMod, mouse_down, workspace, m+1
+bind = $mainMod, mouse_up, workspace, m-1
+bind = $mainMod, bracketright, workspace, m+1
+bind = $mainMod, bracketleft, workspace, m-1
+
 bind = $mainMod SHIFT, 1, movetoworkspace, 1
 bind = $mainMod SHIFT, 2, movetoworkspace, 2
 bind = $mainMod SHIFT, 3, movetoworkspace, 3
@@ -85,7 +91,7 @@ exec-once = /usr/bin/hypridle
 exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
 
 # --- Environment Variables ---
-env = XCURSOR_SIZE,24
+env = XCURSOR_SIZE,52
 env = QT_QPA_PLATFORM,wayland
 env = XDG_CURRENT_DESKTOP,Hyprland
 env = XDG_SESSION_TYPE,wayland

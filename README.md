@@ -190,6 +190,8 @@ atuin import auto
 | **Super + Shift + E** | Exit Hyprland (Logout) |
 | **Super + Escape** | Lock Screen (**Hyprlock**) |
 | **Super + Alt + h/j/k/l** | Resize active window |
+| **Super + Wheel Up/Down** | Cycle Workspaces (Current Monitor) |
+| **Super + [ / ]** | Cycle Workspaces (Current Monitor) |
 | **Print Screen** | Capture Whole Screen to File |
 | **Super + Shift + S** | Capture Area & Edit (**Swappy**) |
 | **Super + Shift + C** | Capture Area to **Clipboard** |

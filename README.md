@@ -87,6 +87,49 @@ Fcitx5 is recommended for the Hyprland environment.
 sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
 ```
 
+## 🖥️ Monitor Configuration (Machine-specific)
+
+Since monitor layouts (order, resolution, refresh rate) vary by machine, they are managed via a local configuration file that is **not** tracked by Git.
+
+### 1. Find your monitor info
+Run the following command to see connected monitors, their names (e.g., `DP-1`, `HDMI-A-1`), and supported resolutions/refresh rates:
+```bash
+hyprctl monitors
+```
+
+### 2. Create/Edit Local Config
+If you need a custom layout (e.g., reversing monitor order), create or edit `~/.config/hypr/monitors.conf`:
+```bash
+# This file is ignored by Git
+nano ~/.config/hypr/monitors.conf
+```
+
+### 3. Examples
+
+#### ✅ Recommended: Flexible & Safe (Auto-detect resolution)
+Using `preferred` and `auto` prevents display issues when hardware specs change.
+```text
+# monitor=NAME, preferred, OFFSET, SCALE
+monitor=DP-1, preferred, 0x0, 1
+monitor=HDMI-A-1, preferred, auto, 1
+```
+
+#### ⚠️ Advanced: Manual Override (Potential for bugs)
+Only use specific resolutions if you need to force a lower refresh rate or non-native resolution. **Incorrect values can cause "No Signal" or alignment bugs.**
+```text
+# monitor=NAME, RESOLUTION@REFRESH, OFFSET, SCALE
+monitor=DP-1, 2560x1440@144, 0x0, 1
+monitor=HDMI-A-1, 1920x1080@60, 2560x0, 1
+```
+
+#### 📐 Vertical Setup
+```text
+monitor=DP-1, preferred, 0x0, 1
+monitor=HDMI-A-1, preferred, auto, 1, transform, 1 # Rotated 90 degrees
+```
+
+---
+
 ## 🛠️ Management Aliases
 
 | Alias | Full Command | Description |

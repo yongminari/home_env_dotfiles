@@ -56,6 +56,11 @@ in
           format-icons = { default = ["" "" ""]; };
           on-click = "pavucontrol";
         };
+
+        "tray" = {
+          icon-size = 16;
+          spacing = 12;
+        };
       };
     };
 
@@ -89,11 +94,15 @@ in
         border-radius: 8px;
       }
 
-      #clock, #cpu, #memory, #network, #pulseaudio, #battery, #tray {
+      #clock, #cpu, #memory, #network, #pulseaudio, #battery {
         padding: 0 10px;
         margin: 4px 2px;
         background-color: @surface0;
         border-radius: 8px;
+      }
+
+      #tray {
+        margin: 4px 8px 4px 2px;
       }
 
       #clock { color: @yellow; }

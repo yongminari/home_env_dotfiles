@@ -97,11 +97,20 @@ Run the following command to see connected monitors, their names (e.g., `DP-1`, 
 hyprctl monitors
 ```
 
-### 2. Create/Edit Local Config
-If you need a custom layout (e.g., reversing monitor order), create or edit `~/.config/hypr/monitors.conf`:
+### 2. Create/Edit Local Configs (Monitors & Workspaces)
+If you need a custom layout (e.g., reversing monitor order) or fixed workspaces:
 ```bash
-# This file is ignored by Git
+# This files are ignored by Git
 nano ~/.config/hypr/monitors.conf
+nano ~/.config/hypr/workspaces.conf
+```
+
+#### 💡 Fixed Workspaces (Example for Dual Monitors)
+To pin specific workspaces to monitors, add the following to `~/.config/hypr/workspaces.conf`:
+```text
+# workspace = [ID], monitor:[NAME]
+workspace = 1, monitor:DP-1
+workspace = 6, monitor:HDMI-A-1
 ```
 
 ### 3. Examples

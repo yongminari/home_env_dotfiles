@@ -7,10 +7,6 @@
 # Default configuration for all machines (auto detection)
 monitor=,preferred,auto,1
 
-# Local override (e.g., monitor order, custom resolution)
-# If ~/.config/hypr/monitors.conf doesn't exist, create it manually to avoid error bar.
-source = ~/.config/hypr/monitors.conf
-
 # --- Variables ---
 $mainMod = SUPER
 
@@ -157,5 +153,9 @@ binde = , XF86AudioLowerVolume, exec, ${pkgs.pamixer}/bin/pamixer -d 5
 bind = , XF86AudioMute, exec, ${pkgs.pamixer}/bin/pamixer -t
 binde = , XF86MonBrightnessUp, exec, ${pkgs.brightnessctl}/bin/brightnessctl set 5%+
 binde = , XF86MonBrightnessDown, exec, ${pkgs.brightnessctl}/bin/brightnessctl set 5%-
+
+# --- Local Overrides (Highest Priority) ---
+source = ~/.config/hypr/monitors.conf
+source = ~/.config/hypr/workspaces.conf
   '';
 }

@@ -10,3 +10,4 @@ node_modules
 nix/modules/local-*.nix
 nix/local.nix
 ~/.config/hypr/monitors.conf
+~/.config/hypr/workspaces.conf

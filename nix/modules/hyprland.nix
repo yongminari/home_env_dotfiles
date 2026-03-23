@@ -4,7 +4,12 @@
   # Hyprland Final Configuration (Optimized for Ubuntu + Nix Paths)
   xdg.configFile."hypr/hyprland.conf".text = ''
 # --- Monitor ---
+# Default configuration for all machines (auto detection)
 monitor=,preferred,auto,1
+
+# Local override (e.g., monitor order, custom resolution)
+# If ~/.config/hypr/monitors.conf doesn't exist, create it manually to avoid error bar.
+source = ~/.config/hypr/monitors.conf
 
 # --- Variables ---
 $mainMod = SUPER

@@ -1,9 +1,3 @@
-mkdir -p ~/dotfiles/nix
-cd ~/dotfiles
-git init
-
-# .gitignore 생성
-cat <<EOF > .gitignore
 result
 result-*
 .direnv
@@ -11,4 +5,8 @@ result-*
 *.swp
 node_modules
 .npm-global
-EOF
+
+# Local Configurations
+nix/modules/local-*.nix
+nix/local.nix
+~/.config/hypr/monitors.conf

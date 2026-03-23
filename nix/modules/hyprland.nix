@@ -142,8 +142,10 @@ animations {
 # --- Screenshot (Absolute Paths for Certainty) ---
 # Print Screen: Capture whole screen
 bind = , Print, exec, ${pkgs.grim}/bin/grim ~/Pictures/$(date +'%Y-%m-%d-%H%M%S_grim.png')
-# Super + Shift + S: Capture area and open in Swappy
+# Super + Shift + S: Capture area and open in Swappy (Editor)
 bind = $mainMod SHIFT, s, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.swappy}/bin/swappy -f -
+# Super + Shift + C: Capture area directly to CLIPBOARD (No editor)
+bind = $mainMod SHIFT, c, exec, ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.wl-clipboard}/bin/wl-copy
 
 # --- Exit ---
 bind = $mainMod SHIFT, E, exec, hyprctl dispatch exit

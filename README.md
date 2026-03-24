@@ -180,9 +180,12 @@ atuin import auto
 | **`Super + D`** | Launch **Rofi** (App runner) |
 | **`Super + Q`** | Close active window (Kill) |
 | **`Super + F`** | Toggle Fullscreen |
-| **`Super + V`** | Toggle Floating mode |
-| **`Super + N`** | Toggle **Notification Center** |
-| **`Super + h/j/k/l`** | Move focus (Left, Down, Up, Right) |
+| **Super + V** | Toggle Floating mode |
+| **Super + N** | Toggle **Notification Center** |
+| **Super + Shift + N** | Focus latest notification |
+| **Super + Alt + N** | Clear all notifications |
+| **Super + h/j/k/l** | Move focus (Left, Down, Up, Right) |
+
 | **`Super + , / .`** | Focus Monitor (Left/Right) |
 | **`Super + Shift + h/j/k/l`** | Move window position |
 | **`Super + Shift + , / .`** | Move window to Monitor |

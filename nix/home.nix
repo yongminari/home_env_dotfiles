@@ -22,6 +22,7 @@
     ./modules/notifications.nix
     ./modules/rofi.nix
     ./modules/waybar.nix
+    ./modules/swappy.nix
   ];
 
   targets.genericLinux.enable = pkgs.stdenv.isLinux;

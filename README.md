@@ -137,6 +137,18 @@ monitor=DP-1, preferred, 0x0, 1
 monitor=HDMI-A-1, preferred, auto, 1, transform, 1 # Rotated 90 degrees
 ```
 
+### 4. GPU Optimization (NVIDIA)
+If your machine has an **NVIDIA GPU**, create `nix/local.nix` (ignored by Git) to enable high-performance rendering:
+
+```nix
+{ config, lib, ... }:
+
+{
+  # Enable NVIDIA specific configurations for Hyprland
+  config.myHardware.nvidia.enable = true;
+}
+```
+
 ---
 
 ## 🛠️ Management Aliases

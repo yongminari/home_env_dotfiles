@@ -11,3 +11,4 @@ nix/modules/local-*.nix
 nix/local.nix
 ~/.config/hypr/monitors.conf
 ~/.config/hypr/workspaces.conf
+~/.config/hypr/nvidia.conf

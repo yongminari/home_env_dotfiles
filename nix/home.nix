@@ -8,6 +8,7 @@
 
   # [모듈 로드] 기능별 파일들을 여기서 불러옴
   imports = [
+    (if builtins.pathExists ./local.nix then ./local.nix else {})
     ./modules/shell.nix
     ./modules/packages.nix
     ./modules/neovim.nix

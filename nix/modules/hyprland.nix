@@ -1,6 +1,13 @@
-{ config, pkgs, inputs, ... }:
+{ config, pkgs, inputs, lib, ... }:
 
+let
+  # Check if nvidia is enabled in a local config
+  isNvidia = config.myHardware.nvidia.enable or false;
+in
 {
+  # We removed home.file here to prevent clobbering existing local files.
+  # Please manage monitors.conf and workspaces.conf manually as you did before.
+
   # Hyprland Final Configuration (Optimized for Ubuntu + Nix Paths)
   xdg.configFile."hypr/hyprland.conf".text = ''
 # --- Monitor ---
@@ -103,6 +110,21 @@ env = QT_IM_MODULE,fcitx
 env = GTK_IM_MODULE,fcitx
 env = SDL_IM_MODULE,fcitx
 env = GLFW_IM_MODULE,fcitx
+
+# --- NVIDIA Specific (Conditional) ---
+${lib.optionalString isNvidia ''
+env = LIBVA_DRIVER_NAME,nvidia
+env = __GLX_VENDOR_LIBRARY_NAME,nvidia
+env = GBM_BACKEND,nvidia-drm
+env = __NV_PRIME_RENDER_OFFLOAD,1
+env = __VK_LAYER_NV_optimus,NVIDIA_only
+env = WLR_DRM_NO_ATOMIC,1
+env = NVD_BACKEND,direct
+
+cursor {
+    no_hardware_cursors = true
+}
+''}
 
 # --- Input ---
 input {

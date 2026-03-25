@@ -16,6 +16,7 @@
         "D2Coding ligature"
       ];
       font-size = 12;
+      adjust-cell-width = "-15%";
 
       # [Window & Visuals]
       window-width = 150;

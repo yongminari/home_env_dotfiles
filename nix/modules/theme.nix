@@ -33,7 +33,7 @@
     };
 
     font = {
-      name = "Maple Mono NF CN";
+      name = "Maple Mono NF, D2Coding ligature";
       size = 11;
     };
   };

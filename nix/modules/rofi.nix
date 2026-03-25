@@ -19,7 +19,7 @@ in
 
       # 2. 전역 설정(*)에서 폰트를 우리 취향대로 바꿉니다. (이게 최종 승리합니다.)
       "*" = {
-        font = "Maple Mono NF CN Bold 12";
+        font = "Maple Mono NF, D2Coding ligature Bold 12";
       };
     };
 

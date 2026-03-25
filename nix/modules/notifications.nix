@@ -47,7 +47,7 @@
   # [SwayNC Style] - Catppuccin Mocha Royal Theme
   xdg.configFile."swaync/style.css".text = ''
     * {
-      font-family: "Maple Mono NF CN", "Ubuntu Mono";
+      font-family: "Maple Mono NF", "D2Coding ligature";
       font-weight: bold;
     }
 

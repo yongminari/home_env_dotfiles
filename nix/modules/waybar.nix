@@ -71,7 +71,7 @@ in
       @import "${waybar-themes}/themes/mocha.css";
 
       * {
-        font-family: "Maple Mono NF CN", "Symbols Nerd Font";
+        font-family: "Maple Mono NF", "D2Coding ligature", "Symbols Nerd Font";
         font-size: 13px;
         font-weight: bold;
       }

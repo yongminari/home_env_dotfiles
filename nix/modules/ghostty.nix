@@ -11,7 +11,10 @@
     settings = {
       command = "${pkgs.zsh}/bin/zsh";
       # [Font]
-      font-family = "Maple Mono NF CN";
+      font-family = [
+        "Maple Mono NF"
+        "D2Coding ligature"
+      ];
       font-size = 12;
 
       # [Window & Visuals]

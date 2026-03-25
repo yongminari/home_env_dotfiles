@@ -16,6 +16,9 @@
       };
     };
 
+    gtk4.extraConfig.gtk-application-prefer-dark-theme = true;
+    gtk4.theme = config.gtk.theme;
+
     # 2. 아이콘 설정 (Papirus-Dark with Catppuccin accents)
     iconTheme = {
       name = "Papirus-Dark";

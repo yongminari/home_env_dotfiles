@@ -20,7 +20,7 @@ $mainMod = SUPER
 # --- Keybindings (Direct & Reliable) ---
 # Terminal & Launcher
 bind = $mainMod, Return, exec, ${pkgs.ghostty}/bin/ghostty
-bind = $mainMod, D, exec, ${pkgs.rofi}/bin/rofi -show drun
+bind = $mainMod, space, exec, ${pkgs.rofi}/bin/rofi -show drun
 bind = $mainMod, n, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
 bind = $mainMod SHIFT, n, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -f -sw # Focus latest notification
 bind = $mainMod ALT, n, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -C -sw # Clear all notifications

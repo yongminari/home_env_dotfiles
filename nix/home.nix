@@ -40,7 +40,7 @@
     (pkgs.writeShellScriptBin "hypr-cheat" ''
       printf "\n  \033[1;35m🪄 [Hyprland Core & Launch]\033[0m\n"
       printf "  \033[1;32mSuper + Enter\033[0m       Launch Ghostty\n"
-      printf "  \033[1;32mSuper + D\033[0m           Launch Rofi (Apps)\n"
+      printf "  \033[1;32mSuper + Space\033[0m       Launch Rofi (Apps)\n"
       printf "  \033[1;32mSuper + Q\033[0m           Kill Active Window\n"
       printf "  \033[1;32mSuper + F\033[0m           Toggle Fullscreen\n"
       printf "  \033[1;32mSuper + V\033[0m           Toggle Floating\n\n"

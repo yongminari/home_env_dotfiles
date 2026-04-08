@@ -56,7 +56,7 @@
     # --- Keybindings ---
     bindsym $mod+Return exec $term
     bindsym $mod+q kill
-    bindsym $mod+d exec $menu
+    bindsym $mod+space exec $menu
     bindsym $mod+Escape exec swaylock -c 11111b
     # [ESC to English] Force English mode when ESC is pressed (Fcitx5 Only)
     bindsym --release Escape exec /usr/bin/fcitx5-remote -c

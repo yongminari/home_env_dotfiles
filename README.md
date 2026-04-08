@@ -189,7 +189,7 @@ atuin import auto
 | Shortcut | Action |
 | :--- | :--- |
 | **`Super + Enter`** | Launch **Ghostty** terminal |
-| **`Super + D`** | Launch **Rofi** (App runner) |
+| **`Super + Space`** | Launch **Rofi** (App runner) |
 | **`Super + Q`** | Close active window (Kill) |
 | **`Super + F`** | Toggle Fullscreen |
 | **Super + V** | Toggle Floating mode |

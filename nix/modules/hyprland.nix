@@ -20,10 +20,10 @@ $mainMod = SUPER
 # --- Keybindings (Direct & Reliable) ---
 # Terminal & Launcher
 bind = $mainMod, Return, exec, ${pkgs.ghostty}/bin/ghostty
-bind = $mainMod, space, exec, ${pkgs.rofi}/bin/rofi -show drun
-bind = $mainMod, n, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw
-bind = $mainMod SHIFT, n, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -f -sw # Focus latest notification
-bind = $mainMod ALT, n, exec, ${pkgs.swaynotificationcenter}/bin/swaync-client -C -sw # Clear all notifications
+bind = $mainMod, space, exec, ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call launcher toggle
+bind = $mainMod, n, exec, ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call notifications toggleHistory
+bind = $mainMod SHIFT, n, exec, ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call notifications toggleHistory
+bind = $mainMod ALT, n, exec, ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call notifications clearAll
 bind = $mainMod, Q, killactive
 bind = $mainMod, F, fullscreen
 bind = $mainMod, V, togglefloating
@@ -92,12 +92,12 @@ bind = $mainMod SHIFT, 0, movetoworkspace, 10
 # --- Auto Start ---
 exec-once = dbus-update-activation-environment --systemd --all
 exec-once = systemctl --user import-environment --all
-exec-once = sleep 1 && ${pkgs.waybar}/bin/waybar
+exec-once = sh -c "sleep 1; ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell"
 exec-once = fcitx5 -dr
 exec-once = nm-applet --indicator
 exec-once = ${pkgs.swaybg}/bin/swaybg -m solid_color -c "#181825"
 exec-once = /usr/bin/hypridle
-exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
+# exec-once = ${pkgs.swaynotificationcenter}/bin/swaync
 
 # --- Environment Variables ---
 env = XCURSOR_SIZE,52

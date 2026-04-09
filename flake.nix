@@ -22,9 +22,15 @@
       url = "github:catppuccin/waybar";
       flake = false;
     };
+
+    # Noctalia Shell (Bar + Launcher + Shell)
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, hyprlock-themes, waybar-themes, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, hyprlock-themes, waybar-themes, noctalia, ... }@inputs:
     let
       mkConfig = system: home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};

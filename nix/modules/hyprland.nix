@@ -134,6 +134,8 @@ input {
     touchpad {
         natural_scroll = true
     }
+    repeat_delay = 400
+    repeat_rate = 40
 }
 
 # --- Visuals ---

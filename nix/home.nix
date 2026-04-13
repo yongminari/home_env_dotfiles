@@ -66,6 +66,14 @@
     '')
   ];
 
+  # [Gemini CLI Settings]
+  home.sessionVariables = {
+    GOOGLE_CLOUD_PROJECT = "gemini-cli-vertex-ai-493207";
+    GOOGLE_CLOUD_LOCATION = "global"; # 서울 리전
+    GOOGLE_APPLICATION_CREDENTIALS = "/home/yongminari/.config/gcloud/application_default_credentials.json";
+    GOOGLE_GENAI_USE_VERTEXAI = "True";
+  };
+
   # [공통 쉘 에일리어스]
   home.shellAliases = {
     # Home Manager 관련

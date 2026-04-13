@@ -29,6 +29,11 @@
         }
       }
 
+      # [Gemini CLI Settings]
+      $env.GOOGLE_CLOUD_PROJECT = "gemini-cli-vertex-ai-493207"
+      $env.GOOGLE_CLOUD_LOCATION = "global" # 서울 리전
+      $env.GOOGLE_APPLICATION_CREDENTIALS = "/home/yongminari/.config/gcloud/application_default_credentials.json"
+      $env.GOOGLE_GENAI_USE_VERTEXAI = "True"
       # [Environment Detection]
       let is_ssh = (not ($env | get -o SSH_CLIENT | is-empty)) or (not ($env | get -o SSH_TTY | is-empty)) or (not ($env | get -o SSH_CONNECTION | is-empty))
       let is_docker = ("/.dockerenv" | path exists) or (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "docker") } else { false })

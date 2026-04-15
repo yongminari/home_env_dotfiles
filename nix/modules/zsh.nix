@@ -18,9 +18,14 @@
       export LANG="en_US.UTF-8"
       export LC_ALL="en_US.UTF-8"
 
-      # [Zsh Rendering Fix]
-      # 오른쪽 프롬프트 너비 계산 오류 방지
-      export ZLE_RPROMPT_INDENT=0
+      # [Zsh Rendering & Input Fixes]
+      # 1. Bracketed Paste 모드 비활성화: 타이핑을 붙여넣기로 오해하여 중복 입력되는 현상 방지
+      unset zle_bracketed_paste
+      # 2. Zsh의 터미널 가로 폭 재계산 강제
+      if command -v tput &>/dev/null; then
+        export COLUMNS=$(tput cols)
+        export LINES=$(tput lines)
+      fi
 
       # [Zsh Autosuggestions Fix]
       # SSH/Zellij 환경에서 문자 중복 입력(Double typing) 방지
@@ -46,6 +51,7 @@
       enable = true;
       plugins = [ "git" "virtualenv" "history-substring-search" ];
     };
+
 
     # [Zsh 에일리어스] - Zsh 전용 (Nushell은 native ls 사용 권장)
     shellAliases = {

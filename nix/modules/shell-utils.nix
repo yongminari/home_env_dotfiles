@@ -61,10 +61,10 @@
 
   # Atuin (Magical Shell History)
   programs.atuin = {
-    enable = true;
-    enableZshIntegration = true;
-    enableBashIntegration = true;
-    enableNushellIntegration = true;
+    enable = false; # [테스트] Zsh 문자 중복 입력 현상 해결을 위해 비활성화
+    enableZshIntegration = false;
+    enableBashIntegration = false;
+    enableNushellIntegration = false;
     flags = [ "--disable-up-arrow" ];
   };
 }

@@ -19,6 +19,16 @@
 
     # 2. 쉘 초기화 (최신 표준 initContent 사용)
     initContent = ''
+      # [Locale Settings for SSH/Zellij]
+      export LANG="en_US.UTF-8"
+      export LC_ALL="en_US.UTF-8"
+
+      # [Zsh Autosuggestions Fix]
+      # SSH/Zellij 환경에서 문자 중복 입력(Double typing) 방지
+      export ZSH_AUTOSUGGEST_MANUAL_REBIND=1
+      export ZSH_AUTOSUGGEST_USE_ASYNC=1
+      export ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
+
       ${builtins.readFile ./shell-common.sh}
 
       # [Welcome Message]

@@ -34,7 +34,7 @@
 
       # [Shell Integration]
       shell-integration = "detect";
-      shell-integration-features = "no-cursor";
+      shell-integration-features = "no-cursor,ssh-terminfo";
 
       # [Clipboard]
       clipboard-read = "allow";

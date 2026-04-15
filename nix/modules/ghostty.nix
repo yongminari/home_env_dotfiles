@@ -3,9 +3,9 @@
 {
   programs.ghostty = {
     enable = true;
-    # [쉘 통합 활성화] - 새 탭 작업 디렉토리 유지 등의 기능을 위해 다시 켭니다.
-    enableZshIntegration = true;
-    enableBashIntegration = true;
+    # [쉘 통합 비활성화] - Zellij/Starship과의 렌더링 충돌 방지 테스트
+    enableZshIntegration = false;
+    enableBashIntegration = false;
 
     # [Ghostty 설정] - Nix 속성 세트 방식으로 정의
     settings = {

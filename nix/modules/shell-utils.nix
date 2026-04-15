@@ -7,7 +7,7 @@
   programs.starship = {
     enable = true;
     enableBashIntegration = true;
-    enableZshIntegration = false; # [테스트] Zsh에서의 문자 중복 입력 원인 파악용
+    enableZshIntegration = true;
     enableNushellIntegration = true;
     settings = lib.importTOML ./starship.toml;
   };

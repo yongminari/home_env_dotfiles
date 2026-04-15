@@ -18,6 +18,10 @@
       export LANG="en_US.UTF-8"
       export LC_ALL="en_US.UTF-8"
 
+      # [Zsh Rendering Fix]
+      # 오른쪽 프롬프트 너비 계산 오류 방지
+      export ZLE_RPROMPT_INDENT=0
+
       # [Zsh Autosuggestions Fix]
       # SSH/Zellij 환경에서 문자 중복 입력(Double typing) 방지
       export ZSH_AUTOSUGGEST_MANUAL_REBIND=1

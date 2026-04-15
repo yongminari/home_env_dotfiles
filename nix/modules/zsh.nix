@@ -4,8 +4,8 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    autosuggestion.enable = false;
-    syntaxHighlighting.enable = false;
+    autosuggestion.enable = true;
+    syntaxHighlighting.enable = true;
 
     # 1. 환경 감지 및 공통 환경 변수
     envExtra = ''
@@ -18,9 +18,14 @@
       export LANG="en_US.UTF-8"
       export LC_ALL="en_US.UTF-8"
 
-      # [Zsh 핵심 렌더링 방해 요소 제거]
-      unsetopt flowcontrol
-      unsetopt beep
+      # [Zsh Rendering & Input Fixes]
+      # 1. Bracketed Paste 모드 비활성화: 타이핑을 붙여넣기로 오해하여 중복 입력되는 현상 방지
+      unset zle_bracketed_paste
+      # 2. Zsh의 터미널 가로 폭 재계산 강제
+      if command -v tput &>/dev/null; then
+        export COLUMNS=$(tput cols)
+        export LINES=$(tput lines)
+      fi
 
       # [Zsh Autosuggestions Fix]
       # SSH/Zellij 환경에서 문자 중복 입력(Double typing) 방지

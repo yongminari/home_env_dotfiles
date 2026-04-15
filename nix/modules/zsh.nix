@@ -4,8 +4,8 @@
   programs.zsh = {
     enable = true;
     enableCompletion = true;
-    autosuggestion.enable = false; # [테스트] 중복 입력 해결용
-    syntaxHighlighting.enable = false; # [테스트] 중복 입력 해결용
+    autosuggestion.enable = false;
+    syntaxHighlighting.enable = false;
 
     # 1. 환경 감지 및 공통 환경 변수
     envExtra = ''
@@ -41,9 +41,7 @@
       if command -v pyenv &>/dev/null; then eval "$(pyenv init -)"; eval "$(pyenv virtualenv-init -)"; fi
 
       # [Keybindings]
-      # history-substring-search 플러그인 없이도 작동하는 표준 바인딩
-      bindkey '^[[A' up-line-or-history
-      bindkey '^[[B' down-line-or-history
+      # Note: history-substring-search 플러그인이 비활성화된 경우 아래 바인딩은 에러를 낼 수 있으므로 체크가 필요할 수 있습니다.
     '';
 
     oh-my-zsh = {
@@ -51,18 +49,12 @@
       plugins = [ "git" "virtualenv" ];
     };
 
-    # [Zsh 에일리어스] - Zsh 전용
+    # [Zsh 에일리어스] - Zsh 전용 (Nushell은 native ls 사용 권장)
     shellAliases = {
       ls = "eza";
       ll = "eza -l --icons --git -a";
       lt = "eza --tree --level=2 --long --icons --git";
       cat = "bat";
-      
-      # [Home.nix 공통 외 추가 에일리어스들]
-      vi = "nvim";
-      vim = "nvim";
-      zj = "zellij";
-      tocb = "wl-copy";
     };
   };
 }

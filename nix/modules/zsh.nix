@@ -44,20 +44,11 @@
 
     oh-my-zsh = {
       enable = true;
-      plugins = [ "git" "virtualenv" ];
+      plugins = [ "git" "virtualenv" "history-substring-search" ];
     };
 
 
     # [Zsh 에일리어스] - Zsh 전용 (Nushell은 native ls 사용 권장)
-    shellAliases = {
-      ls = "eza";
-      ll = "eza -l --icons --git -a";
-      lt = "eza --tree --level=2 --long --icons --git";
-      cat = "bat";
-    };
-  };
-}
-�용 (Nushell은 native ls 사용 권장)
     shellAliases = {
       ls = "eza";
       ll = "eza -l --icons --git -a";

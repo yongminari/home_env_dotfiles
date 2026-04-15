@@ -9,11 +9,6 @@
 
     # 1. 환경 감지 및 공통 환경 변수
     envExtra = ''
-      # Ghostty TERM fix
-      if [[ "$TERM" == "xterm-ghostty" ]] && ! command -v infocmp &>/dev/null; then
-        export TERM=xterm-256color
-      fi
-
       export PATH=$HOME/.local/bin:$PATH
     '';
 

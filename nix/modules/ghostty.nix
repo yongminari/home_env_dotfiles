@@ -25,9 +25,6 @@
       background-opacity = 0.85;
       theme = "Dracula";
 
-      # [Compatibility]
-      term = "xterm-256color";
-
       # [Cursor]
       cursor-style = "block";
       cursor-style-blink = true;

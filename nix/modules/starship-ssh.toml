@@ -33,12 +33,6 @@ truncation_length = 5
 truncate_to_repo = false
 truncation_symbol = "…/"
 
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
-
 [git_branch]
 symbol = ""
 style = "bg:#394260"

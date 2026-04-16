@@ -1,38 +1,32 @@
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   welcomeScript = pkgs.writeShellScriptBin "welcome-msg" ''
-    # lolcat 이 있는지 확인 (Nix 패키지에서 가져옴)
     LOLCAT="${pkgs.lolcat}/bin/lolcat"
 
-    function is_ssh() {
-      [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] || \
-      [[ "$(ps -o comm= -p $PPID 2>/dev/null)" == "sshd" ]]
-    }
+    # 현재 실제 작동 중인 쉘 이름을 가져오는 가장 확실한 방법
+    # 스크립트를 실행한 부모 프로세스(쉘)의 이름을 찾습니다.
+    current_shell=$(ps -p $PPID -o comm= | sed 's/^-//')
 
-    if [[ -n "$ZELLIJ" ]] || is_ssh; then
-      printf "\e[?7l" # 줄바꿈 제한 해제 (이미지 깨짐 방지)
+    if [[ -n "$ZELLIJ" ]] || [[ -n "$SSH_CLIENT" ]]; then
+      printf "\e[?7l"
       
       os_name="Linux"
-      if [[ -f /etc/os-release ]]; then
-        os_name=$(grep PRETTY_NAME /etc/os-release | cut -d '"' -f2)
-      fi
+      [[ -f /etc/os-release ]] && os_name=$(grep PRETTY_NAME /etc/os-release | cut -d '"' -f2)
 
       {
         session_type=$([[ -n "$ZELLIJ" ]] && echo "Zellij" || echo "Remote SSH")
-        shell_name=$(ps -p $PPID -o comm= | sed 's/^-//')
         host_name=$(uname -n)
         kernel_info=$(uname -r)
         current_date=$(date +'%Y-%m-%d %H:%M:%S')
         current_user=$(whoami)
 
-        # 상단 테두리 (대시 60개)
         echo   " ╭────────────────────────────────────────────────────────────────────╮"
         printf " │  ███                  %-44s │\n" "$os_name"
         printf " │ ░░░███                %-44s │\n" ""
         printf " │   ░░░███              HOST      : %-32s │\n" "$host_name"
         printf " │     ░░░███            SESSION   : %-32s │\n" "$session_type"
-        printf " │      ███░             Shell     : %-32s │\n" "$shell_name"
+        printf " │      ███░             Shell     : %-32s │\n" "$current_shell"
         printf " │    ███░               Kernel    : %-32s │\n" "$kernel_info"
         printf " │  ███░      █████████  Date      : %-32s │\n" "$current_date"
         printf " │ ░░░       ░░░░░░░░░   Who       : %-32s │\n" "$current_user"
@@ -40,7 +34,7 @@ let
       } | $LOLCAT
 
       echo -e "\nWelcome back to \x1b[94mShell\x1b[0m, \x1b[1m$USER!\x1b[0m"
-      printf "\e[?7h" # 다시 켜기
+      printf "\e[?7h"
     fi
   '';
 in

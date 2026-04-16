@@ -26,8 +26,8 @@
       export PATH=$HOME/.local/bin:$PATH
     '';
 
-    # [쉘 초기화 스크립트] - .zshrc 끝부분에 들어감
-    initExtra = ''
+    # [쉘 초기화 스크립트] - .zshrc 구성 (최신 표준 initContent 사용)
+    initContent = ''
       # 공통 쉘 스크립트 로드
       ${builtins.readFile ./shell-common.sh}
 

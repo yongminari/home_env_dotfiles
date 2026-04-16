@@ -1,18 +1,35 @@
 { config, pkgs, lib, ... }:
 
 {
+  # [전역 환경 변수] - 쉘 외에도 모든 프로세스에서 참조 가능
+  home.sessionVariables = {
+    LANG = "en_US.UTF-8";
+    LC_ALL = "en_US.UTF-8";
+    EDITOR = "nvim";
+  };
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
+    # [Zsh 전용 지역 변수] - Zsh가 시작될 때 자동으로 선언됨
+    localVariables = {
+      ZSH_AUTOSUGGEST_MANUAL_REBIND = "1";
+      ZSH_AUTOSUGGEST_USE_ASYNC = "1";
+      ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE = "20";
+    };
+
+    # [경로 설정] - .zshenv에 들어감
     envExtra = ''
       export PATH=$HOME/.local/bin:$PATH
     '';
 
-    initContent = ''
-      source ${./shell-common.sh}
+    # [쉘 초기화 스크립트] - .zshrc 끝부분에 들어감
+    initExtra = ''
+      # 공통 쉘 스크립트 로드
+      ${builtins.readFile ./shell-common.sh}
 
       # [Welcome Message]
       if [[ $- == *i* ]]; then welcome-msg; fi
@@ -35,6 +52,8 @@
       ll = "eza -l --icons --git -a";
       lt = "eza --tree --level=2 --long --icons --git";
       cat = "bat";
+      # Ghostty를 유지하면서 SSH 호환성을 챙기는 가장 현대적인 방법
+      gssh = "ghostty +ssh";
     };
   };
 }

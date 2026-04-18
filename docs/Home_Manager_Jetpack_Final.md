@@ -3,15 +3,15 @@
 ## 1. 개요
 
 이 문서는 Nix Home Manager를 사용하여 리눅스 개발 환경을 구축하는 최종 가이드이다.
-Ubuntu 24.04 환경에서 **Sway(TWM)**와 **Rofi(런처)**, **Waybar(상단 바)**를 중심으로 가장 안정적이고 표준화된 개발 환경을 구축한다.
+Ubuntu 24.04 환경에서 **Hyprland(TWM)**와 **Noctalia Shell(런처, 바, 알림)**을 중심으로 가장 안정적이고 표준화된 개발 환경을 구축한다.
 
 **주요 기능:**
 - **Core:** Nix Flakes + Home Manager (Modular Structure)
-- **TWM Engine:** Sway (Wayland 기반, apt 설치로 안정성 확보)
+- **TWM Engine:** Hyprland (Wayland 기반, 하드웨어 가속 지원)
 - **Shell:** Zsh + Nushell + Bash (Centralized Aliases 통합 관리)
 - **Editor:** Neovim (Modular Lua Setup: options, keymaps, plugins, utils)
 - **Terminal:** Ghostty (Nix 통합 관리)
-- **App Launcher:** Rofi (Modern Dracula Theme)
+- **Unified Shell:** Noctalia Shell (Launcher, Bar, Notifications 통합)
 - **Multiplexer:** Zellij (Standard Module, Theme support)
 
 ## 2. 필수 사전 준비 (Manual Steps)
@@ -22,10 +22,11 @@ curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix 
 ```
 
 ### 2.2 TWM 엔진 설치 (Ubuntu 24.04 필수 단계)
-Ubuntu 24.04에서 그래픽 드라이버 호환성과 시스템 안정성을 위해 핵심 엔진은 `apt`로 설치한다.
+Ubuntu 24.04에서 최신 Hyprland를 사용하기 위해 PPA를 활용하거나 시스템 패키지로 설치한다.
 ```bash
+sudo add-apt-repository ppa:cppiber/hyprland
 sudo apt update
-sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk swaylock swayidle
+sudo apt install hyprland xdg-desktop-portal-hyprland hyprlock hypridle
 ```
 
 ### 2.3 한글 입력기 (Fcitx5) 설정
@@ -67,37 +68,30 @@ sudo apt install sway rofi waybar xdg-desktop-portal-wlr xdg-desktop-portal-gtk 
 │   └── modules           # 기능별 세부 설정 모듈
 │       ├── shell.nix     # 쉘 환경 브릿지
 │       ├── neovim.nix    # Neovim 모듈 로더
-│       ├── neovim/       # Neovim 기능별 Lua 설정 (Modular)
-│       ├── sway.nix      # Sway TWM 및 단축키 자동화
-│       ├── rofi.nix      # Rofi 런처 테마 및 스타일
-│       ├── waybar.nix    # Waybar 상단 바 설정 및 스타일
+│       ├── hyprland.nix  # Hyprland 코어 및 단축키 설정
+│       ├── noctalia.nix  # Noctalia Shell 통합 설정 (Bar/Launcher)
 │       ├── packages.nix  # 시스템 패키지 카테고리별 관리
 │       └── git.nix       # Git 사용자 정보 및 표준 설정
 └── .gitignore
 ```
 
-## 4. 핵심 모듈 설명 (Sway & Rofi)
+## 4. 핵심 모듈 설명 (Hyprland & Noctalia)
 
-### 4.1 ~/home_env_dotfiles/nix/modules/sway.nix
-Sway 설정 파일(`~/.config/sway/config`)을 생성한다. `apt`로 설치된 Sway 엔진이 이 설정을 읽어 구동된다.
+### 4.1 ~/home_env_dotfiles/nix/modules/hyprland.nix
+Hyprland 설정 파일(`~/.config/hypr/hyprland.conf`)을 생성한다. 
 
 ```nix
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
-  xdg.configFile."sway/config".text = ''
+  xdg.configFile."hypr/hyprland.conf".text = ''
     # Variables & Keybindings
-    set $mod Mod4
-    set $term ghostty
-    set $menu rofi -show drun
-
-    bindsym $mod+Return exec $term
-    bindsym $mod+d exec $menu
-    bindsym $mod+q kill
-    # ... (생략 없이 실제 파일은 모든 hjkl 이동 및 워크스페이스 단축키 포함)
+    $mainMod = SUPER
+    bind = $mainMod, Return, exec, ghostty
+    bind = $mainMod, space, exec, noctalia-shell ipc call launcher toggle
     
-    # Waybar 통합
-    bar { swaybar_command waybar }
+    # Auto Start
+    exec-once = noctalia-shell
   '';
 }
 ```

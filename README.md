@@ -15,9 +15,7 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 - **💻 Terminal Multiplexer:** **Zellij** managed via standard Nix modules.
 - **📝 Editor:** **Neovim** (Modern Modular Setup).
   - Fully modular Lua configuration split by function (`options`, `keymaps`, `plugins`, `utils`).
-- **🚀 App Launcher:** **Rofi** (Wayland-native) with modern **adi1090x Type-6** theme.
-- **📊 Status Bar:** **Waybar** with official **Catppuccin Mocha** theme.
-- **🔔 Notification:** **SwayNC** (Notification Center) with integrated control center (`Super + N`).
+- **🚀 App Launcher, Bar & Notifications:** **Noctalia Shell** - Unified Wayland-native shell for a seamless experience.
 - **🔒 Security:** **Hyprlock** & **Hypridle** for automated screen locking and power management.
 - **🎨 Global Theme:** Unified **Catppuccin Mocha** aesthetic across GTK, Icons, and WM.
 - **📦 Modular & Standardized:** Clean file structure using the latest Home Manager patterns.
@@ -42,8 +40,7 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
         ├── hyprland.nix  # Hyprland core configuration & Keybindings
         ├── hyprlock.nix  # Catppuccin themed lock screen
         ├── hypridle.nix  # Idle & Auto-lock configuration
-        ├── waybar.nix    # Status bar layout & styles
-        ├── notifications.nix # SwayNC configuration
+        ├── noctalia.nix  # Noctalia Shell (Bar, Launcher, Notifications)
         ├── theme.nix     # GTK/Icon/Cursor theme configuration
         ├── packages.nix  # Categorized system packages
         ├── git.nix       # Standardized Git user config
@@ -175,7 +172,7 @@ If Ghostty doesn't appear in your app launcher:
 - If it still doesn't show up, run `hmsx` again and restart your session.
 
 ### 3. Troubleshooting: Hyprland Startup Issues
-If Waybar or Rofi doesn't start automatically on a fresh boot:
+If key components don't start automatically on a fresh boot:
 - The current configuration uses **absolute Nix store paths** to ensure binaries are found.
 - Always run `hyprctl reload` after `hmsx` if shortcuts seem unresponsive.
 
@@ -189,12 +186,11 @@ atuin import auto
 | Shortcut | Action |
 | :--- | :--- |
 | **`Super + Enter`** | Launch **Ghostty** terminal |
-| **`Super + Space`** | Launch **Rofi** (App runner) |
+| **`Super + Space`** | Launch **Noctalia** (App Launcher) |
 | **`Super + Q`** | Close active window (Kill) |
 | **`Super + F`** | Toggle Fullscreen |
 | **Super + V** | Toggle Floating mode |
-| **Super + N** | Toggle **Notification Center** |
-| **Super + Shift + N** | Focus latest notification |
+| **Super + N** | Toggle **Noctalia Notification Center** |
 | **Super + Alt + N** | Clear all notifications |
 | **Super + h/j/k/l** | Move focus (Left, Down, Up, Right) |
 

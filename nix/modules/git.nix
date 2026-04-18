@@ -14,6 +14,24 @@
     };
   };
 
+  programs.gitui = {
+    enable = true;
+    keyConfig = ''
+      (
+          move_left: Some(( code: Char('h'), modifiers: "")),
+          move_right: Some(( code: Char('l'), modifiers: "")),
+          move_up: Some(( code: Char('k'), modifiers: "")),
+          move_down: Some(( code: Char('j'), modifiers: "")),
+
+          stash_open: Some(( code: Char('S'), modifiers: "")),
+          main_tabs_next: Some(( code: Char('l'), modifiers: "CONTROL")),
+          main_tabs_prev: Some(( code: Char('h'), modifiers: "CONTROL")),
+
+          open_help: Some(( code: Char('?'), modifiers: "")),
+      )
+    '';
+  };
+
   # Delta: Syntax-highlighted git pager
   programs.delta = {
     enable = true;

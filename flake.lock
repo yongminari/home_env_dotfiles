@@ -101,8 +101,7 @@
         "home-manager": "home-manager",
         "hyprlock-themes": "hyprlock-themes",
         "nixpkgs": "nixpkgs",
-        "noctalia": "noctalia",
-        "waybar-themes": "waybar-themes"
+        "noctalia": "noctalia"
       }
     },
     "systems": {
@@ -139,22 +138,6 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "type": "github"
-      }
-    },
-    "waybar-themes": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1720870206,
-        "narHash": "sha256-za0y6hcN2rvN6Xjf31xLRe4PP0YyHu2i454ZPjr+lWA=",
-        "owner": "catppuccin",
-        "repo": "waybar",
-        "rev": "ee8ed32b4f63e9c417249c109818dcc05a2e25da",
-        "type": "github"
-      },
-      "original": {
-        "owner": "catppuccin",
-        "repo": "waybar",
         "type": "github"
       }
     }

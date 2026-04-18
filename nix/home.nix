@@ -20,7 +20,6 @@
     ./modules/hyprlock.nix
     ./modules/hypridle.nix
     ./modules/theme.nix
-    ./modules/notifications.nix
     ./modules/noctalia.nix
     ./modules/swappy.nix
   ];

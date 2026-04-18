@@ -17,7 +17,6 @@
     lsb-release
     rclone
     swaybg
-    rofi          # rofi-wayland가 통합된 최신 rofi
     hyprpaper     # Hyprland 전용 월페이퍼 도구
     networkmanagerapplet # Wi-Fi/Network 트레이 아이콘 (nm-applet)
     
@@ -33,7 +32,6 @@
     bibata-cursors     # 세련된 커서 테마 (theme.nix에서 사용됨)
     
     # [알림 센터]
-    swaynotificationcenter # 현대적인 알림 엔진 및 컨트롤 센터
     libnotify              # notify-send 명령어를 위한 도구
     
     # [하드웨어 제어]

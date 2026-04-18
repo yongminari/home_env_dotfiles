@@ -17,12 +17,6 @@
       flake = false;
     };
 
-    # Catppuccin Waybar Themes (전 세계적으로 가장 유명한 바 테마)
-    waybar-themes = {
-      url = "github:catppuccin/waybar";
-      flake = false;
-    };
-
     # Noctalia Shell (Bar + Launcher + Shell)
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
@@ -30,7 +24,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, hyprlock-themes, waybar-themes, noctalia, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, hyprlock-themes, noctalia, ... }@inputs:
     let
       mkConfig = system: home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.${system};

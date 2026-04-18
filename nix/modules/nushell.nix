@@ -109,5 +109,20 @@
       g  = "git";
       v  = "nvim";
     };
+
+    extraConfig = ''
+      # [SSH Wrapper]
+      # Ghostty 사용 시 'ghostty +ssh'를 통해 terminfo 자동 주입 시도
+      def --env ssh [...args] {
+        let is_ghostty = ($env.TERM? == "xterm-ghostty") or ($env.TERM_PROGRAM? == "Ghostty")
+        if $is_ghostty {
+          ^ghostty +ssh ...$args
+        } else {
+          with-env { TERM: "xterm-256color", COLORTERM: "truecolor" } {
+            ^ssh ...$args
+          }
+        }
+      }
+    '';
   };
 }

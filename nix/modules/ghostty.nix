@@ -9,8 +9,10 @@
 
     # [Ghostty 설정] - Nix 속성 세트 방식으로 정의
     settings = {
+      # SSH 접속 시 원격 서버에 terminfo를 자동으로 주입하기 위해 xterm-ghostty 사용
       term = "xterm-ghostty";
       command = "${pkgs.zsh}/bin/zsh";
+      
       # [Font]
       font-family = [
         "Maple Mono NF"
@@ -23,7 +25,7 @@
       window-height = 60;
       window-decoration = "auto";
       background-opacity = 0.85;
-      theme = "Dracula";
+      theme = "Gruvbox Dark";
 
       # [Cursor]
       cursor-style = "block";
@@ -40,7 +42,6 @@
   };
 
   # [GNOME 런처 인식 문제 해결]
-  # Nix가 설치한 Ghostty의 .desktop 파일을 GNOME이 인식할 수 있는 표준 경로로 심볼릭 링크합니다.
   home.file.".local/share/applications/com.mitchellh.ghostty.desktop".source = 
     "${pkgs.ghostty}/share/applications/com.mitchellh.ghostty.desktop";
 }

@@ -5,15 +5,10 @@
   gtk = {
     enable = true;
     
-    # 1. 테마 설정 (Catppuccin Mocha)
+    # 1. 테마 설정 (Ayu Dark)
     theme = {
-      name = "catppuccin-mocha-mauve-standard";
-      package = pkgs.catppuccin-gtk.override {
-        accents = [ "mauve" ];
-        size = "standard";
-        tweaks = [ "rimless" "black" ];
-        variant = "mocha";
-      };
+      name = "Ayu-Dark";
+      package = pkgs.ayu-theme-gtk;
     };
 
     gtk4.extraConfig.gtk-application-prefer-dark-theme = true;

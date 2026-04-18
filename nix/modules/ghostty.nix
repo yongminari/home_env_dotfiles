@@ -25,7 +25,7 @@
       window-height = 60;
       window-decoration = "auto";
       background-opacity = 0.85;
-      theme = "Gruvbox Dark";
+      theme = "Ayu Dark";
 
       # [Cursor]
       cursor-style = "block";

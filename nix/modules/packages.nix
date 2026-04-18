@@ -26,8 +26,8 @@
     swappy        # 캡처 이미지 즉석 편집기
     
     # [테마 및 아이콘]
-    catppuccin-gtk     # 공식 Catppuccin GTK 테마
-    catppuccin-kvantum # Qt 앱용 테마 엔진
+    ayu-theme-gtk      # Ayu GTK 테마 (Dark, Mirage, Light 지원)
+    catppuccin-kvantum # Qt 앱용 테마 엔진 (Ayu용 대안이 없으면 유지하거나 추후 교체)
     papirus-icon-theme # 가장 대중적이고 예쁜 아이콘 팩
     bibata-cursors     # 세련된 커서 테마 (theme.nix에서 사용됨)
     

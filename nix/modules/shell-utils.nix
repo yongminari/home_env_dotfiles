@@ -57,6 +57,13 @@
     enableBashIntegration = true;
     enableNushellIntegration = true;
     shellWrapperName = "y";
+    
+    # 테마(Flavor) 설정
+    settings = {
+      theme = {
+        flavor = "ayu-dark";
+      };
+    };
   };
 
   # Atuin (Magical Shell History)

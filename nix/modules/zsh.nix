@@ -37,12 +37,6 @@
       # [External Tools (fnm)]
       if command -v fnm &>/dev/null; then eval "$(fnm env --use-on-cd --shell zsh)"; fi
 
-      # [SSH-specific Keybindings]
-      if is_ssh; then
-        bindkey "^?" backward-delete-char
-        bindkey "^H" backward-delete-char
-      fi
-
       # [Keybindings]
       bindkey '^[[A' history-substring-search-up
       bindkey '^[[B' history-substring-search-down

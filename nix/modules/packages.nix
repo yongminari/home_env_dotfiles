@@ -7,6 +7,7 @@
 
   home.packages = with pkgs; [
     # [시스템 유틸리티]
+    ghostty
     fastfetch 
     htop 
     ripgrep 
@@ -44,6 +45,9 @@
     xclip 
     xsel 
     wl-clipboard 
+
+    # [Git 도구]
+    gitui
     
     # [개발 보조 도구 (LSP/Parsers)]
     tree-sitter   # Tree-sitter CLI (Fix checkhealth error)

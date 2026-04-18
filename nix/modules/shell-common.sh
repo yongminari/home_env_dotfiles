@@ -6,6 +6,22 @@ function is_ssh() {
 function is_docker() { [[ -e /.dockerenv ]] || grep -q "docker" /proc/1/cgroup 2>/dev/null; }
 function is_vscode() { [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TERM_PROGRAM" == "vscode" ]]; }
 
+# [SSH Terminfo Fallback]
+# SSH 접속 시 xterm-ghostty 정보를 모를 경우 xterm-256color로 fallback
+if is_ssh; then
+  # ~/.terminfo 경로를 우선 확인하도록 설정
+  export TERMINFO_DIRS="$HOME/.terminfo:/usr/share/terminfo"
+  
+  if [[ "$TERM" == "xterm-ghostty" ]]; then
+    # 시스템이 xterm-ghostty를 모르면 xterm-256color로 fallback
+    if ! infocmp xterm-ghostty >/dev/null 2>&1; then
+      export TERM=xterm-256color
+    fi
+    # SSH가 전달하지 않았을 COLORTERM을 명시적으로 선언 (256/Truecolor 활성화의 핵심)
+    export COLORTERM=truecolor
+  fi
+fi
+
 # [Theme & Prompt Settings]
 if is_ssh; then
   export STARSHIP_CONFIG="$HOME/.config/starship-ssh.toml"

@@ -31,6 +31,9 @@
       trouble-nvim
       toggleterm-nvim
       lazygit-nvim
+      neogit
+      diffview-nvim
+      git-conflict-nvim
       obsidian-nvim
       nvim-lspconfig
       nvim-cmp

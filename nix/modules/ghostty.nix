@@ -41,6 +41,18 @@
     };
   };
 
+  # SSH 접속 시 원격에서 들어오는 xterm-ghostty를 인식하기 위한 terminfo 설정
+  home.packages = [ pkgs.ghostty.terminfo ];
+  
+  # 시스템 표준 경로에 terminfo 링크 생성 (SSH 세션 인식용)
+  # share/terminfo 내부의 내용이 직접 ~/.terminfo에 들어가도록 설정하는 것이 더 정확할 수 있음
+  home.file.".terminfo".source = "${pkgs.ghostty.terminfo}/share/terminfo";
+
+  # 쉘 환경 변수에 terminfo 경로 추가
+  home.sessionVariables = {
+    TERMINFO_DIRS = "${config.home.homeDirectory}/.terminfo:/usr/share/terminfo";
+  };
+
   # [GNOME 런처 인식 문제 해결]
   home.file.".local/share/applications/com.mitchellh.ghostty.desktop".source = 
     "${pkgs.ghostty}/share/applications/com.mitchellh.ghostty.desktop";

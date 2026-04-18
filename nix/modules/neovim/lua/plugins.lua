@@ -3,20 +3,15 @@ local options = require('options')
 local safe_require = utils.safe_require
 
 -- [테마 설정]
-safe_require("tokyonight", function(tokyonight)
-  tokyonight.setup({
-    style = options.theme_style,
-    transparent = options.is_transparent,
-    styles = {
-      sidebars = utils.is_remote and "dark" or "transparent",
-      floats = utils.is_remote and "dark" or "transparent",
-    },
-  })
-  vim.cmd.colorscheme "tokyonight"
-end)
+if utils.is_remote then
+  vim.g.ayucolor = "mirage"
+else
+  vim.g.ayucolor = "dark"
+end
+vim.cmd.colorscheme "ayu"
 
 -- [기본 UI 컴포넌트]
-safe_require("lualine", function(lualine) lualine.setup { options = { theme = 'tokyonight' } } end)
+safe_require("lualine", function(lualine) lualine.setup { options = { theme = 'ayu' } } end)
 safe_require("bufferline", function(bufferline) bufferline.setup{} end)
 safe_require("gitsigns", function(gitsigns) gitsigns.setup() end)
 safe_require("ibl", function(ibl) ibl.setup() end)

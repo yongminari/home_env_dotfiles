@@ -12,7 +12,7 @@
     extraLuaPackages = ps: [ ps.jsregexp ];
 
     plugins = with pkgs.vimPlugins; [
-      tokyonight-nvim
+      ayu-vim
       which-key-nvim 
       nvim-web-devicons
       lualine-nvim

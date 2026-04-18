@@ -34,6 +34,15 @@
 
   programs.home-manager.enable = true;
 
+  # [공통 경로 설정] - 모든 쉘(Bash, Zsh, Nushell)에 적용됨
+  home.sessionPath = [
+    "$HOME/.nix-profile/bin"
+    "$HOME/.local/bin"
+    "$HOME/.local/state/nix/profiles/home-manager/profile/bin"
+    "/nix/var/nix/profiles/default/bin"
+    "/run/current-system/sw/bin"
+  ];
+
   # [Hyprland Shortcuts Cheat Sheet] - 전용 도움말 명령어 생성
   home.packages = [
     (pkgs.writeShellScriptBin "hypr-cheat" ''

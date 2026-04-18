@@ -1,6 +1,6 @@
 # [Environment Detection]
 function is_ssh() { 
-  [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] || \
+  [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]] && return 0
   [[ "$(ps -o comm= -p $PPID 2>/dev/null)" == "sshd" ]]
 }
 function is_docker() { [[ -e /.dockerenv ]] || grep -q "docker" /proc/1/cgroup 2>/dev/null; }
@@ -9,11 +9,6 @@ function is_vscode() { [[ -n "$VSCODE_IPC_HOOK_CLI" || -n "$VSCODE_PID" || "$TER
 # [Theme & Prompt Settings]
 if is_ssh; then
   export STARSHIP_CONFIG="$HOME/.config/starship-ssh.toml"
-  # SSH 환경에서 백스페이스 오작동 방지를 위한 바인딩 (Ghostty/Zellij 대응)
-  if [[ -n "$ZSH_VERSION" ]]; then
-    bindkey "^?" backward-delete-char
-    bindkey "^H" backward-delete-char
-  fi
 elif is_docker; then
   export STARSHIP_CONFIG="$HOME/.config/starship-docker.toml"
 fi
@@ -21,7 +16,7 @@ fi
 # [SSH Wrapper]
 # 다른 서버로 접속할 때 호환성을 위해 TERM 및 COLORTERM을 설정하여 전송
 # Ghostty 사용 시 'ghostty +ssh'를 통해 terminfo 자동 주입 시도
-ssh() {
+function ssh() {
   if [[ "$TERM" == "xterm-ghostty" || "$TERM_PROGRAM" == "Ghostty" ]]; then
     ghostty +ssh "$@"
   else

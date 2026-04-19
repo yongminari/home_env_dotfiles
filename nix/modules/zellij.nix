@@ -3,6 +3,7 @@
 let
   mkZellijConfig = lockKey: themeName: ''
     theme "${themeName}"
+
     // 시스템 기본쉘(Bash)을 무시하고 Zsh를 강제로 사용하도록 설정
     default_shell "${pkgs.zsh}/bin/zsh"
     default_layout "default"
@@ -42,5 +43,5 @@ in
   };
   
   xdg.configFile."zellij/config.kdl".text = mkZellijConfig "Ctrl g" "ayu_dark";
-  xdg.configFile."zellij/remote.kdl".text = mkZellijConfig "Ctrl a" "ayu_mirage";
+  xdg.configFile."zellij/remote.kdl".text = mkZellijConfig "Ctrl a" "iceberg-light";
 }

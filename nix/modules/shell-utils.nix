@@ -32,7 +32,7 @@
   # Bat (cat 대체)
   programs.bat = {
     enable = true;
-    config = { theme = "ayu-dark"; };
+    config = { theme = "OneHalfDark"; };
   };
 
   # FZF (Fuzzy Finder - 기본 설정으로 복구)

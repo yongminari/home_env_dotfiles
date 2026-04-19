@@ -40,7 +40,7 @@
       navigate = true;
       line-numbers = true;
       side-by-side = true;
-      syntax-theme = "ayu";
+      syntax-theme = "OneHalfDark";
     };
   };
 

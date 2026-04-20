@@ -40,9 +40,9 @@ binde = $mainMod ALT, j, resizeactive, 0 30
 # IME (Fcitx5) - ESC to English
 bindn = , Escape, exec, /usr/bin/fcitx5-remote -c
 
-# Focus (Vim Style)
-bind = $mainMod, h, movefocus, l
-bind = $mainMod, l, movefocus, r
+# Focus (Vim Style) with Workspace Wrapping
+bind = $mainMod, h, exec, bash -c 'old_win=$(hyprctl activewindow -j | jq -r ".address"); old_mon=$(hyprctl activeworkspace -j | jq ".monitorID"); hyprctl dispatch movefocus l; new_win=$(hyprctl activewindow -j | jq -r ".address"); new_mon=$(hyprctl activeworkspace -j | jq ".monitorID"); if [ "$old_win" == "$new_win" ] || [ "$old_mon" != "$new_mon" ]; then if [ "$old_mon" != "$new_mon" ]; then hyprctl dispatch focusmonitor "$old_mon"; fi; hyprctl dispatch workspace m-1; fi'
+bind = $mainMod, l, exec, bash -c 'old_win=$(hyprctl activewindow -j | jq -r ".address"); old_mon=$(hyprctl activeworkspace -j | jq ".monitorID"); hyprctl dispatch movefocus r; new_win=$(hyprctl activewindow -j | jq -r ".address"); new_mon=$(hyprctl activeworkspace -j | jq ".monitorID"); if [ "$old_win" == "$new_win" ] || [ "$old_mon" != "$new_mon" ]; then if [ "$old_mon" != "$new_mon" ]; then hyprctl dispatch focusmonitor "$old_mon"; fi; hyprctl dispatch workspace m+1; fi'
 bind = $mainMod, k, movefocus, u
 bind = $mainMod, j, movefocus, d
 

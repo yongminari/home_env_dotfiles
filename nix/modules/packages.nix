@@ -19,6 +19,7 @@
     swaybg
     hyprpaper     # Hyprland 전용 월페이퍼 도구
     networkmanagerapplet # Wi-Fi/Network 트레이 아이콘 (nm-applet)
+    jq
     
     # [화면 캡처 도구]
     grim          # 화면 캡처 엔진

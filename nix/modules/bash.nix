@@ -4,13 +4,8 @@
   programs.bash = {
     enable = true;
     
-    # [Bash 에일리어스] - Bash 전용 (Nushell은 native ls 사용 권장)
-    shellAliases = {
-      ls = "eza";
-      ll = "eza -l --icons --git -a";
-      lt = "eza --tree --level=2 --long --icons --git";
-      cat = "bat";
-    };
+    # [Bash 에일리어스] - 공통 에일리어스는 shell-utils.nix에서 관리됨
+    shellAliases = { };
 
     # [Bash 초기화] - 표준 initExtra 사용
     initExtra = ''

@@ -80,8 +80,6 @@
     shellAliases = {
       # Navigation & View
       la = "ls -a";
-      ll = "ls -a";
-      lt = "eza --tree --level=2 --icons --git"; # 트리는 시각적 효과를 위해 eza 유지
       o  = "open"; # 파일을 테이블 데이터로 열기 (JSON, YAML, CSV 등)
       
       # Short Shortcuts

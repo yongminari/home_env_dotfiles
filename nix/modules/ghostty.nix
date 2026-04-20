@@ -25,7 +25,7 @@
       window-height = 60;
       window-decoration = "auto";
       background-opacity = 0.85;
-      theme = "Ayu Dark";
+      theme = "Ayu";
 
       # [Cursor]
       cursor-style = "block";

@@ -136,3 +136,29 @@ else
     lspconfig.clangd.setup { capabilities = capabilities, cmd = { "clangd", "--offset-encoding=utf-16" } }
   end
 end
+
+-- [LSP 단어 하이라이트 설정]
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(event)
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+    if client and client:supports_method('textDocument/documentHighlight') then
+      local group = vim.api.nvim_create_augroup('lsp_document_highlight', { clear = false })
+      vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+        buffer = event.buf,
+        group = group,
+        callback = vim.lsp.buf.document_highlight,
+      })
+      vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
+        buffer = event.buf,
+        group = group,
+        callback = vim.lsp.buf.clear_references,
+      })
+    end
+  end,
+})
+
+-- 하이라이트 스타일: 배경색을 채우지 않고 언더라인만 사용하여 터미널에서 깔끔하게 보이도록 함
+local hl_color = "#ffcc66" -- ayu 테마와 어울리는 골드 계열 색상
+vim.api.nvim_set_hl(0, "LspReferenceText", { underline = true, sp = hl_color })
+vim.api.nvim_set_hl(0, "LspReferenceRead", { underline = true, sp = hl_color })
+vim.api.nvim_set_hl(0, "LspReferenceWrite", { underline = true, bold = true, sp = hl_color })

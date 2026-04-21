@@ -34,6 +34,7 @@ vim.opt.termguicolors = true
 vim.opt.conceallevel = 2
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 1
+vim.opt.updatetime = 300 -- 하이라이트 반응 속도 (ms)
 
 return {
   theme_style = theme_style,

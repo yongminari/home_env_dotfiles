@@ -193,7 +193,6 @@ atuin import auto
 | **Super + N** | Toggle **Noctalia Notification Center** |
 | **Super + Alt + N** | Clear all notifications |
 | **Super + h/j/k/l** | Move focus (Left, Down, Up, Right) |
-
 | **`Super + , / .`** | Focus Monitor (Left/Right) |
 | **`Super + Shift + h/j/k/l`** | Move window position |
 | **`Super + Shift + , / .`** | Move window to Monitor |

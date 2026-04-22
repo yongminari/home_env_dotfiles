@@ -162,3 +162,10 @@ local hl_color = "#ffcc66" -- ayu 테마와 어울리는 골드 계열 색상
 vim.api.nvim_set_hl(0, "LspReferenceText", { underline = true, sp = hl_color })
 vim.api.nvim_set_hl(0, "LspReferenceRead", { underline = true, sp = hl_color })
 vim.api.nvim_set_hl(0, "LspReferenceWrite", { underline = true, bold = true, sp = hl_color })
+
+-- [Diagnostic 하이라이트 설정]
+-- Error: 빨간색 가운데 줄 (strikethrough), Warn: 노란색 가운데 줄
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineError", { underline = false, strikethrough = true, sp = "Red" })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { underline = false, strikethrough = true, sp = "Yellow" })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineInfo", { underline = false, strikethrough = true, sp = "LightBlue" })
+vim.api.nvim_set_hl(0, "DiagnosticUnderlineHint", { underline = false, strikethrough = true, sp = "LightGrey" })

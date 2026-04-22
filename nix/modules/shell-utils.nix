@@ -62,20 +62,53 @@
     nix-direnv.enable = true;
   };
 
-  # Yazi (Terminal File Manager)
+    # Yazi (Terminal File Manager)
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
     enableBashIntegration = true;
     enableNushellIntegration = true;
     shellWrapperName = "y";
-    
-    # 테마(Flavor) 설정
-    settings = {
-      theme = {
-        flavor = "ayu-dark";
-      };
-    };
+  };
+
+  # Yazi 설정을 raw text로 직접 관리 (가장 확실한 방법)
+  xdg.configFile."yazi/yazi.toml".text = ''
+    [manager]
+    show_hidden = false
+    sort_by     = "alphabetical"
+    linemode    = "githead"
+
+    [status]
+    left  = [
+      { name = "hovered", collect = false },
+      { name = "count",   collect = false },
+      { name = "githead", collect = false },
+    ]
+    right = [
+      { name = "cursor",      collect = false },
+      { name = "sort",        collect = false },
+      { name = "permissions", collect = false },
+    ]
+
+    [opener]
+    edit = [
+      { run = '${pkgs.neovim}/bin/nvim "$@"', block = true },
+    ]
+
+    [theme]
+    flavor = "ayu-dark"
+  '';
+
+  xdg.configFile."yazi/init.lua".text = ''
+    require("githead"):setup()
+  '';
+
+  # githead.yazi 플러그인 설치
+  xdg.configFile."yazi/plugins/githead.yazi".source = pkgs.fetchFromGitHub {
+    owner = "llanosrocas";
+    repo = "githead.yazi";
+    rev = "main";
+    sha256 = "sha256-o2EnQYOxp5bWn0eLn0sCUXcbtu6tbO9pdUdoquFCTVw=";
   };
 
   # Atuin (Magical Shell History)

@@ -55,10 +55,11 @@
       ^welcome-msg
 
       # [SSH Wrapper]
-      # Ghostty 사용 시 'ghostty +ssh'를 통해 terminfo 자동 주입 시도
+      # Ghostty 사용 시 'ghostty +ssh'를 통해 terminfo 자동 주입 시도 (중첩 SSH는 제외)
       def --env ssh [...args] {
+        let is_ssh = (not ($env | get -o SSH_CLIENT | is-empty)) or (not ($env | get -o SSH_TTY | is-empty)) or (not ($env | get -o SSH_CONNECTION | is-empty))
         let is_ghostty = ($env.TERM? == "xterm-ghostty") or ($env.TERM_PROGRAM? == "Ghostty")
-        if $is_ghostty {
+        if (not $is_ssh) and $is_ghostty {
           ^ghostty +ssh ...$args
         } else {
           with-env { TERM: "xterm-256color", COLORTERM: "truecolor" } {

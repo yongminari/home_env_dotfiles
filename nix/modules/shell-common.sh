@@ -31,9 +31,9 @@ fi
 
 # [SSH Wrapper]
 # 다른 서버로 접속할 때 호환성을 위해 TERM 및 COLORTERM을 설정하여 전송
-# Ghostty 사용 시 'ghostty +ssh'를 통해 terminfo 자동 주입 시도
+# Ghostty 사용 시 'ghostty +ssh'를 통해 terminfo 자동 주입 시도 (중첩 SSH는 제외)
 function ssh() {
-  if [[ "$TERM" == "xterm-ghostty" || "$TERM_PROGRAM" == "Ghostty" ]]; then
+  if ! is_ssh && [[ "$TERM" == "xterm-ghostty" || "$TERM_PROGRAM" == "Ghostty" ]]; then
     ghostty +ssh "$@"
   else
     TERM=xterm-256color COLORTERM=truecolor command ssh "$@"

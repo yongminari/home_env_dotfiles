@@ -24,6 +24,7 @@
           move_down: Some(( code: Char('j'), modifiers: "")),
 
           stash_open: Some(( code: Char('S'), modifiers: "")),
+          status_reset_item: Some(( code: Char('U'), modifiers: "SHIFT")),
           main_tabs_next: Some(( code: Char('l'), modifiers: "CONTROL")),
           main_tabs_prev: Some(( code: Char('h'), modifiers: "CONTROL")),
 

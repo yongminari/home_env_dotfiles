@@ -11,7 +11,11 @@ end
 vim.cmd.colorscheme "ayu"
 
 -- [기본 UI 컴포넌트]
-safe_require("lualine", function(lualine) lualine.setup { options = { theme = 'ayu' } } end)
+safe_require("lualine", function(lualine)
+  local lualine_theme = 'ayu_dark'
+  if utils.is_remote then lualine_theme = 'ayu_mirage' end
+  lualine.setup { options = { theme = lualine_theme } }
+end)
 safe_require("bufferline", function(bufferline) bufferline.setup{} end)
 safe_require("gitsigns", function(gitsigns) gitsigns.setup() end)
 safe_require("ibl", function(ibl) ibl.setup() end)
@@ -60,7 +64,11 @@ end)
 
 -- [Git 고급 도구]
 safe_require("neogit", function(neogit)
-  neogit.setup {}
+  neogit.setup({
+    integrations = {
+      diffview = true, -- Neogit에서 Diffview를 바로 볼 수 있게 연동
+    },
+  })
   vim.keymap.set("n", "<leader>ng", "<cmd>Neogit<cr>", { desc = "Neogit" })
 end)
 
@@ -106,8 +114,45 @@ if cmp_ok then
   })
 end
 
--- Treesitter Config
-safe_require("nvim-treesitter.configs", function(configs) configs.setup { highlight = { enable = true }, indent = { enable = true } } end)
+-- Treesitter Config (Main branch migration)
+-- Neovim 0.11+ 및 새로운 nvim-treesitter 구조에 맞춰 설정합니다.
+safe_require("nvim-treesitter", function(ts)
+  ts.setup()
+end)
+
+-- 버퍼 진입 시 하이라이트 및 들여쓰기 활성화
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function(args)
+    local lang = vim.treesitter.language.get_lang(vim.bo[args.buf].filetype)
+    if lang then
+      pcall(vim.treesitter.start, args.buf, lang)
+      vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    end
+  end,
+})
+
+-- [ROS/Distrobox 하이브리드 지원 로직]
+-- [컨테이너 파일 로더: 호스트에 없는 /opt, /usr 경로의 파일을 컨테이너에서 가져옵니다]
+vim.api.nvim_create_autocmd("BufReadCmd", {
+  pattern = { "/opt/*", "/usr/include/*" },
+  callback = function(args)
+    local file = args.file
+    -- 호스트에 파일이 실존한다면 (Nix가 링크했거나 등) Distrobox를 호출하지 않음
+    if vim.fn.filereadable(file) == 1 then
+      return
+    end
+
+    local cmd = string.format("distrobox enter ros-jazzy -- cat '%s'", file)
+    local content = vim.fn.systemlist(cmd)
+    if vim.v.shell_error == 0 then
+      vim.api.nvim_buf_set_lines(args.buf, 0, -1, false, content)
+      vim.api.nvim_set_option_value("readonly", true, { buf = args.buf })
+      vim.api.nvim_set_option_value("buftype", "nowrite", { buf = args.buf })
+      local ft = vim.filetype.match({ filename = file })
+      if ft then vim.api.nvim_set_option_value("filetype", ft, { buf = args.buf }) end
+    end
+  end,
+})
 
 -- [LSP Config (Neovim 0.11+ Modern Way)]
 local capabilities = {}
@@ -122,10 +167,24 @@ if vim.lsp.config then
     vim.lsp.config(lsp, { capabilities = capabilities })
     vim.lsp.enable(lsp)
   end
-  -- clangd 전용 안전 설정
+
+  local is_ros_project = vim.env.ROS_DISTRO ~= nil or 
+                         vim.env.AMENT_PREFIX_PATH ~= nil or
+                         #vim.fs.find('package.xml', { upward = true }) > 0
+  
+  local clangd_cmd = { 
+    "clangd", 
+    "--offset-encoding=utf-16",
+    "--query-driver=/nix/store/*/bin/clang++,/nix/store/*/bin/g++,/usr/bin/clang++,/usr/bin/g++"
+  }
+  
+  if is_ros_project and vim.fn.executable("clangd-distrobox") == 1 then
+    clangd_cmd = { "clangd-distrobox", "--offset-encoding=utf-16" }
+  end
+
   vim.lsp.config('clangd', {
     capabilities = capabilities,
-    cmd = { "clangd", "--offset-encoding=utf-16" }
+    cmd = clangd_cmd
   })
   vim.lsp.enable('clangd')
 else
@@ -133,7 +192,21 @@ else
   local lspconfig_ok, lspconfig = pcall(require, "lspconfig")
   if lspconfig_ok then
     for _, lsp in ipairs(servers) do lspconfig[lsp].setup { capabilities = capabilities } end
-    lspconfig.clangd.setup { capabilities = capabilities, cmd = { "clangd", "--offset-encoding=utf-16" } }
+    
+    local is_ros_project = vim.env.ROS_DISTRO ~= nil or 
+                           vim.env.AMENT_PREFIX_PATH ~= nil or
+                           #vim.fs.find('package.xml', { upward = true }) > 0
+
+    local clangd_cmd = { 
+      "clangd", 
+      "--offset-encoding=utf-16",
+      "--query-driver=/nix/store/*/bin/clang++,/nix/store/*/bin/g++,/usr/bin/clang++,/usr/bin/g++"
+    }
+    
+    if is_ros_project and vim.fn.executable("clangd-distrobox") == 1 then
+      clangd_cmd = { "clangd-distrobox", "--offset-encoding=utf-16" }
+    end
+    lspconfig.clangd.setup { capabilities = capabilities, cmd = clangd_cmd }
   end
 end
 

@@ -77,8 +77,12 @@
     '')
   ];
 
-  # [Gemini CLI Settings]
+  # --- [Global Session Variables] ---
   home.sessionVariables = {
+    NIXOS_OZONE_WL = "1"; # Wayland 호환성 (Chromium/Electron 등)
+    TERMINAL = "ghostty"; # 기본 터미널 설정
+
+    # [Gemini CLI Settings]
     GOOGLE_CLOUD_PROJECT = "gemini-cli-vertex-ai-493207";
     GOOGLE_CLOUD_LOCATION = "global"; # 서울 리전
     GOOGLE_APPLICATION_CREDENTIALS = "/home/yongminari/.config/gcloud/application_default_credentials.json";

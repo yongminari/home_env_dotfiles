@@ -8,13 +8,15 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
 - **🪟 Window Manager:** **Hyprland** (Wayland-native) - Hardware-accelerated with rich animations and blur effects.
 - **⚡ Shell:** Zsh (Main), **Nushell (Experimental)**, and Bash optimized with **Starship (Jetpack Theme)**.
 - **🛠️ Modern Core Utils:** Replaces legacy tools with modern Rust alternatives.
-  - `ls` -> `eza`, `cd` -> `zoxide`, `cat` -> `bat`, `find` -> `fd`, `grep` -> `ripgrep`.
+  - `ls` -> `eza`, `cd` -> `zoxide`, `cat` -> `bat`, `find` -> `fd`, `grep` → `ripgrep`, `ps` → `procs`.
   - `direnv` -> **`direnv` (Nix-direnv integrated)**.
   - **TUI File Manager:** **`yazi`** (Fast, Wayland-native image previews).
   - **Shell History:** **`atuin`** (Magical database-driven history search).
+- **🚀 Advanced CLI Tools:** `gh` (GitHub), `lazydocker`, `xh` (HTTP), `sd` (sed replacement), `gping` (Visual Ping), `comma` (Run without install), `nix-tree`.
 - **💻 Terminal Multiplexer:** **Zellij** managed via standard Nix modules.
 - **📝 Editor:** **Neovim** (Modern Modular Setup).
   - Fully modular Lua configuration split by function (`options`, `keymaps`, `plugins`, `utils`).
+  - **Enhanced:** Neovim 0.11 support, ROS/Distrobox integration, and refined LSP visuals.
 - **🚀 App Launcher, Bar & Notifications:** **Noctalia Shell** - Unified Wayland-native shell for a seamless experience.
 - **🔒 Security:** **Hyprlock** & **Hypridle** for automated screen locking and power management.
 - **🎨 Global Theme:** Unified **Catppuccin Mocha** aesthetic across GTK, Icons, and WM.
@@ -32,19 +34,23 @@ This setup supports both **Native Linux** and **WSL** with a single, unified con
         ├── bash.nix      # Bash configuration
         ├── zsh.nix       # Zsh configuration
         ├── nushell.nix   # Nushell (Experimental) configuration
-        ├── shell-utils.nix # Shell-related Rust utilities
+        ├── shell-utils.nix # Shell-related Rust utilities (eza, zoxide, atuin, yazi, carapace)
         ├── neovim.nix    # Neovim module loader
-        ├── neovim/       # Modular Lua configurations
+        ├── neovim/       # Modular Lua configurations (Neovim 0.11+ ready)
         ├── zellij.nix    # Terminal multiplexer config
         ├── ghostty.nix   # Ghostty terminal emulator config
         ├── hyprland.nix  # Hyprland core configuration & Keybindings
         ├── hyprlock.nix  # Catppuccin themed lock screen
         ├── hypridle.nix  # Idle & Auto-lock configuration
         ├── noctalia.nix  # Noctalia Shell (Bar, Launcher, Notifications)
-        ├── theme.nix     # GTK/Icon/Cursor theme configuration
-        ├── packages.nix  # Categorized system packages
-        ├── git.nix       # Standardized Git user config
+        ├── theme.nix     # GTK/Icon/Cursor/Kvantum theme configuration
+        ├── system-utils.nix # System monitoring, capture, hardware control (nh, btop, wlogout, cliphist)
+        ├── dev-tools.nix # Development tools & LSP (gh, lazydocker, sd, xh, nil, gopls)
+        ├── gui-apps.nix  # GUI applications (Ghostty)
+        ├── fonts.nix     # Font configurations (Maple Mono, Nerd Fonts)
+        ├── git.nix       # Standardized Git user config (GitUI, Delta, Lazygit)
         ├── rclone.nix    # Rclone cloud sync config
+        ├── swappy.nix    # Swappy configuration
         └── welcome.nix   # Custom welcome messages
 ```
 
@@ -78,11 +84,18 @@ Since `home-manager` isn't installed yet, use `nix run` to apply the configurati
 nix run home-manager/master -- switch --flake .#yongminari-x86-linux
 ```
 
-### 4. Korean Input Method (Fcitx5)
-Fcitx5 is recommended for the Hyprland environment.
-```bash
-sudo apt install fcitx5 fcitx5-hangul fcitx5-config-qt
-```
+## 🛠️ Management Guide (with `nh`)
+
+이 프로젝트는 더 나은 사용자 경험을 위해 **`nh` (Nix Helper)**를 사용합니다.
+
+| Task | nh Command (Recommended) | Native Command |
+| :--- | :--- | :--- |
+| **Apply Config** | `nh home switch` | `home-manager switch --flake .` |
+| **Update Flake** | - | `nix flake update` |
+| **Clean Garbage** | `nh clean all` | `nix-collect-garbage -d` |
+
+- `nh`는 빌드 시 `nix-output-monitor`를 통해 시각적으로 빌드 로그를 보여줍니다.
+- 설정 파일에서 `programs.nh.flake` 경로가 이미 `~/home_env_dotfiles`로 지정되어 있어 편리합니다.
 
 ## 🖥️ Monitor Configuration (Machine-specific)
 

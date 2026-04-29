@@ -10,7 +10,10 @@
   imports = [
     (if builtins.pathExists ./local.nix then ./local.nix else {})
     ./modules/shell.nix
-    ./modules/packages.nix
+    ./modules/system-utils.nix
+    ./modules/dev-tools.nix
+    ./modules/gui-apps.nix
+    ./modules/fonts.nix
     ./modules/neovim.nix
     ./modules/zellij.nix
     ./modules/git.nix

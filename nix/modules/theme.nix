@@ -33,6 +33,10 @@
     };
   };
 
+  home.packages = with pkgs; [
+    catppuccin-kvantum
+  ];
+
   # Qt 앱들을 GTK 테마와 동기화
   qt = {
     enable = true;

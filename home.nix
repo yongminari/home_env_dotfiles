@@ -73,10 +73,10 @@
   # [공통 쉘 에일리어스]
   home.shellAliases = {
     # Home Manager 관련
-    hms = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}";
-    hmsx = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}-x86-linux";
-    hmsa = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}-aarch-linux";
-    hmsm = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}-aarch-mac";
+    hms = "nh home switch ~/home_env_dotfiles";
+    hmsx = "nh home switch ~/home_env_dotfiles -- --flake .#${config.home.username}-x86-linux";
+    hmsa = "nh home switch ~/home_env_dotfiles -- --flake .#${config.home.username}-aarch-linux";
+    hmsm = "nh home switch ~/home_env_dotfiles -- --flake .#${config.home.username}-aarch-mac";
 
     yazi_shortcuts = "yazi-cheat";
     hypr_shortcuts = "hypr-cheat";

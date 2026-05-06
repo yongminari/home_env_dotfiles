@@ -18,6 +18,7 @@
     lua51Packages.jsregexp
     gopls
     clang-tools
+    pyright
 
     # [현대적 대체 도구]
     sd              # sed 대체 (find & replace)

@@ -9,22 +9,34 @@
   # [모듈 로드] 기능별 파일들을 여기서 불러옴
   imports = [
     (if builtins.pathExists ./local.nix then ./local.nix else {})
-    ./modules/shell.nix
-    ./modules/system-utils.nix
-    ./modules/dev-tools.nix
-    ./modules/gui-apps.nix
-    ./modules/fonts.nix
-    ./modules/neovim.nix
-    ./modules/zellij.nix
-    ./modules/git.nix
-    ./modules/ghostty.nix
-    ./modules/rclone.nix
-    ./modules/hyprland.nix
-    ./modules/hyprlock.nix
-    ./modules/hypridle.nix
-    ./modules/theme.nix
-    ./modules/noctalia.nix
-    ./modules/swappy.nix
+    
+    # [1. core] 필수 설정 및 CLI
+    ./modules/core/system-utils.nix
+    ./modules/core/theme.nix
+    ./modules/core/fonts.nix
+    ./modules/core/shell/shell-utils.nix
+    ./modules/core/shell/welcome.nix
+    ./modules/core/shell/bash.nix
+    ./modules/core/shell/zsh.nix
+    ./modules/core/shell/nushell.nix
+    ./modules/core/shell/zellij.nix
+
+    # [2. dev] 개발 환경
+    ./modules/dev/git.nix
+    ./modules/dev/dev-tools.nix
+    ./modules/dev/neovim.nix
+
+    # [3. desktop] UI 및 데스크탑 앱
+    ./modules/desktop/hyprland.nix
+    ./modules/desktop/hyprlock.nix
+    ./modules/desktop/hypridle.nix
+    ./modules/desktop/ghostty.nix
+    ./modules/desktop/gui-apps.nix
+    ./modules/desktop/swappy.nix
+
+    # [4. services] 백그라운드 서비스
+    ./modules/services/noctalia.nix
+    ./modules/services/rclone.nix
   ];
 
   targets.genericLinux.enable = pkgs.stdenv.isLinux;

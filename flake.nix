@@ -27,7 +27,10 @@
   outputs = { self, nixpkgs, home-manager, hyprlock-themes, noctalia, ... }@inputs:
     let
       mkConfig = system: home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.${system};
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
         extraSpecialArgs = { inherit inputs; }; # 이 부분이 핵심입니다.
         modules = [ 
           ./nix/home.nix

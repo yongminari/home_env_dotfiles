@@ -35,6 +35,8 @@
       diffview-nvim
       git-conflict-nvim
       obsidian-nvim
+      hlchunk-nvim
+      rainbow-delimiters-nvim
       nvim-lspconfig
       nvim-cmp
       cmp-nvim-lsp

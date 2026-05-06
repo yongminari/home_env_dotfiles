@@ -14,7 +14,7 @@
     ./modules/core/system-utils.nix
     ./modules/core/theme.nix
     ./modules/core/fonts.nix
-    ./modules/core/shell/shell-utils.nix
+    ./modules/core/shell/utils.nix
     ./modules/core/shell/welcome.nix
     ./modules/core/shell/bash.nix
     ./modules/core/shell/zsh.nix
@@ -27,6 +27,7 @@
     ./modules/dev/neovim.nix
 
     # [3. desktop] UI 및 데스크탑 앱
+    ./modules/desktop/niri
     ./modules/desktop/hyprland.nix
     ./modules/desktop/hyprlock.nix
     ./modules/desktop/hypridle.nix
@@ -76,11 +77,6 @@
     hmsx = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}-x86-linux";
     hmsa = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}-aarch-linux";
     hmsm = "home-manager switch --flake ~/home_env_dotfiles/#${config.home.username}-aarch-mac";
-
-    vi = "nvim";
-    vim = "nvim";
-    zj = "zellij";
-    tocb = "wl-copy";
 
     yazi_shortcuts = "yazi-cheat";
     hypr_shortcuts = "hypr-cheat";

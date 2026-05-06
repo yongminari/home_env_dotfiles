@@ -12,7 +12,16 @@ vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
 vim.opt.ignorecase = true     -- Case insensitive searching
 vim.opt.smartcase = true      -- Smart case
+vim.opt.updatetime = 300      -- Faster completion and highlight
 vim.g.mapleader = " "         
+
+-- [테마 배경색 설정]
+-- 원격지(SSH/Container)에서 접속 시 배경을 light 모드로 전환
+if utils.is_remote then
+  vim.opt.background = "light"
+else
+  vim.opt.background = "dark"
+end
 
 -- [클립보드 설정]
 if utils.is_remote or utils.is_multiplexer then
@@ -34,7 +43,6 @@ vim.opt.termguicolors = true
 vim.opt.conceallevel = 2
 vim.opt.laststatus = 3
 vim.opt.cmdheight = 1
-vim.opt.updatetime = 300 -- 하이라이트 반응 속도 (ms)
 
 return {
   theme_style = theme_style,

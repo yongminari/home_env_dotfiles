@@ -11,9 +11,27 @@
     # ROS 2 & Qt Wayland compatibility fixes
     rviz2 = "env QT_QPA_PLATFORM=xcb rviz2";
     wireshark = "env QT_QPA_PLATFORM=xcb wireshark";
+
+    # Common
+    g = "git";
+    v = "nvim";
+    vi = "nvim";
+    vim = "nvim";
+    zj = "zellij";
+    tocb = "wl-copy";
   };
 
+  # 공통 CLI 패키지
+  home.packages = with pkgs; [
+    htop
+    fastfetch
+    lolcat
+    lsb-release
+    python3
+  ];
+
   home.file.".config/starship-ssh.toml".source = ./starship-ssh.toml;
+  home.file.".config/starship-docker.toml".source = ./starship-docker.toml;
 
   # Starship 프롬프트
   programs.starship = {

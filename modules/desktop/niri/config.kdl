@@ -1,0 +1,42 @@
+// 창 규칙
+window-rule {
+    geometry-corner-radius 20
+    clip-to-geometry true
+}
+
+window-rule {
+    match is-active=false
+    opacity 0.85
+}
+
+layer-rule {
+    match namespace="^noctalia-overview"
+    place-within-backdrop true
+}
+
+layout {
+    background-color "transparent"
+}
+
+overview {
+    workspace-shadow {
+        off
+    }
+}
+
+// 커서 설정 (Niri 네이티브 설정)
+cursor {
+    xcursor-theme "Bibata-Modern-Ice"
+    xcursor-size 48
+}
+
+// 자동 실행 (환경 변수 공유 및 Systemd 세션 연동)
+spawn-at-startup "dbus-update-activation-environment" "--systemd" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP" "NIRI_SOCKET"
+spawn-at-startup "systemctl" "--user" "start" "niri-session.target"
+
+spawn-at-startup "fcitx5" "-d"
+spawn-at-startup "noctalia-shell"
+spawn-at-startup "nm-applet"
+
+// 단축키 파일 포함
+include "binds.kdl"

@@ -33,7 +33,7 @@
         };
         extraSpecialArgs = { inherit inputs; }; # 이 부분이 핵심입니다.
         modules = [ 
-          ./nix/home.nix
+          ./home.nix
         ];
       };
 

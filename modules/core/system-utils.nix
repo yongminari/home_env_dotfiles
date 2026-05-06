@@ -104,25 +104,6 @@
     flake = "${config.home.homeDirectory}/home_env_dotfiles";
   };
 
-  # Swappy 설정 (캡처 후 즉시 편집기)
-  xdg.configFile."swappy/config".text = ''
-    [Default]
-    save_dir=${config.home.homeDirectory}/Pictures/Screenshots
-    save_filename_format=swappy-%Y%m%d-%H%M%S.png
-    show_panel=false
-    line_size=5
-    text_size=20
-    text_font=sans-serif
-    paint_mode=brush
-    early_exit=false
-    fill_shape=false
-  '';
-
-  # 스크린샷 폴더 자동 생성
-  home.activation.createScreenshotDir = config.lib.dag.entryAfter ["writeBoundary"] ''
-    mkdir -p ${config.home.homeDirectory}/Pictures/Screenshots
-  '';
-
   # 클립보드 히스토리 감시 서비스
   services.cliphist.enable = true;
 }

@@ -8,10 +8,17 @@
     extraEnv = ''
       # [Environment Detection]
       let is_ssh = (not ($env | get -o SSH_CLIENT | is-empty)) or (not ($env | get -o SSH_TTY | is-empty)) or (not ($env | get -o SSH_CONNECTION | is-empty))
-      let is_docker = ("/.dockerenv" | path exists) or (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "docker") } else { false })
+      let is_container = (
+        (not ($env | get -o DISTROBOX_ENTER_PATH | is-empty)) or 
+        ("/run/.containerenv" | path exists) or 
+        ("/.dockerenv" | path exists) or 
+        (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "docker") } else { false }) or
+        (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "podman") } else { false }) or
+        (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "containerd") } else { false })
+      )
 
       # [Starship 설정 연동]
-      if ($is_ssh or $is_docker) {
+      if ($is_ssh or $is_container) {
         $env.STARSHIP_CONFIG = ($env.HOME | path join ".config" "starship-ssh.toml")
       }
     '';
@@ -70,9 +77,16 @@
 
       # [Zellij Wrapper]
       let is_ssh = (not ($env | get -o SSH_CLIENT | is-empty)) or (not ($env | get -o SSH_TTY | is-empty)) or (not ($env | get -o SSH_CONNECTION | is-empty))
-      let is_docker = ("/.dockerenv" | path exists) or (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "docker") } else { false })
+      let is_container = (
+        (not ($env | get -o DISTROBOX_ENTER_PATH | is-empty)) or 
+        ("/run/.containerenv" | path exists) or 
+        ("/.dockerenv" | path exists) or 
+        (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "docker") } else { false }) or
+        (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "podman") } else { false }) or
+        (if ("/proc/1/cgroup" | path exists) { (open /proc/1/cgroup | str contains "containerd") } else { false })
+      )
       
-      if ($is_ssh or $is_docker) {
+      if ($is_ssh or $is_container) {
         alias zellij = zellij --config ($env.HOME | path join ".config" "zellij" "remote.kdl")
       }
     '';

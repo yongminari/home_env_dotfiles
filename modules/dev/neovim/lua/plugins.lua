@@ -36,8 +36,18 @@ end
 -- [기본 UI 컴포넌트]
 safe_require("lualine", function(lualine)
   local lualine_theme = 'ayu_dark'
-  if utils.is_remote then lualine_theme = 'ayu_mirage' end
-  lualine.setup { options = { theme = lualine_theme } }
+  if utils.is_remote then 
+    lualine_theme = 'ayu_mirage' -- 기본 mirage 유지하되, 필요시 'ayu_light'의 어두운 버전 등으로 커스텀 가능
+    -- 또는 아예 다른 계열의 테마를 사용하여 대비를 높임
+    -- lualine_theme = 'horizon' 
+  end
+  lualine.setup { 
+    options = { 
+      theme = lualine_theme,
+      component_separators = utils.is_remote and { left = '', right = ''} or { left = '', right = ''},
+      section_separators = utils.is_remote and { left = '', right = ''} or { left = '', right = ''},
+    } 
+  }
 end)
 safe_require("bufferline", function(bufferline) bufferline.setup{} end)
 safe_require("gitsigns", function(gitsigns) gitsigns.setup() end)

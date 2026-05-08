@@ -21,21 +21,23 @@ $mainMod = SUPER
 # Terminal & Launcher
 bind = $mainMod, Return, exec, ${pkgs.ghostty}/bin/ghostty
 bind = $mainMod, space, exec, ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call launcher toggle
+bind = $mainMod, n, exec, ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call launcher toggle
 bind = $mainMod, n, exec, ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call notifications toggleHistory
 bind = $mainMod SHIFT, n, exec, ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call notifications toggleHistory
 bind = $mainMod ALT, n, exec, ${inputs.noctalia.packages.${pkgs.system}.default}/bin/noctalia-shell ipc call notifications clearAll
 bind = $mainMod, Q, killactive
 bind = $mainMod, F, fullscreen
 bind = $mainMod, V, togglefloating
+bind = $mainMod, G, togglegroup
 # Escape: Lock Screen using System Path (Hyprlock)
 bind = $mainMod, Escape, exec, /usr/bin/hyprlock
 
 # --- Resizing ---
-# Quick Resize (SUPER + ALT + HJKL)
-binde = $mainMod ALT, l, resizeactive, 30 0
-binde = $mainMod ALT, h, resizeactive, -30 0
-binde = $mainMod ALT, k, resizeactive, 0 -30
-binde = $mainMod ALT, j, resizeactive, 0 30
+# Quick Resize (SUPER + CTRL + HJKL)
+binde = $mainMod CTRL, l, resizeactive, 30 0
+binde = $mainMod CTRL, h, resizeactive, -30 0
+binde = $mainMod CTRL, k, resizeactive, 0 -30
+binde = $mainMod CTRL, j, resizeactive, 0 30
 
 # IME (Fcitx5) - ESC to English
 bindn = , Escape, exec, /usr/bin/fcitx5-remote -c
@@ -46,19 +48,19 @@ bind = $mainMod, l, exec, bash -c 'old=$(hyprctl activewindow -j); oa=$(echo "$o
 bind = $mainMod, k, movefocus, u
 bind = $mainMod, j, movefocus, d
 
-# Monitor Focus
-bind = $mainMod, comma, focusmonitor, l
-bind = $mainMod, period, focusmonitor, r
+# Monitor Focus & Group Navigation
+bind = $mainMod ALT, h, focusmonitor, l
+bind = $mainMod ALT, l, focusmonitor, r
+bind = $mainMod, comma, changegroupactive, b
+bind = $mainMod, period, changegroupactive, f
 
 # Move Window (Vim Style)
 bind = $mainMod SHIFT, h, movewindow, l
 bind = $mainMod SHIFT, l, movewindow, r
 bind = $mainMod SHIFT, k, movewindow, u
 bind = $mainMod SHIFT, j, movewindow, d
-
-# Move Window to Monitor
-bind = $mainMod SHIFT, comma, movewindow, l
-bind = $mainMod SHIFT, period, movewindow, r
+bind = $mainMod, bracketleft, movewindow, l
+bind = $mainMod, bracketright, movewindow, r
 
 # Workspaces
 bind = $mainMod, 1, workspace, 1
@@ -75,8 +77,6 @@ bind = $mainMod, 0, workspace, 10
 # Cycle through workspaces on current monitor
 bind = $mainMod, mouse_down, workspace, m+1
 bind = $mainMod, mouse_up, workspace, m-1
-bind = $mainMod, bracketright, workspace, m+1
-bind = $mainMod, bracketleft, workspace, m-1
 
 bind = $mainMod SHIFT, 1, movetoworkspace, 1
 bind = $mainMod SHIFT, 2, movetoworkspace, 2

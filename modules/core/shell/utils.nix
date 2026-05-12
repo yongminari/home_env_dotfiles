@@ -27,7 +27,11 @@
     fastfetch
     lolcat
     lsb-release
-    python3
+    glow      # Markdown preview
+    ouch      # Archive preview/manager
+    mediainfo # Media metadata
+    exiftool  # Image/Media metadata
+    wl-clipboard # System clipboard integration (Wayland)
   ];
 
   home.file.".config/starship-ssh.toml".source = ./starship-ssh.toml;
@@ -114,10 +118,36 @@
           { run = ''${pkgs.neovim}/bin/nvim "$@"''; block = true; }
         ];
       };
+      preview = {
+        rules = [
+          { mime = "{image,audio,video}/*"; run = "plugin mediainfo"; }
+          { mime = "application/x-subrip"; run = "plugin mediainfo"; }
+          { mime = "text/markdown"; run = "plugin glow"; }
+          { mime = "application/{zip,rar,7z*,tar*,gzip,xz,zstd,bzip*}"; run = "plugin ouch"; }
+        ];
+      };
+    };
+
+    keymap = {
+      manager.prepend_keymap = [
+        { on = [ "l" ]; run = "plugin smart-enter"; desc = "Enter directory or open file"; }
+        { on = [ "<Enter>" ]; run = "plugin smart-enter"; desc = "Enter directory or open file"; }
+        { on = [ "c" "m" ]; run = "plugin chmod"; desc = "Chmod"; }
+        { on = [ "m" ]; run = "plugin relative-motions"; desc = "Relative motions"; }
+        { on = [ "i" ]; run = "plugin easyjump"; desc = "Easyjump"; }
+      ];
+      cmp.prepend_keymap = [
+        { on = [ "<Tab>" ]; run = "close --submit"; desc = "현재 선택된 제안으로 완성"; }
+        { on = [ "<C-n>" ]; run = "arrow 1";        desc = "다음 제안으로 이동"; }
+        { on = [ "<C-p>" ]; run = "arrow -1";       desc = "이전 제안으로 이동"; }
+      ];
     };
 
     initLua = ''
       require("githead"):setup()
+      require("shell-completion"):setup()
+      require("full-border"):setup()
+      require("relative-motions"):setup()
     '';
 
     plugins = {
@@ -126,6 +156,60 @@
         repo = "githead.yazi";
         rev = "main";
         sha256 = "sha256-o2EnQYOxp5bWn0eLn0sCUXcbtu6tbO9pdUdoquFCTVw=";
+      };
+      shell-completion = pkgs.fetchFromGitHub {
+        owner = "yazi-rs";
+        repo = "plugins";
+        rev = "main";
+        sha256 = "sha256-kcZGQB8Dfon8OipuAcNnCeRgTp/S0mQokADkuvEG4Lc=";
+      } + "/shell-completion.yazi";
+      smart-enter = pkgs.fetchFromGitHub {
+        owner = "yazi-rs";
+        repo = "plugins";
+        rev = "main";
+        sha256 = "sha256-kcZGQB8Dfon8OipuAcNnCeRgTp/S0mQokADkuvEG4Lc=";
+      } + "/smart-enter.yazi";
+      chmod = pkgs.fetchFromGitHub {
+        owner = "yazi-rs";
+        repo = "plugins";
+        rev = "main";
+        sha256 = "sha256-kcZGQB8Dfon8OipuAcNnCeRgTp/S0mQokADkuvEG4Lc=";
+      } + "/chmod.yazi";
+      full-border = pkgs.fetchFromGitHub {
+        owner = "yazi-rs";
+        repo = "plugins";
+        rev = "main";
+        sha256 = "sha256-kcZGQB8Dfon8OipuAcNnCeRgTp/S0mQokADkuvEG4Lc=";
+      } + "/full-border.yazi";
+      relative-motions = pkgs.fetchFromGitHub {
+        owner = "dedukun";
+        repo = "relative-motions.yazi";
+        rev = "main";
+        sha256 = "1kk8my0apb4ahp60krqalccp63crggh8jkvi0zdhsf26bkyv2bpn";
+      };
+      glow = pkgs.fetchFromGitHub {
+        owner = "Reledia";
+        repo = "glow.yazi";
+        rev = "main";
+        sha256 = "139vrns3jwaymqi2sf0fpmkn2vsw261z3195cvi4lk6bvyxbydcv";
+      };
+      ouch = pkgs.fetchFromGitHub {
+        owner = "ndtoan96";
+        repo = "ouch.yazi";
+        rev = "main";
+        sha256 = "0byhj3rhibky5havkv9a4c2cpfmp0czl1ann71bxh3qs7mn7z36p";
+      };
+      easyjump = pkgs.fetchFromGitHub {
+        owner = "DreamMaoMao";
+        repo = "easyjump.yazi";
+        rev = "master";
+        sha256 = "0gbzzz4j0b70lsbyrv1fp30w0w5hpcrr93lirklj4irrwrspd49a";
+      };
+      mediainfo = pkgs.fetchFromGitHub {
+        owner = "boydaihungst";
+        repo = "mediainfo.yazi";
+        rev = "master";
+        sha256 = "0k66zsa6i5hqd08qdg027697bk32vz7gkahmh1c24pisdlaaph9x";
       };
     };
   };

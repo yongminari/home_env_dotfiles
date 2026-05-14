@@ -20,6 +20,7 @@
     ./modules/core/shell/zsh.nix
     ./modules/core/shell/nushell.nix
     ./modules/core/shell/zellij.nix
+    ./modules/core/shell/yazi.nix
 
     # [2. dev] 개발 환경
     ./modules/dev/git.nix
